@@ -1,0 +1,36 @@
+<div class="container">
+<div class="col-md-7">
+  <div class="row" *ngFor="let person of people; let i = index">
+    <div class="col-md-4">
+        {{i}}
+    </div>
+    <div class="col-md-3">
+        {{person.fullname}}
+    </div>
+    <div class="col-md-3">
+        {{person.phone}}
+    </div>
+    <div class="col-md-3">
+        {{person.email}}
+    </div>
+    <div class="col-md-2">
+        <input type="button" class="btn btn-success" name="details" value="Details" (click)="showDetails(i)" />
+    </div>
+    <br />
+    <br />
+  </div>
+</div>
+<div class="col-md-5">
+<div class="container" *ngIf="shown">
+    <h3>Person details</h3>
+    <ul>
+        <li>Name: {{ choosenOne.name}}</li>
+        <li>phone: {{ choosenOne.phone }}</li>
+        <li>username: {{ choosenOne.username }}</li>
+        <li>website: {{ choosenOne.website }}</li>
+        <li>email: {{ choosenOne.email }}</li>
+    </ul>
+</div>
+</div>
+</div>
+<input type="submit" class="btn btn-info" value="Add new person" (click)="addPerson()" />
