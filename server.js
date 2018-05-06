@@ -4,7 +4,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 
 const index = require('./server/routes/index');
-const tasks = require('./server/routes/tasks');
+//const tasks = require('./server/routes/tasks');
 const people = require('./server/routes/people');
 const dummy = require('./server/routes/dummy');
 
@@ -31,7 +31,7 @@ app.use('/api', dummy);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 app.listen(port, function(){
