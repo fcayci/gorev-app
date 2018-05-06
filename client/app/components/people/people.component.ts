@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Person, Kisi } from '../../../person';
-
 import { PasserService } from '../../services/passer.service';
 
 @Component({
@@ -17,20 +16,7 @@ export class PeopleComponent {
      this.passerservice.getPeople()
        .subscribe(people => {
          this.people = people;
-         console.log(this.people);
        });
-  }
-
-  addPerson(){
-    //this.router.navigate[('person')];
-  }
-
-  addPersondummy(){
-    var p = {
-      fullname : "hede",
-    }
-
-    this.people.push(p);
   }
 
 }

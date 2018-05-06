@@ -9,5 +9,4 @@ import { PasserService } from './services/passer.service';
 })
 
 export class AppComponent {
-  title = 'app';
 }

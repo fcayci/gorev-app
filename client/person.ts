@@ -13,9 +13,11 @@ export class Kisi{
   // username: string;
   // password: string;
   fullname: string;
-  // phone: string;
-  // email: string;
-  // position: string;
+  email: string
+  //position: string;
+  //office: string;
+  //phone: string;
+  // mobile: string;
   // load: number;
   // busy: null;
   // vacation: boolean

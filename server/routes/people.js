@@ -19,7 +19,6 @@ router.get('/people/:id', function(req, res, next){
     if (err) {
       res.send(err);
     }
-      console.log(person);
       res.json(person);
   })
 });
@@ -27,7 +26,8 @@ router.get('/people/:id', function(req, res, next){
 // save person
 router.post('/people', function(req, res, next){
   var person = req.body;
-  if (!person.name) {
+
+  if (!person.fullname) {
     res.status(400);
     res.json({
       "error" : "Bad Data"

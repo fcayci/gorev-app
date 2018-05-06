@@ -1,35 +1,39 @@
 <div class="container">
-<div class="col-md-7">
-  <div class="row" *ngFor="let person of people; let i = index">
-    <div class="col-md-1">
+  <h1>List of people</h1>
+  <hr>
+  <h2>DUMMY</h2>
+
+  <div class="col-md-7">
+    <div class="row" *ngFor="let person of people; let i = index">
+      <div class="col-md-1">
         {{person.id}}
-    </div>
-    <div class="col-md-3">
+      </div>
+      <div class="col-md-3">
         {{person.name}}
-    </div>
-    <div class="col-md-3">
+      </div>
+      <div class="col-md-3">
         {{person.phone}}
-    </div>
-    <div class="col-md-3">
+      </div>
+      <div class="col-md-3">
         {{person.email}}
-    </div>
-    <div class="col-md-2">
+      </div>
+      <div class="col-md-2">
         <input type="button" class="btn btn-success" name="details" value="Details" (click)="showDetails(i)" />
+      </div>
+      <br />
+      <br />
     </div>
-    <br />
-    <br />
   </div>
-</div>
-<div class="col-md-5">
-<div class="container" *ngIf="shown">
-    <h3>Person details</h3>
-    <ul>
+  <div class="col-md-5">
+    <div class="container" *ngIf="shown">
+      <h3>Person details</h3>
+      <ul>
         <li>Name: {{ choosenOne.name}}</li>
         <li>phone: {{ choosenOne.phone }}</li>
         <li>username: {{ choosenOne.username }}</li>
         <li>website: {{ choosenOne.website }}</li>
         <li>email: {{ choosenOne.email }}</li>
-    </ul>
-</div>
-</div>
+      </ul>
+    </div>
+  </div>
 </div>

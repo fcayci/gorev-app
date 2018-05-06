@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
 
-const index = require('./server/routes/index');
+const home = require('./server/routes/home');
 //const tasks = require('./server/routes/tasks');
 const people = require('./server/routes/people');
 const dummy = require('./server/routes/dummy');
@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : false}));
 
-app.use('/', index);
+app.use('/', home);
 //app.use('/api', tasks);
 app.use('/api', people);
 app.use('/api', dummy);
