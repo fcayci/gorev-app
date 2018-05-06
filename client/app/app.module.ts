@@ -23,10 +23,6 @@ const ROUTES : Routes = [
   {
     path: 'people',
     component: PeopleComponent
-  },
-  {
-    path: 'add',
-    component: AdderComponent
   }
 ];
 

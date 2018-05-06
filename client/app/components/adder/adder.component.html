@@ -1,77 +1,16 @@
-<div class="container">
-    <h2>Kisi Olustur</h2>
-    <hr>
-    <form class="form-horizontal">
-
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>Isim</label>
+<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}"
+       [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <ng-content select=".adder-header"></ng-content>
         </div>
-        <div class="col-md-3">
-          <input type="text" placeholder="Furkan Cayci" class="form-control" name="fullname" [(ngModel)]="fullname" required>
+        <div class="modal-body">
+          <ng-content select=".adder-body"></ng-content>
         </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>email</label>
-        </div>
-        <div class="col-md-3">
-          <input type="text" placeholder="furkancayci@gtu.edu.tr" class="form-control" name="email" [(ngModel)]="email" required>
+        <div class="modal-footer">
+          <ng-content select=".adder-footer"></ng-content>
         </div>
       </div>
-
-<!--
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>Kadro</label>
-        </div>
-        <div class="col-md-3">
-          <select class="form-control" [(ngModel)]="position" *ngOptions="g for g in positions"></select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>Oda No</label>
-        </div>
-        <div class="col-md-3">
-          <input type="text" placeholder="248" class="form-control" name="office" [(ngModel)]="office" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>Telefon (Dahili)</label>
-        </div>
-        <div class="col-md-3">
-          <input type="string"  placeholder="3242" class="form-control" name="phone" [(ngModel)]="phone" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-md-2">
-          <label>Telefon (Cep)</label>
-        </div>
-        <div class="col-md-3">
-          <input type="text" placeholder="0543 987 6543" class="form-control" name="mobile" [(ngModel)]="mobile" required>
-        </div>
-      </div>
- -->
-      <br />
-      <br />
-
-      <div class="form-group">
-        <div class="col-md-1 col-md-offset-1">
-           <input type="submit" value="Oluştur" class="btn btn-success" (click)="addPerson()" />
-        </div>
-        <div class="col-md-1">
-           <input type="button" value="Temizle" class="btn btn-warning" (click)="clearFields()" />
-        </div>
-        <div class="col-md-1">
-           <input type="button" value="Iptal" class="btn btn-danger" routerLink="/people" />
-        </div>
-      </div>
-
-    </form>
+    </div>
   </div>

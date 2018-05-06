@@ -4,9 +4,9 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class PasserService{
+export class DataService {
   constructor(private http:Http) {
-    console.log('[passer.service.ts] Passer service initialized...');
+    console.log('[data.service.ts] Data service initialized...');
   }
 
   getPeople(){
@@ -22,6 +22,7 @@ export class PasserService{
   addPerson(person){
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
+
     return this.http.post('http://localhost:4200/api/people', JSON.stringify(person), {headers: headers})
       .map(res => res.json());
   }
