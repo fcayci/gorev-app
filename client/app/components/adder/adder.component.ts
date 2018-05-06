@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PasserService } from '../../services/passer.service';
+import { DataService } from '../../services/data.service';
 import { Kisi } from '../../../person';
 import { Router } from '@angular/router';
 
@@ -18,10 +18,10 @@ export class AdderComponent {
   phone : string;
   mobile : string;
 
-  constructor(private passerservice:PasserService, private router:Router){
+  constructor(private dataService:DataService, private router:Router){
 
     console.log('[adder.component.ts] Person component called..')
-    // this.passerservice.addPerson()
+    // this.dataService.addPerson()
     //   .subscribe(person => {
     //     this.person;
     // });
@@ -45,7 +45,7 @@ export class AdderComponent {
 
     console.log(person);
 
-    this.passerservice.addPerson(person)
+    this.dataService.addPerson(person)
       .subscribe(person => {
          person = person;
       });

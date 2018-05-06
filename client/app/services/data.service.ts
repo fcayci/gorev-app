@@ -4,9 +4,9 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class PasserService{
+export class DataService{
   constructor(private http:Http) {
-    console.log('[passer.service.ts] Passer service initialized...');
+    console.log('[data.service.ts] Passer service initialized...');
   }
 
   getPeople(){

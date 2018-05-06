@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Person, Kisi } from '../../../person';
-import { PasserService } from '../../services/passer.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'people',
@@ -12,8 +12,8 @@ export class PeopleComponent {
 
   people : Kisi[];
 
-  constructor(private passerservice:PasserService){
-     this.passerservice.getPeople()
+  constructor(private dataService:DataService){
+     this.dataService.getPeople()
        .subscribe(people => {
          this.people = people;
        });
