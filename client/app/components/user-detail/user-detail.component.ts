@@ -3,17 +3,17 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Kisi } from '../../../person';
+import { OE } from '../../../ogretimelemani';
 import { DataService } from '../../services/data.service';
 
 
 @Component({
-  selector: 'person-detail',
-  templateUrl: './person-detail.component.html',
-  styleUrls: ['./person-detail.component.css']
+  selector: 'user-detail',
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.css']
 })
 
-export class PersonDetailComponent implements OnInit {
+export class UserDetailComponent implements OnInit {
 
   @Input() kisi: Kisi;
   _kisiBak = {};
@@ -27,12 +27,12 @@ export class PersonDetailComponent implements OnInit {
     private location: Location) {}
 
   ngOnInit(): void {
-    this.getPerson();
+    this.getUser();
   }
 
-  getPerson(): void {
+  getUser(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.dataService.getPerson(id)
+    this.dataService.getUser(id)
       .subscribe(kisi => {
         this.kisi = kisi;
         this.fullname = this.kisi.fullname;
@@ -40,8 +40,8 @@ export class PersonDetailComponent implements OnInit {
     });
   }
 
-  updatePerson(): void {
-    this.dataService.updatePerson(this.kisi)
+  updateUser(): void {
+    this.dataService.updateUser(this.kisi)
       .subscribe(res => {
         console.log(res);
         this.fullname = this.kisi.fullname;
@@ -52,7 +52,7 @@ export class PersonDetailComponent implements OnInit {
   }
 
   // go back to original form when hit cancel.
-  resetPerson(): void {
+  resetUser(): void {
     this.kisi = JSON.parse(JSON.stringify(this._kisiBak));
     this.showEdit();
   }

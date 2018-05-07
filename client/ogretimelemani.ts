@@ -1,4 +1,4 @@
-export class Kisi{
+export class OE{
   // username: string;
   // password: string;
   fullname: string;

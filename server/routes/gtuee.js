@@ -11,8 +11,8 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// get all people
-router.get('/people', function(req, res, next){
+// get all users
+router.get('/users', function(req, res, next){
   OE.find(function (err, users) {
     if (err) return console.error(err);
     console.log(users);
@@ -20,11 +20,22 @@ router.get('/people', function(req, res, next){
   });
 });
 
-// add person
-router.post('/people', function(req, res, next){
-  console.log('[gtuee.js] /people will be posted to create new user...');
+// get single user
+router.get('/users/:username', function(req, res, next){
+  OE.find(function (err, users) {
+    if (err) return console.error(err);
+    console.log(users);
+    res.send(users);
+  });
+});
+
+
+// add user
+router.post('/users', function(req, res, next){
+  console.log('[gtuee.js] /users will be posted to create new user...');
 
   var candidate = req.body;
+  // TODO: remove this for production
   console.log('[gtuee]', candidate)
 
   if (!candidate.fullname) {

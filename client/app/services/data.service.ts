@@ -9,40 +9,40 @@ export class DataService {
     console.log('[data.service.ts] Data service initialized...');
   }
 
-  // get a single person by passing id as an argument
-  getPerson(id){
-    return this.http.get('http://localhost:4200/api/people/' + id)
+  // get a single user by passing id as an argument
+  getUser(id){
+    return this.http.get('http://localhost:4200/api/users/' + id)
       .map(res => res.json());
   }
 
-  // get all people in the db
-  getPeople(){
-    return this.http.get('http://localhost:4200/api/people')
+  // get all users in the db
+  getUsers(){
+    return this.http.get('http://localhost:4200/api/users')
       .map(res => res.json());
   }
 
-  // add a person to the db by passing the kisi object
-  addPerson(person){
+  // add a user to the db by passing the kisi object
+  addUser(user){
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    console.log('[data.service]. ' + person);
-    return this.http.post('http://localhost:4200/api/people', JSON.stringify(person), {headers: headers})
+    console.log('[data.service]. ' + user);
+    return this.http.post('http://localhost:4200/api/users', JSON.stringify(user), {headers: headers})
       .map(res => res.json());
   }
 
-  // delete a person by passing the person
-  deletePerson(person){
-    return this.http.delete('http://localhost:4200/api/people/' + person._id)
+  // delete a user by passing the user
+  deleteUser(user){
+    return this.http.delete('http://localhost:4200/api/users/' + user._id)
       .map(res => res.json());
   }
 
-  // update person
-  updatePerson(person){
+  // update user
+  updateUser(user){
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    return this.http.put('http://localhost:4200/api/people/' + person._id, JSON.stringify(person), {headers: headers})
+    return this.http.put('http://localhost:4200/api/users/' + user._id, JSON.stringify(user), {headers: headers})
       .map(res => res.json());
   }
 

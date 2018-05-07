@@ -1,5 +1,5 @@
 <div class="container"> <!-- container -->
-  <h1>Kişi Listesi <small>({{people?.length}})</small></h1>
+  <h1>Kişi Listesi <small>({{users?.length}})</small></h1>
   <input type="button" class="btn btn-info" value="Yeni Kişi Ekle" (click)="show()" />
   <br />
   <br />
@@ -16,15 +16,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr role="button" routerLink="/people/{{person._id}}" *ngFor="let person of people; let i = index">
+      <tr role="button" routerLink="/users/{{user._id}}" *ngFor="let user of users; let i = index">
         <td>{{i + 1}}</td>
-        <td>{{person.fullname}}</td>
-        <td>{{person.email}}</td>
-        <td>{{person.office}}</td>
-        <td>{{person.phone}}</td>
-        <td>{{person.mobile}}</td>
+        <td>{{user.fullname}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.office}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.mobile}}</td>
         <td>
-          <input type="button" class="btn btn-danger" name="remove" value="Remove" (click)="deletePerson($event, i)" />
+          <input type="button" class="btn btn-danger" name="remove" value="Remove" (click)="deleteUser($event, i)" />
         </td>
       </tr>
     </tbody>
@@ -44,7 +44,7 @@
         </aside>
       </header>
 
-      <form class="modal-body" (ngSubmit)="onSubmit()" #personForm="ngForm">
+      <form class="modal-body" (ngSubmit)="onSubmit()" #userForm="ngForm">
 
         <fieldset class="form-group">
           <label for="fullname">Isim</label>
@@ -74,8 +74,8 @@
       </form>
 
       <footer class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="hide();personForm.reset()">İptal</button>
-        <button type="submit" class="btn btn-success" [disabled]="!personForm.form.valid" (click)="addPerson();personForm.reset()">Oluştur</button>
+        <button type="button" class="btn btn-default" (click)="hide();userForm.reset()">İptal</button>
+        <button type="submit" class="btn btn-success" [disabled]="!userForm.form.valid" (click)="addUser();userForm.reset()">Oluştur</button>
       </footer>
 
     </section>

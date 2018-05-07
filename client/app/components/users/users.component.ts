@@ -3,20 +3,20 @@ import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 
-import { Kisi } from '../../../person';
+import { OE } from '../../../ogretimelemani';
 import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'people',
-  templateUrl: './people.component.html',
-  styleUrls: ['./people.component.css']
+  selector: 'users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
 })
 
-export class PeopleComponent implements OnInit {
-  @Input() people: Kisi[];
+export class UsersComponent implements OnInit {
+  @Input() users: OE[];
 
   // FIX this model
-  model : Kisi = {...};
+  model : OE = {...};
 
   submitted = false;
 
@@ -27,26 +27,26 @@ export class PeopleComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO: remove this for production
-    console.log('[people.component] people grabbed from db');
-    this.getPeople();
+    console.log('[users.component] users grabbed from db');
+    this.getUsers();
   }
 
-  getPeople() : void {
-    this.dataService.getPeople()
-      .subscribe(people => {
-        this.people = people;
+  getUsers() : void {
+    this.dataService.getUsers()
+      .subscribe(users => {
+        this.users = users;
       });
   }
 
-  addPerson() {
-    var result = this.people.filter(p => p.fullname.toLowerCase() === this.model.fullname).length;
+  addUser() {
+    var result = this.users.filter(p => p.fullname.toLowerCase() === this.model.fullname).length;
     if (result == 0) {
 
       // TODO: remove this for production
-      console.log('[people.component.ts] Adding person');
-      this.dataService.addPerson(this.model)
+      console.log('[users.component.ts] Adding user');
+      this.dataService.addUser(this.model)
         .subscribe(res => {
-          this.people.push(res);
+          this.users.push(res);
         });
 
       setTimeout(() => this.hide(), 800);
@@ -54,20 +54,20 @@ export class PeopleComponent implements OnInit {
     }
     else {
       // TODO: remove this for production
-      console.log('[people.component.ts] Person exists');
+      console.log('[users.component.ts] User exists');
       setTimeout(() => this.hide(), 800);
       this.success();
     }
   }
 
-  // delete person with parameters $event and index
-  deletePerson(e, i){
+  // delete user with parameters $event and index
+  deleteUser(e, i){
     // Do not propagate click to the details section
     e.stopPropagation();
 
-    this.dataService.deletePerson(this.people[i])
+    this.dataService.deleteUser(this.users[i])
         .subscribe(res => {
-          this.people.splice(i, 1);
+          this.users.splice(i, 1);
         });
   }
 
@@ -88,7 +88,7 @@ export class PeopleComponent implements OnInit {
     setTimeout(() => this.aFail = false, 800);
   }
 
-  // Fancy stuff for modal view inside people component
+  // Fancy stuff for modal view inside users component
   visible = false;
   visibleAnimate = false;
 

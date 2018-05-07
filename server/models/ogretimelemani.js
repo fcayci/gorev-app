@@ -15,6 +15,16 @@ const OESchema = new Schema(
       required: true,
       max: 100
     },
+    username: {
+      type: String,
+      required: false,
+      max: 100
+    },
+    password: {
+      type: String,
+      required: false,
+      max: 100
+    },
     office: {
       type: String,
       required: false,
