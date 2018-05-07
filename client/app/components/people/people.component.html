@@ -1,5 +1,5 @@
 <div class="container"> <!-- container -->
-  <h1>Kişi Listesi <small>({{people.length}})</small></h1>
+  <h1>Kişi Listesi <small>({{people?.length}})</small></h1>
   <input type="button" class="btn btn-info" value="Yeni Kişi Ekle" (click)="show()" />
   <br />
   <br />
@@ -33,6 +33,7 @@
   <!-- form modal start -->
   <div (click)="onContainerClicked($event);" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
     <section class="modal-dialog modal-sm modal-content">
+
       <header class="modal-header">
         <h2>Kişi Oluştur</h2>
         <aside *ngIf="aSuccess" class="alert alert-success">
@@ -42,36 +43,41 @@
           Kişi sistemde mevcut...
         </aside>
       </header>
+
       <form class="modal-body" (ngSubmit)="onSubmit()" #personForm="ngForm">
+
         <fieldset class="form-group">
           <label for="fullname">Isim</label>
-          <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci"  autocomplete="fullname" required [(ngModel)]="model.fullname" name="fullname">
+          <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci"  autocomplete="user-fullname" required [(ngModel)]="model.fullname" name="fullname">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="email">E-mail</label>
-          <input type="email" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr"  autocomplete="email" required [(ngModel)]="model.email" name="email" pattern=".+@gtu.edu.tr" title="Please provide only a GTU email address">
+          <div class="input-group"><input type="email" class="form-control" id="email" placeholder="furkancayci"  autocomplete="user-email" required [(ngModel)]="model.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
         </fieldset>
 
         <fieldset class="form-group">
           <label for="office">Oda No</label>
-          <input type="number" class="form-control" placeholder="248" id="office" required [(ngModel)]="model.office" name="office">
+          <input type="text" class="form-control" id="office" autocomplete="user-office" placeholder="248" required [(ngModel)]="model.office" name="office">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="phone">Telefon (Dahili)</label>
-          <input type="string" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="model.phone" name="phone">
+          <input type="string" class="form-control" id="phone" autocomplete="user-phone" placeholder="3242" required [(ngModel)]="model.phone" name="phone">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="mobile">Telefon (Cep)</label>
-          <input type="phone" class="form-control" id="mobile"  autocomplete="tel" placeholder="05123456789" [(ngModel)]="model.mobile" name="mobile">
+          <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" placeholder="05123456789" [(ngModel)]="model.mobile" name="mobile">
         </fieldset>
+
       </form>
+
       <footer class="modal-footer">
         <button type="button" class="btn btn-default" (click)="hide();personForm.reset()">İptal</button>
         <button type="submit" class="btn btn-success" [disabled]="!personForm.form.valid" (click)="addPerson();personForm.reset()">Oluştur</button>
       </footer>
+
     </section>
   </div>
   <!-- form modal end -->

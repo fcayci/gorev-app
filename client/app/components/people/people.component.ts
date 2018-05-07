@@ -13,7 +13,6 @@ import { DataService } from '../../services/data.service';
 })
 
 export class PeopleComponent implements OnInit {
-
   @Input() people: Kisi[];
 
   // FIX this model

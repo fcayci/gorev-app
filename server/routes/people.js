@@ -38,20 +38,35 @@ router.post('/people', function(req, res, next){
         res.send(err);
       }
         res.json(person);
-    })
+    });
   }
-})
+});
 
 // delete person
 router.delete('/people/:id', function(req, res, next){
-  db.gtueepeople.remove({_id: mongojs.ObjectId(req.params.id)}, function(err, person){
+  db.gtueepeople.remove({_id: mongojs.ObjectId(req.params.id)}, function(err, data){
+    if (err){
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+// update person
+router.put('/people/:id', function(req, res, next){
+  var person = req.body;
+
+  // remove _id before sending data.
+  delete person._id;
+
+  db.gtueepeople.update({_id: mongojs.ObjectId(req.params.id)}, person, {}, function(err, person){
     if (err){
       res.send(err);
     }
     res.json(person);
-  })
-})
+  });
 
-// update @29:00
+});
+
 
 module.exports = router;

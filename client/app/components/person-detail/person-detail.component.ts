@@ -16,6 +16,8 @@ import { DataService } from '../../services/data.service';
 export class PersonDetailComponent implements OnInit {
 
   @Input() kisi: Kisi;
+  _kisiBak = {};
+  fullname = null;
 
   edit = false;
 
@@ -33,7 +35,26 @@ export class PersonDetailComponent implements OnInit {
     this.dataService.getPerson(id)
       .subscribe(kisi => {
         this.kisi = kisi;
+        this.fullname = this.kisi.fullname;
+        this._kisiBak = JSON.parse(JSON.stringify(this.kisi));
     });
+  }
+
+  updatePerson(): void {
+    this.dataService.updatePerson(this.kisi)
+      .subscribe(res => {
+        console.log(res);
+        this.fullname = this.kisi.fullname;
+        this._kisiBak = JSON.parse(JSON.stringify(this.kisi));
+      });
+
+    this.showEdit();
+  }
+
+  // go back to original form when hit cancel.
+  resetPerson(): void {
+    this.kisi = JSON.parse(JSON.stringify(this._kisiBak));
+    this.showEdit();
   }
 
   showEdit(){
