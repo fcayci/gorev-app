@@ -24,14 +24,14 @@
         <td>{{person.phone}}</td>
         <td>{{person.mobile}}</td>
         <td>
-          <input type="button" class="btn btn-danger" name="remove" value="Remove" (click)="deletePerson(i)" />
+          <input type="button" class="btn btn-danger" name="remove" value="Remove" (click)="deletePerson($event, i)" />
         </td>
       </tr>
     </tbody>
   </table>
 
   <!-- form modal start -->
-  <div (click)="onContainerClicked($event);" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+  <div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
     <section class="modal-dialog modal-sm modal-content">
 
       <header class="modal-header">
@@ -53,7 +53,7 @@
 
         <fieldset class="form-group">
           <label for="email">E-mail</label>
-          <div class="input-group"><input type="email" class="form-control" id="email" placeholder="furkancayci"  autocomplete="user-email" required [(ngModel)]="model.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
+          <div class="input-group"><input type="email" class="form-control" id="email" placeholder="furkancayci" autocomplete="user-email" required [(ngModel)]="model.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
         </fieldset>
 
         <fieldset class="form-group">

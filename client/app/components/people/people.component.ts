@@ -60,7 +60,11 @@ export class PeopleComponent implements OnInit {
     }
   }
 
-  deletePerson(i){
+  // delete person with parameters $event and index
+  deletePerson(e, i){
+    // Do not propagate click to the details section
+    e.stopPropagation();
+
     this.dataService.deletePerson(this.people[i])
         .subscribe(res => {
           this.people.splice(i, 1);
