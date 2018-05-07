@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { DummyComponent } from './components/dummy/dummy.component';
 import { PeopleComponent } from './components/people/people.component';
 import { PersonDetailComponent } from './components/person-detail/person-detail.component';
 
@@ -15,10 +14,6 @@ const ROUTES : Routes = [
   {
     path: '',
     component: HomeComponent
-  },
-  {
-    path: 'dummy',
-    component: DummyComponent
   },
   {
     path: 'people',
@@ -35,7 +30,6 @@ const ROUTES : Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    DummyComponent,
     PeopleComponent,
     PersonDetailComponent
   ],
