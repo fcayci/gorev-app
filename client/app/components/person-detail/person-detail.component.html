@@ -1,0 +1,36 @@
+<div class="container" *ngIf="kisi">
+  <h2>{{ kisi.fullname }} Bilgi</h2>
+  <form class="form-group" style="max-width:250px;">
+    <fieldset class="form-group">
+      <label for="fullname">Isim</label>
+      <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.fullname" name="fullname">
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.email" name="email" pattern=".+@gtu.edu.tr" title="Please provide only a GTU email address">
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="office">Oda No</label>
+      <input type="number" class="form-control" placeholder="248" id="office" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.office" name="office">
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="phone">Telefon (Dahili)</label>
+      <input type="string" class="form-control" id="phone" placeholder="3242" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.phone" name="phone">
+    </fieldset>
+
+    <fieldset class="form-group">
+      <label for="mobile">Telefon (Cep)</label>
+      <input type="phone" class="form-control" id="mobile"  autocomplete="tel" placeholder="05123456789" [readonly] = "edit ? null : true" [(ngModel)]="kisi.mobile" name="mobile">
+    </fieldset>
+
+    <aside class="form-group float-sm-right">
+      <button *ngIf="!edit" type="button" class="btn btn-default" (click)="goBack()">Geri Dön</button>
+      <button *ngIf="!edit" type="button" class="btn btn-primary" (click)="showEdit()">Düzenle</button>
+      <button *ngIf="edit" type="button" class="btn btn-danger" (click)="showEdit()">İptal</button>
+      <button *ngIf="edit" type="button" class="btn btn-success" (click)="showEdit()">Kaydet</button>
+    </aside>
+  </form>
+</div>

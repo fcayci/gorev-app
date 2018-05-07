@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://127.0.0.1:27017/gtueepeople';
+var mongoDB = 'mongodb://127.0.0.1:27017/gtuee';
 mongoose.connect(mongoDB);
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
@@ -67,7 +67,7 @@ router.post('/people', function(req, res, next){
 })
 
 // delete person
-router.delete('peopel/:id', function(req, res, next){
+router.delete('/people/:id', function(req, res, next){
   db.gtueepeople.remove({_id: mongojs.ObjectId(req.params.id)}, function(err, person){
     if (err){
       res.send(err);

@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Location } from '@angular/common';
+
 import { Person, Kisi } from '../../../person';
 import { DataService } from '../../services/data.service';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'people',
@@ -9,17 +12,27 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./people.component.css']
 })
 
-export class PeopleComponent {
+export class PeopleComponent implements OnInit {
 
-  people : Kisi[];
+  @Input() people: Kisi[];
+
   // FIX this model
   model : Kisi = {...};
 
   submitted = false;
 
-  constructor(private dataService:DataService){
+  constructor(
+    private route: ActivatedRoute,
+    private dataService:DataService,
+    private location: Location) {}
+
+  ngOnInit(): void {
     // TODO: remove this for production
-    console.log('[people.component] people grabbed from db')
+    console.log('[people.component] people grabbed from db');
+    this.getPeople();
+  }
+
+  getPeople() : void {
     this.dataService.getPeople()
       .subscribe(people => {
         this.people = people;
@@ -27,10 +40,6 @@ export class PeopleComponent {
   }
 
   addPerson() {
-
-    // TODO: remove this for production
-    console.log('[adder.component.ts] addPerson() called...');
-
     var result = this.people.filter(p => p.fullname.toLowerCase() === this.model.fullname).length;
     if (result == 0) {
 

@@ -16,6 +16,11 @@ export class DataService {
   }
 
 
+  getPerson(id){
+    return this.http.get('http://localhost:4200/api/people/' + id)
+      .map(res => res.json());
+  }
+
   getPeople(){
     return this.http.get('http://localhost:4200/api/people')
       .map(res => res.json());

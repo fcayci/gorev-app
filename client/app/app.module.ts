@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { DummyComponent } from './components/dummy/dummy.component';
 import { PeopleComponent } from './components/people/people.component';
+import { PersonDetailComponent } from './components/person-detail/person-detail.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -22,6 +23,10 @@ const ROUTES : Routes = [
   {
     path: 'people',
     component: PeopleComponent
+  },
+  {
+    path: 'people/:id',
+    component: PersonDetailComponent
   }
 ];
 
@@ -31,7 +36,8 @@ const ROUTES : Routes = [
     AppComponent,
     HomeComponent,
     DummyComponent,
-    PeopleComponent
+    PeopleComponent,
+    PersonDetailComponent
   ],
   imports: [
     BrowserModule,
