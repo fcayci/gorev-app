@@ -2,9 +2,16 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/gtueepeople', { useMongoClient: true})
-  .then(()=> { console.log(`Succesfully Connected to the Mongodb Database  at URL : mongodb://127.0.0.1:27017/gtueepeople`)})
-  .catch(()=> { console.log(`Error Connecting to the Mongodb Database at URL : mongodb://127.0.0.1:27017/gtueepeople`)})
+//Set up default mongoose connection
+var mongoDB = 'mongodb://127.0.0.1:27017/gtueepeople';
+mongoose.connect(mongoDB);
+// Get Mongoose to use the global promise library
+mongoose.Promise = global.Promise;
+//Get the default connection
+var db = mongoose.connection;
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 
 // get all people
 router.get('/people', function(req, res, next){

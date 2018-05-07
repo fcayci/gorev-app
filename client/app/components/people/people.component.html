@@ -1,7 +1,7 @@
 <div class="container"> <!-- container -->
-  <h1>List of people</h1>
-  <input type="button" class="btn btn-info" value="Add new person" (click)="show()" />
-
+  <h1>Kişi Listesi</h1>
+  <input type="button" class="btn btn-info" value="Yeni Kişi Ekle" (click)="show()" />
+  <br />
   <br />
   <div class="col-md-7"> <!-- list -->
     <div class="row">
@@ -18,7 +18,8 @@
       </div>
     </div>
     <hr />
-    <div class="row" *ngFor="let person of people; let i = index"> <!-- row -->
+    <!-- row -->
+    <div class="row" *ngFor="let person of people; let i = index">
       <div class="col-md-1">
         {{i + 1}}
       </div>
@@ -29,7 +30,7 @@
         {{person.email}}
       </div>
       <div class="col-md-2">
-        <input type="button" class="btn btn-success" name="details" value="Details" (click)="showDetails(i)" />
+        <input type="button" class="btn btn-danger" name="remove" value="Remove" (click)="deletePerson(i)" />
       </div>
       <br />
       <br />
@@ -42,21 +43,31 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2>Kişi Oluştur</h2>
+          <div *ngIf="aSuccess" class="alert alert-success">
+            Kişi eklendi...
+          </div>
+          <div *ngIf="aFail" class="alert alert-danger">
+            Kişi sistemde mevcut...
+          </div>
         </div>
         <div class="modal-body">
-          <form #personForm="ngForm">
+          <form (ngSubmit)="onSubmit()" #personForm="ngForm">
             <div class="form-group">
               <label for="fullname">Isim</label>
-              <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci" required [(ngModel)]="model.fullname" name="fullname" #fullname="ngModel">
+              <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci"  autocomplete="fullname" required [(ngModel)]="model.fullname" name="fullname" #fullname="ngModel">
             </div>
             <div [hidden]="fullname.valid || fullname.pristine" class="alert alert-danger">
               Name is required
             </div>
             <div class="form-group">
               <label for="email">E-mail</label>
-              <input type="text" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr" required [(ngModel)]="model.email" name="email">
+              <input type="email" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr"  autocomplete="email" required [(ngModel)]="model.email" name="email" pattern=".+@gtu.edu.tr" title="Please provide only a GTU email address" #email="ngModel">
+              {{email.className}}
             </div>
 
+            <div [hidden]="email.valid || email.pristine" class="alert alert-warning">
+              Lütfen GTU maili giriniz.
+            </div>
             <div class="form-group">
               <label for="office">Oda No</label>
               <input type="number" class="form-control" placeholder="248" id="office" required [(ngModel)]="model.office" name="office">
@@ -64,18 +75,18 @@
 
             <div class="form-group">
               <label for="phone">Telefon (Dahili)</label>
-              <input type="number" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="model.phone" name="phone">
+              <input type="string" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="model.phone" name="phone">
             </div>
 
             <div class="form-group">
               <label for="mobile">Telefon (Cep)</label>
-              <input type="phone" class="form-control" id="mobile" placeholder="05123456789" [(ngModel)]="model.mobile" name="mobile">
+              <input type="phone" class="form-control" id="mobile"  autocomplete="tel" placeholder="05123456789" [(ngModel)]="model.mobile" name="mobile">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" (click)="hide();personForm.reset()">İptal</button>
-          <button type="submit" class="btn btn-success" (click)="addPerson();personForm.reset()">Oluştur</button>
+          <button type="submit" class="btn btn-success" [disabled]="!personForm.form.valid" (click)="addPerson();personForm.reset()">Oluştur</button>
         </div>
       </div>
     </div>

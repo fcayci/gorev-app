@@ -9,13 +9,15 @@ export class DataService {
     console.log('[data.service.ts] Data service initialized...');
   }
 
-  getPeople(){
-    return this.http.get('http://localhost:4200/api/people')
+  // TODO: delete this for production.
+  getDummy(){
+    return this.http.get('http://localhost:4200/api/dummy')
       .map(res => res.json());
   }
 
-  getDummy(){
-    return this.http.get('http://localhost:4200/api/dummy')
+
+  getPeople(){
+    return this.http.get('http://localhost:4200/api/people')
       .map(res => res.json());
   }
 
@@ -24,6 +26,11 @@ export class DataService {
     headers.append('Content-Type', 'application/json');
 
     return this.http.post('http://localhost:4200/api/people', JSON.stringify(person), {headers: headers})
+      .map(res => res.json());
+  }
+
+  deletePerson(person){
+    return this.http.delete('http://localhost:4200/api/people/' + person._id)
       .map(res => res.json());
   }
 

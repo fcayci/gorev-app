@@ -12,11 +12,14 @@ import { FormsModule } from '@angular/forms';
 export class PeopleComponent {
 
   people : Kisi[];
+  // FIX this model
   model : Kisi = {...};
 
   submitted = false;
 
   constructor(private dataService:DataService){
+    // TODO: remove this for production
+    console.log('[people.component] people grabbed from db')
     this.dataService.getPeople()
       .subscribe(people => {
         this.people = people;
@@ -32,33 +35,62 @@ export class PeopleComponent {
     if (result == 0) {
 
       // TODO: remove this for production
-      console.log('[adder.component.ts] Adding person');
+      console.log('[people.component.ts] Adding person');
       this.dataService.addPerson(this.model)
         .subscribe(res => {
           this.people.push(res);
         });
+
+      setTimeout(() => this.hide(), 800);
+      this.success();
     }
+    else {
+      // TODO: remove this for production
+      console.log('[people.component.ts] Person exists');
+      setTimeout(() => this.hide(), 800);
+      this.success();
+    }
+  }
+
+  deletePerson(i){
+    this.dataService.deletePerson(this.people[i])
+        .subscribe(res => {
+          this.people.splice(i, 1);
+        });
   }
 
   onSubmit() {
     this.submitted = true;
   }
 
-  // Fancy stuff for modal view inside people component
-  public visible = false;
-  public visibleAnimate = false;
+  aSuccess = false;
+  aFail = false;
 
-  public show(): void {
+  success(): void {
+    this.aSuccess = true;
+    setTimeout(() => this.aSuccess = false, 800);
+  }
+
+  fail(): void {
+    this.aFail = true;
+    setTimeout(() => this.aFail = false, 800);
+  }
+
+  // Fancy stuff for modal view inside people component
+  visible = false;
+  visibleAnimate = false;
+
+  show(): void {
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
   }
 
-  public hide(): void {
+  hide(): void {
     this.visibleAnimate = false;
     setTimeout(() => this.visible = false, 300);
   }
 
-  public onContainerClicked(event: MouseEvent): void {
+  onContainerClicked(event: MouseEvent): void {
     if ((<HTMLElement>event.target).classList.contains('modal')) {
       this.hide();
     }

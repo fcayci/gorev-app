@@ -43,7 +43,7 @@ router.post('/people', function(req, res, next){
 })
 
 // delete person
-router.delete('peopel/:id', function(req, res, next){
+router.delete('/people/:id', function(req, res, next){
   db.gtueepeople.remove({_id: mongojs.ObjectId(req.params.id)}, function(err, person){
     if (err){
       res.send(err);
