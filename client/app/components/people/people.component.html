@@ -1,20 +1,31 @@
 <div class="container"> <!-- container -->
   <h1>List of people</h1>
-  <hr>
-  <h2>PEOPLE</h2>
+  <input type="button" class="btn btn-info" value="Add new person" (click)="modal1.show()" />
 
+  <br />
   <div class="col-md-7"> <!-- list -->
-    <div class="row" *ngFor="let person of people; let i = index"> <!-- row -->
-      <div class="col-md-4">
-        {{i}}
+    <div class="row">
+      <div class="col-md-1">
+        <b>No</b>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
+        <b>Isim</b>
+      </div>
+      <div class="col-md-5">
+        <b>e-mail</b>
+      </div>
+      <div class="col-md-2">
+      </div>
+    </div>
+    <hr />
+    <div class="row" *ngFor="let person of people; let i = index"> <!-- row -->
+      <div class="col-md-1">
+        {{i + 1}}
+      </div>
+      <div class="col-md-4">
         {{person.fullname}}
       </div>
-      <div class="col-md-3">
-        {{person.phone}}
-      </div>
-      <div class="col-md-3">
+      <div class="col-md-5">
         {{person.email}}
       </div>
       <div class="col-md-2">
@@ -25,92 +36,45 @@
     </div> <!-- /row -->
   </div> <!-- /list -->
 
-  <input type="button" class="btn btn-info" value="Add new person" (click)="modal1.show()" />
 
-  <adder #modal1>
-    <div class="adder-header">
+  <form-person #modal1>
+    <div class="form-person-header">
       <h2>Kişi Oluştur</h2>
     </div>
-    <div class="adder-body">
-      <form class="form-horizontal">
+    <div class="form-person-body">
+      <form #personForm="ngForm">
         <div class="form-group">
-          <div class="col-md-2">
-            <label>Isim</label>
-          </div>
-          <div class="col-md-5">
-            <input type="text" placeholder="Furkan Cayci" class="form-control" name="fullname" [(ngModel)]="fullname" required>
-          </div>
+          <label for="fullname">Isim</label>
+          <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci" required [(ngModel)]="modal1.model.fullname" name="fullname" #fullname="ngModel">
+        </div>
+        <div [hidden]="fullname.valid || fullname.pristine" class="alert alert-danger">
+          Name is required
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="text" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr" required [(ngModel)]="modal1.model.email" name="email">
         </div>
 
         <div class="form-group">
-          <div class="col-md-2">
-            <label>email</label>
-          </div>
-          <div class="col-md-5">
-            <input type="text" placeholder="furkancayci@gtu.edu.tr" class="form-control" name="email" [(ngModel)]="email" required>
-          </div>
+          <label for="office">Oda No</label>
+          <input type="number" class="form-control" placeholder="248" id="office" required [(ngModel)]="modal1.model.office" name="office">
         </div>
 
         <div class="form-group">
-          <div class="col-md-2">
-            <label>Oda No</label>
-          </div>
-          <div class="col-md-3">
-            <input type="text" placeholder="248" class="form-control" name="office" [(ngModel)]="office" required>
-          </div>
+          <label for="phone">Telefon (Dahili)</label>
+          <input type="number" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="modal1.model.phone" name="phone">
         </div>
 
         <div class="form-group">
-          <div class="col-md-2">
-            <label>Telefon (Dahili)</label>
-          </div>
-          <div class="col-md-3">
-            <input type="string"  placeholder="3242" class="form-control" name="phone" [(ngModel)]="phone" required>
-          </div>
+          <label for="mobile">Telefon (Cep)</label>
+          <input type="phone" class="form-control" id="mobile" placeholder="05123456789" [(ngModel)]="modal1.model.mobile" name="mobile">
         </div>
-
-        <div class="form-group">
-          <div class="col-md-2">
-            <label>Telefon (Cep)</label>
-          </div>
-          <div class="col-md-3">
-            <input type="text" placeholder="0543 987 6543" class="form-control" name="mobile" [(ngModel)]="mobile" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-md-2">
-            <label>Oda No</label>
-          </div>
-          <div class="col-md-3">
-            <input type="text" placeholder="248" class="form-control" name="office" [(ngModel)]="office" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-md-2">
-            <label>Telefon (Dahili)</label>
-          </div>
-          <div class="col-md-3">
-            <input type="string"  placeholder="3242" class="form-control" name="phone" [(ngModel)]="phone" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-md-2">
-            <label>Telefon (Cep)</label>
-          </div>
-          <div class="col-md-3">
-            <input type="text" placeholder="0543 987 6543" class="form-control" name="mobile" [(ngModel)]="mobile" required>
-          </div>
-        </div>
-
       </form>
     </div>
-    <div class="adder-footer">
-      <button type="button" class="btn btn-default" (click)="modal1.hide()">Close</button>
-      <button type="button" class="btn btn-default" (click)="modal2.show()">Show modal 2</button>
-      <button type="button" class="btn btn-primary">Save changes</button>
+    <div class="form-person-footer">
+      <button type="button" class="btn btn-default" (click)="modal1.hide();personForm.reset()">İptal</button>
+      <button type="submit" class="btn btn-success" (click)="modal1.addPerson();personForm.reset()">Oluştur</button>
     </div>
-  </adder>
+  </form-person>
 
 </div> <!-- /container -->
