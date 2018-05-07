@@ -1,3 +1,20 @@
+.modal {
+  background: rgba(0,0,0,0.6);
+}
+
+.modal-dialog{
+  overflow-y: initial !important;
+  overflow-y: scroll;
+  max-height:85%;
+  margin-top: 20px;
+  margin-bottom:20px;
+}
+
+.modal-body{
+  height: 300px;
+  overflow-y: auto;
+}
+
 .ng-valid[required], .ng-valid.required  {
   border-left: 5px solid #42A948; /* green */
 }

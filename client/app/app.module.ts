@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { DummyComponent } from './components/dummy/dummy.component';
 import { PeopleComponent } from './components/people/people.component';
-import { FormPersonComponent } from './components/form-person/form-person.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -32,8 +31,7 @@ const ROUTES : Routes = [
     AppComponent,
     HomeComponent,
     DummyComponent,
-    PeopleComponent,
-    FormPersonComponent
+    PeopleComponent
   ],
   imports: [
     BrowserModule,

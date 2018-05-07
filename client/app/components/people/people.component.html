@@ -1,6 +1,6 @@
 <div class="container"> <!-- container -->
   <h1>List of people</h1>
-  <input type="button" class="btn btn-info" value="Add new person" (click)="modal1.show()" />
+  <input type="button" class="btn btn-info" value="Add new person" (click)="show()" />
 
   <br />
   <div class="col-md-7"> <!-- list -->
@@ -36,45 +36,50 @@
     </div> <!-- /row -->
   </div> <!-- /list -->
 
+  <!-- modal start -->
+  <div (click)="onContainerClicked($event);" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Kişi Oluştur</h2>
+        </div>
+        <div class="modal-body">
+          <form #personForm="ngForm">
+            <div class="form-group">
+              <label for="fullname">Isim</label>
+              <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci" required [(ngModel)]="model.fullname" name="fullname" #fullname="ngModel">
+            </div>
+            <div [hidden]="fullname.valid || fullname.pristine" class="alert alert-danger">
+              Name is required
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="text" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr" required [(ngModel)]="model.email" name="email">
+            </div>
 
-  <form-person #modal1>
-    <div class="form-person-header">
-      <h2>Kişi Oluştur</h2>
+            <div class="form-group">
+              <label for="office">Oda No</label>
+              <input type="number" class="form-control" placeholder="248" id="office" required [(ngModel)]="model.office" name="office">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Telefon (Dahili)</label>
+              <input type="number" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="model.phone" name="phone">
+            </div>
+
+            <div class="form-group">
+              <label for="mobile">Telefon (Cep)</label>
+              <input type="phone" class="form-control" id="mobile" placeholder="05123456789" [(ngModel)]="model.mobile" name="mobile">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="hide();personForm.reset()">İptal</button>
+          <button type="submit" class="btn btn-success" (click)="addPerson();personForm.reset()">Oluştur</button>
+        </div>
+      </div>
     </div>
-    <div class="form-person-body">
-      <form #personForm="ngForm">
-        <div class="form-group">
-          <label for="fullname">Isim</label>
-          <input type="text" class="form-control" id="fullname" placeholder="Furkan Cayci" required [(ngModel)]="modal1.model.fullname" name="fullname" #fullname="ngModel">
-        </div>
-        <div [hidden]="fullname.valid || fullname.pristine" class="alert alert-danger">
-          Name is required
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="text" class="form-control" id="email" placeholder="furkancayci@gtu.edu.tr" required [(ngModel)]="modal1.model.email" name="email">
-        </div>
-
-        <div class="form-group">
-          <label for="office">Oda No</label>
-          <input type="number" class="form-control" placeholder="248" id="office" required [(ngModel)]="modal1.model.office" name="office">
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Telefon (Dahili)</label>
-          <input type="number" class="form-control" id="phone" placeholder="3242" required [(ngModel)]="modal1.model.phone" name="phone">
-        </div>
-
-        <div class="form-group">
-          <label for="mobile">Telefon (Cep)</label>
-          <input type="phone" class="form-control" id="mobile" placeholder="05123456789" [(ngModel)]="modal1.model.mobile" name="mobile">
-        </div>
-      </form>
-    </div>
-    <div class="form-person-footer">
-      <button type="button" class="btn btn-default" (click)="modal1.hide();personForm.reset()">İptal</button>
-      <button type="submit" class="btn btn-success" (click)="modal1.addPerson();personForm.reset()">Oluştur</button>
-    </div>
-  </form-person>
+  </div>
+  <!-- modal end -->
 
 </div> <!-- /container -->
