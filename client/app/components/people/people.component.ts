@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
 
-import { Person, Kisi } from '../../../person';
+import { Kisi } from '../../../person';
 import { DataService } from '../../services/data.service';
 
 @Component({

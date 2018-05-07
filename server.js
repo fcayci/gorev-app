@@ -5,13 +5,12 @@ const bodyParser = require('body-parser');
 
 const home = require('./server/routes/home');
 //const tasks = require('./server/routes/tasks');
-const people = require('./server/routes/people');
-const dummy = require('./server/routes/dummy');
+//const people = require('./server/routes/people');
+const gtuee = require('./server/routes/gtuee');
 
 const port = 3000;
 
 const app = express();
-
 
 // Cross Origin Request (CORS)
 // app.use(function(req, res, next) {
@@ -35,8 +34,8 @@ app.use(bodyParser.urlencoded({extended : false}));
 
 app.use('/', home);
 //app.use('/api', tasks);
-app.use('/api', people);
-app.use('/api', dummy);
+//app.use('/api', people);
+app.use('/api', gtuee);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

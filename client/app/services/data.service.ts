@@ -9,12 +9,6 @@ export class DataService {
     console.log('[data.service.ts] Data service initialized...');
   }
 
-  // TODO: delete this for production.
-  getDummy(){
-    return this.http.get('http://localhost:4200/api/dummy')
-      .map(res => res.json());
-  }
-
   // get a single person by passing id as an argument
   getPerson(id){
     return this.http.get('http://localhost:4200/api/people/' + id)
@@ -32,6 +26,7 @@ export class DataService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
+    console.log('[data.service]. ' + person);
     return this.http.post('http://localhost:4200/api/people', JSON.stringify(person), {headers: headers})
       .map(res => res.json());
   }
