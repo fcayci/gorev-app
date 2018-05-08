@@ -15,21 +15,10 @@ var GorevSchema = new Schema(
       type: String,
       required: false
     },
-    dateStart: {
-      type: Date,
+    when: {
+      type: Schema.ObjectId,
+      ref: 'Zaman',
       required: true
-    },
-    dateEnd: {
-      type: Date,
-      required: false
-    },
-    timeStart: {
-      type: String,
-      required: false
-    },
-    timeEnd: {
-      type: String,
-      required: false
     },
     peopleCount: {
       type: Number,
@@ -37,11 +26,11 @@ var GorevSchema = new Schema(
       min: 1,
       default: 1
     },
-    choosenPeople: {
+    choosenPeople: [{
       type: Schema.ObjectId,
       ref: 'OE',
       required: false
-    },
+    }],
     status: {
       type: String,
       required: true,

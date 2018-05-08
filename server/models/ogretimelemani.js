@@ -13,12 +13,16 @@ const OESchema = new Schema(
     email: {
       type: String,
       required: true,
-      max: 100
+      max: 30,
+      lowercase: true,
+      trim: true
     },
     username: {
       type: String,
-      required: false,
-      max: 100
+      required: true,
+      max: 30,
+      lowercase: true,
+      trim: true
     },
     password: {
       type: String,
@@ -28,7 +32,7 @@ const OESchema = new Schema(
     office: {
       type: String,
       required: false,
-      min:3,
+      min: 3,
       max: 4
     },
     phone: {
@@ -46,8 +50,12 @@ const OESchema = new Schema(
     load: {
       type: Number,
       required: false
-    }
-  }, { collection: 'users' }
+    },
+    busy: [{
+      type: Schema.ObjectId,
+      ref: 'Zaman'
+    }]
+  }
 );
 
 OESchema.plugin(timestamps);

@@ -1,0 +1,44 @@
+  <header>
+    <h2>Kişi Listesi <span class="badge">{{kadro?.length}}</span></h2>
+  </header>
+
+  <section class="row midbar-custom">
+    <div class="col-lg-6">
+      <form class="input-group">
+        <input type="text" class="form-control" placeholder="Search">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+      </form>
+    </div>
+    <div class="col-lg-6">
+      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span> Yeni Kişi Ekle</button>
+    </div>
+  </section>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Isim</th>
+        <th>E-mail</th>
+        <th>Oda #</th>
+        <th>Dahili</th>
+        <th>Cep</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr role="button" routerLink="/kadro/{{kisi.username}}" *ngFor="let kisi of kadro; let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{kisi.fullname}}</td>
+        <td>{{kisi.email}}</td>
+        <td>{{kisi.office}}</td>
+        <td>{{kisi.phone}}</td>
+        <td>{{kisi.mobile}}</td>
+        <td>
+          <input type="button" class="btn btn-danger pull-right" name="remove" value="Remove" (click)="deleteKisi($event, i)" />
+        </td>
+      </tr>
+    </tbody>
+  </table>

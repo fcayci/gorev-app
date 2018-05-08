@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const home = require('./server/routes/home');
 //const tasks = require('./server/routes/tasks');
-//const users = require('./server/routes/users');
+//const kadro = require('./server/routes/kadro');
 const gtuee = require('./server/routes/gtuee');
 
 const port = 3000;
@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({extended : false}));
 
 app.use('/', home);
 //app.use('/api', tasks);
-//app.use('/api', users);
+//app.use('/api', kadro);
 app.use('/api', gtuee);
 
 // Catch all other routes and return the index file

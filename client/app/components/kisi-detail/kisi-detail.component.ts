@@ -8,15 +8,15 @@ import { DataService } from '../../services/data.service';
 
 
 @Component({
-  selector: 'user-detail',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.css']
+  selector: 'kisi-detail',
+  templateUrl: './kisi-detail.component.html',
+  styleUrls: ['./kisi-detail.component.css']
 })
 
-export class UserDetailComponent implements OnInit {
+export class KisiDetailComponent implements OnInit {
 
-  @Input() kisi: Kisi;
-  _kisiBak = {};
+  @Input() kisi: OE;
+  __kisi = {};
   fullname = null;
 
   edit = false;
@@ -27,33 +27,33 @@ export class UserDetailComponent implements OnInit {
     private location: Location) {}
 
   ngOnInit(): void {
-    this.getUser();
+    this.getKisi();
   }
 
-  getUser(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.dataService.getUser(id)
+  getKisi(): void {
+    const username = this.route.snapshot.paramMap.get('id');
+    this.dataService.getKisi(username)
       .subscribe(kisi => {
         this.kisi = kisi;
         this.fullname = this.kisi.fullname;
-        this._kisiBak = JSON.parse(JSON.stringify(this.kisi));
+        this.__kisi = JSON.parse(JSON.stringify(this.kisi));
     });
   }
 
-  updateUser(): void {
-    this.dataService.updateUser(this.kisi)
+  updateKisi(): void {
+    this.dataService.updateKisi(this.kisi)
       .subscribe(res => {
         console.log(res);
         this.fullname = this.kisi.fullname;
-        this._kisiBak = JSON.parse(JSON.stringify(this.kisi));
+        this.__kisi = JSON.parse(JSON.stringify(this.kisi));
       });
 
     this.showEdit();
   }
 
   // go back to original form when hit cancel.
-  resetUser(): void {
-    this.kisi = JSON.parse(JSON.stringify(this._kisiBak));
+  resetKisi(): void {
+    this.kisi = JSON.parse(JSON.stringify(this.__kisi));
     this.showEdit();
   }
 

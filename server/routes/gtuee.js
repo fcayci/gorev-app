@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 
-var OE = require('../models/ogretimelemani');
-var Gorev = require('../models/gorev');
+const OE = require('../models/ogretimelemani');
+const Gorev = require('../models/gorev');
+const Zaman = require('../models/zaman');
 
 var mongoDB = 'mongodb://127.0.0.1:27017/gtuee';
 mongoose.connect(mongoDB);
@@ -11,44 +12,59 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// get all users
-router.get('/users', function(req, res, next){
-  OE.find(function (err, users) {
+// get all kadro
+router.get('/kadro', function(req, res, next){
+  OE.find(function (err, kadro) {
     if (err) return console.error(err);
-    console.log(users);
-    res.send(users);
+    console.log(kadro);
+    res.send(kadro);
   });
 });
 
-// get single user
-router.get('/users/:username', function(req, res, next){
-  OE.find(function (err, users) {
+// get single kisi
+router.get('/kadro/:username', function(req, res, next){
+  OE.findOne({ 'username': req.params.username }, function (err, kisi) {
     if (err) return console.error(err);
-    console.log(users);
-    res.send(users);
+    console.log(kisi);
+    res.send(kisi);
   });
 });
 
 
-// add user
-router.post('/users', function(req, res, next){
-  console.log('[gtuee.js] /users will be posted to create new user...');
+// add kisi
+router.post('/kadro', function(req, res, next){
+  console.log('[gtuee.js] /kadro will be posted to create new kisi...');
 
   var candidate = req.body;
   // TODO: remove this for production
   console.log('[gtuee]', candidate)
 
-  if (!candidate.fullname) {
+  if (!candidate.fullname || !candidate.email) {
     res.status(400);
     res.json({"error" : "Bad Data"});
-  } else {
-    var user = new OE(candidate);
-    user.save(function(err){
+  }
+  else {
+    candidate.username = candidate.email;
+
+    var kisi = new OE(candidate);
+    kisi.save(function(err){
       if (err) return console.error(err);
       res.status(200);
-      res.json(user);
+      res.json(kisi);
     });
   }
 });
+
+
+// remove kisi
+router.delete('/kadro/:username', function(req, res, next){
+  OE.findOne({ 'username': req.params.username }, function (err, kisi) {
+    if (err) return console.error(err);
+    console.log(kisi);
+    res.send(kisi);
+  });
+});
+
+
 
 module.exports = router;

@@ -7,17 +7,15 @@ import { OE } from '../../../ogretimelemani';
 import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.css']
+  selector: 'kadro',
+  templateUrl: './kadro.component.html',
+  styleUrls: ['./kadro.component.css']
 })
 
-export class UsersComponent implements OnInit {
-  @Input() users: OE[];
+export class KadroComponent implements OnInit {
+  @Input() kadro: OE[];
 
-  // FIX this model
-  model : OE = {...};
-
+  model = {};
   submitted = false;
 
   constructor(
@@ -27,47 +25,25 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO: remove this for production
-    console.log('[users.component] users grabbed from db');
-    this.getUsers();
+    console.log('[kadro.component] kadro grabbed from db');
+    this.getKadro();
   }
 
-  getUsers() : void {
-    this.dataService.getUsers()
-      .subscribe(users => {
-        this.users = users;
+  getKadro() : void {
+    this.dataService.getKadro()
+      .subscribe(kadro => {
+        this.kadro = kadro;
       });
   }
 
-  addUser() {
-    var result = this.users.filter(p => p.fullname.toLowerCase() === this.model.fullname).length;
-    if (result == 0) {
-
-      // TODO: remove this for production
-      console.log('[users.component.ts] Adding user');
-      this.dataService.addUser(this.model)
-        .subscribe(res => {
-          this.users.push(res);
-        });
-
-      setTimeout(() => this.hide(), 800);
-      this.success();
-    }
-    else {
-      // TODO: remove this for production
-      console.log('[users.component.ts] User exists');
-      setTimeout(() => this.hide(), 800);
-      this.success();
-    }
-  }
-
-  // delete user with parameters $event and index
-  deleteUser(e, i){
+  // delete kisi with parameters $event and index
+  deleteKisi(e, i){
     // Do not propagate click to the details section
     e.stopPropagation();
 
-    this.dataService.deleteUser(this.users[i])
+    this.dataService.deleteKisi(this.kadro[i])
         .subscribe(res => {
-          this.users.splice(i, 1);
+          this.kadro.splice(i, 1);
         });
   }
 
@@ -88,7 +64,7 @@ export class UsersComponent implements OnInit {
     setTimeout(() => this.aFail = false, 800);
   }
 
-  // Fancy stuff for modal view inside users component
+  // Fancy stuff for modal view inside kadro component
   visible = false;
   visibleAnimate = false;
 

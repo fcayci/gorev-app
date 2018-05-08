@@ -6,8 +6,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { UsersComponent } from './components/users/users.component';
-import { UserDetailComponent } from './components/user-detail/user-detail.component';
+import { KadroComponent } from './components/kadro/kadro.component';
+import { KisiDetailComponent } from './components/kisi-detail/kisi-detail.component';
+import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -15,13 +16,17 @@ const ROUTES : Routes = [
     path: '',
     component: HomeComponent
   },
-  {
-    path: 'users',
-    component: UsersComponent
+    {
+    path: 'kisiekle',
+    component: KisiAddComponent
   },
   {
-    path: 'users/:id',
-    component: UserDetailComponent
+    path: 'kadro',
+    component: KadroComponent
+  },
+  {
+    path: 'kadro/:id',
+    component: KisiDetailComponent
   }
 ];
 
@@ -30,8 +35,9 @@ const ROUTES : Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    UsersComponent,
-    UserDetailComponent
+    KadroComponent,
+    KisiDetailComponent,
+    KisiAddComponent
   ],
   imports: [
     BrowserModule,
