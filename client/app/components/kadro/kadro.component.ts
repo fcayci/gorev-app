@@ -36,17 +36,6 @@ export class KadroComponent implements OnInit {
       });
   }
 
-  // delete kisi with parameters $event and index
-  deleteKisi(e, i){
-    // Do not propagate click to the details section
-    e.stopPropagation();
-
-    this.dataService.deleteKisi(this.kadro[i])
-        .subscribe(res => {
-          this.kadro.splice(i, 1);
-        });
-  }
-
   onSubmit() {
     this.submitted = true;
   }

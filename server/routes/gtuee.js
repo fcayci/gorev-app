@@ -58,10 +58,12 @@ router.post('/kadro', function(req, res, next){
 
 // remove kisi
 router.delete('/kadro/:username', function(req, res, next){
-  OE.findOne({ 'username': req.params.username }, function (err, kisi) {
+  console.log('[gtuee.js] deleting', req.params.username, '...');
+
+  OE.deleteOne({ 'username': req.params.username }, function (err, msg) {
     if (err) return console.error(err);
-    console.log(kisi);
-    res.send(kisi);
+      console.log(msg);
+      res.send(msg);
   });
 });
 

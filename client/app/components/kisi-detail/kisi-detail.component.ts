@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { OE } from '../../../ogretimelemani';
@@ -18,10 +18,15 @@ export class KisiDetailComponent implements OnInit {
   @Input() kisi: OE;
   __kisi = {};
   fullname = null;
-
   edit = false;
 
+  // TODO: for testing purposes
+  busy = ['a','b','c','e','f','g','h'];
+  tasks = ['a','b','c','e','f'];
+
+
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private dataService:DataService,
     private location: Location) {}
@@ -51,6 +56,19 @@ export class KisiDetailComponent implements OnInit {
     this.showEdit();
   }
 
+  // delete kisi
+  deleteKisi(){
+
+    this.dataService.deleteKisi(this.kisi)
+        .subscribe(res => {
+          // Nothing
+        });
+
+    setTimeout(() => this.router.navigate(['/kadro']), 800);
+
+  }
+
+
   // go back to original form when hit cancel.
   resetKisi(): void {
     this.kisi = JSON.parse(JSON.stringify(this.__kisi));
@@ -64,4 +82,6 @@ export class KisiDetailComponent implements OnInit {
   goBack(){
     this.location.back();
   }
+
+  get diagnostic() { return JSON.stringify(this.kisi); }
 }

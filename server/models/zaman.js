@@ -22,7 +22,7 @@ var ZamanSchema = new Schema(
       type: String,
       required: false
     }
-  }
+  }, {collection: 'times'}
 );
 
 //Export model

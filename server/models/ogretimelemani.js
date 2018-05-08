@@ -55,7 +55,7 @@ const OESchema = new Schema(
       type: Schema.ObjectId,
       ref: 'Zaman'
     }]
-  }
+  }, {collection: 'users'}
 );
 
 OESchema.plugin(timestamps);

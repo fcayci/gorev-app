@@ -37,7 +37,7 @@ var GorevSchema = new Schema(
       enum: ['Open', 'Completed', 'Closed'],
       default: 'Open'
     }
-  }
+  }, {collection: 'tasks'}
 );
 
 // Virtual for gorev's URL

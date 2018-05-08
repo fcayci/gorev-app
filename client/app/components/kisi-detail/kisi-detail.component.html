@@ -1,40 +1,122 @@
 <div *ngIf="kisi && fullname">
   <header class="btn-toolbar header-custom" role="toolbar">
     <h2 class="title-custom">{{ fullname }}</h2>
-    <button *ngIf="!edit" type="button" class="btn btn-success" (click)="showEdit()"><span class="glyphicon glyphicon-edit"></span></button>
-    <button *ngIf="edit" type="button" class="btn btn-danger" (click)="resetKisi()">İptal</button>
-    <button *ngIf="edit && !newKisi" type="button" class="btn btn-success" (click)="updateKisi()">Kaydet</button>
-    <button *ngIf="edit && newKisi" type="button" class="btn btn-success" [disabled]="!kisiForm.form.valid" (click)="addKisi()">Oluştur</button>
+    <button *ngIf="!edit" type="button" class="btn btn-sm btn-info" (click)="showEdit()"><span class="glyphicon glyphicon-edit"></span></button>
+
     <!--<button *ngIf="!edit" type="button" class="btn btn-default navbar-right navbar-right-custom" (click)="goBack()">Geri Dön</button>-->
   </header>
 
+  <main class="row">
+    <section class="col-md-3">
+      <form class="form-group" (ngSubmit)="onSubmit()" #kisiForm="ngForm">
+
+        <fieldset class="form-group">
+          <label for="fullname">Isim</label>
+          <input type="text" class="form-control" id="fullname" autocomplete="user-fullname" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.fullname" name="fullname">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="email">E-mail</label>
+          <div class="input-group"><input type="email" class="form-control" id="email" autocomplete="user-email" autocomplete="user-email" pattern="[a-zA-Z0-9._%+-]+" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="office">Oda No</label>
+          <input type="string" class="form-control" id="office" autocomplete="user-office" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.office" name="office">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="phone">Telefon (Dahili)</label>
+          <input type="string" class="form-control" id="phone" autocomplete="user-phone" pattern="[0-9]{4}" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.phone" name="phone">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="mobile">Telefon (Cep)</label>
+          <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" pattern="[0-9 ]{11,14}" [readonly] = "edit ? null : true" [(ngModel)]="kisi.mobile" name="mobile">
+        </fieldset>
+
+        <fieldset class="btn-group">
+          <button *ngIf="edit" type="button" class="btn btn-default" (click)="resetKisi()">İptal</button>
+          <button *ngIf="edit && !newKisi" type="button" class="btn btn-primary  pull-right" [disabled]="!kisiForm.form.valid" (click)="updateKisi()">Kaydet</button>
+          <button *ngIf="edit && newKisi" type="button" class="btn btn-primary pull-right" [disabled]="!kisiForm.form.valid" (click)="addKisi()">Oluştur</button>
+        </fieldset>
+      </form>
+
+      <fieldset class="btn-group">
+        <button *ngIf="edit && !newKisi" type="button" class="btn btn-danger" (click)="deleteKisi()">Kişiyi Sil</button>
+      </fieldset>
+
+    </section>
+    <section class="col-md-8 col-md-offset-1">
+      <table class="table table-hover">
+
+        <caption class="btn-toolbar" role="toolbar">
+          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busy?.length}}</span></h4>
+          <button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="addBusy()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
+        </caption>
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Gun Baslangic</th>
+            <th>Gun Bitis</th>
+            <th>Saat Baslangic</th>
+            <th>Saat Bitis</th>
+            <th>Sure</th>
+            <th>Tekrar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of busy; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{b.dateStart}}</td>
+            <td>{{b.dateEnd}}</td>
+            <td>{{b.timeStart}}</td>
+            <td>{{b.timeEnd}}</td>
+            <td>{{b.duration}}</td>
+            <td>{{b.doesRepeat}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <section *ngIf="tasks?.length == 0">
+        <strong><em>Aktif Görevlerndirmesi bulunmamaktadır.</em></strong>
+      </section>
+
+      <section *ngIf="tasks?.length > 0">
+        <table class="table table-hover">
+          <caption class="btn-toolbar" role="toolbar">
+            <h4 class="title-custom">Aktif Görevlerndirmeler <span class="badge">{{tasks?.length}}</span></h4>
+          </caption>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Baslik</th>
+              <th>Gun Baslangic</th>
+              <th>Gun Bitis</th>
+              <th>Saat Baslangic</th>
+              <th>Saat Bitis</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{task.title}}</td>
+              <td>{{task.dateStart}}</td>
+              <td>{{task.dateEnd}}</td>
+              <td>{{task.timeStart}}</td>
+              <td>{{task.timeEnd}}</td>
+              <td>{{task.duration}}</td>
+              <td>{{task.doesRepeat}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+  </main>
+
   {{ diagnostic }}
-  <form class="form-group" style="max-width:250px;" (ngSubmit)="onSubmit()" #kisiForm="ngForm">
 
-    <fieldset class="form-group">
-      <label for="fullname">Isim</label>
-      <input type="text" class="form-control" id="fullname" autocomplete="user-fullname" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.fullname" name="fullname">
-    </fieldset>
-
-    <fieldset class="form-group">
-      <label for="email">E-mail</label>
-      <div class="input-group"><input type="email" class="form-control" id="email" autocomplete="user-email" autocomplete="user-email" pattern="[a-zA-Z0-9._%+-]+" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
-    </fieldset>
-
-    <fieldset class="form-group">
-      <label for="office">Oda No</label>
-      <input type="number" class="form-control" id="office" autocomplete="user-office" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.office" name="office">
-    </fieldset>
-
-    <fieldset class="form-group">
-      <label for="phone">Telefon (Dahili)</label>
-      <input type="string" class="form-control" id="phone" autocomplete="user-phone" required [readonly] = "edit ? null : true" [(ngModel)]="kisi.phone" name="phone">
-    </fieldset>
-
-    <fieldset class="form-group">
-      <label for="mobile">Telefon (Cep)</label>
-      <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" [readonly] = "edit ? null : true" [(ngModel)]="kisi.mobile" name="mobile">
-    </fieldset>
-
-  </form>
 </div>
