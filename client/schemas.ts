@@ -11,3 +11,12 @@ export class OE{
   // busy: null;
   // vacation: boolean
 }
+
+export class Zaman{
+  dateStart : string;
+  timeStart : string;
+  dateEnd : string;
+  timeEnd : string;
+  allDay : boolean;
+  doesRepeat : boolean
+}

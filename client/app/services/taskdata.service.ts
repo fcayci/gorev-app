@@ -4,9 +4,10 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class DataService {
+export class TaskDataService {
+
   constructor(private http:Http) {
-    console.log('[data.service.ts] Data service initialized...');
+    console.log('[taskdata.service.ts] Task Data service initialized...');
   }
 
   // get a single kisi by passing username as an argument
@@ -26,7 +27,7 @@ export class DataService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    console.log('[data.service]. ' + kisi);
+    console.log('[taskdata.service]. ' + kisi);
     return this.http.post('http://localhost:4200/api/kadro', JSON.stringify(kisi), {headers: headers})
       .map(res => res.json());
   }

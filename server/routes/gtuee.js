@@ -12,7 +12,9 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+
 // get all kadro
+// return kadro
 router.get('/kadro', function(req, res, next){
   OE.find(function (err, kadro) {
     if (err) return console.error(err);
@@ -21,7 +23,9 @@ router.get('/kadro', function(req, res, next){
   });
 });
 
+
 // get single kisi
+// return kisi
 router.get('/kadro/:username', function(req, res, next){
   OE.findOne({ 'username': req.params.username }, function (err, kisi) {
     if (err) return console.error(err);
@@ -32,11 +36,12 @@ router.get('/kadro/:username', function(req, res, next){
 
 
 // add kisi
+// TODO: add validation
 router.post('/kadro', function(req, res, next){
   console.log('[gtuee.js] /kadro will be posted to create new kisi...');
 
+// TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
-  // TODO: remove this for production
   console.log('[gtuee]', candidate)
 
   if (!candidate.fullname || !candidate.email) {
@@ -57,6 +62,7 @@ router.post('/kadro', function(req, res, next){
 
 
 // remove kisi
+// return status msg
 router.delete('/kadro/:username', function(req, res, next){
   console.log('[gtuee.js] deleting', req.params.username, '...');
 
@@ -67,6 +73,61 @@ router.delete('/kadro/:username', function(req, res, next){
   });
 });
 
+
+// update kisi
+router.put('/kadro/:username', function(req, res, next){
+  console.log('[gtuee.js] updating', req.params.username, '...');
+
+  // TOOD: Make approperiate checks for the candidate
+  var candidate = req.body;
+  console.log('[gtuee]', candidate)
+
+  OE.update({'username': req.params.username},
+    { $set : {candidate} },
+    function(err, msg){
+      if (err) return console.error(err);
+      console.log(msg);
+      res.send(msg);
+  });
+});
+
+
+// Add to busy array
+router.put('/kadro/:username', function(req, res, next){
+  console.log('[gtuee.js] adding to ', req.params.username, '...');
+
+  // TOOD: Make approperiate checks for the busy
+  // busy should be in ObjectId('id') format
+  var busy = req.body;
+  console.log('[gtuee]', busy)
+
+  OE.update({'username': req.params.username},
+    { $push : {'busy' : busy} },
+    function(err, msg){
+      if (err) return console.error(err);
+      console.log(msg);
+      res.send(msg);
+  });
+});
+
+
+// Remove from busy array
+router.put('/kadro/:username', function(req, res, next){
+  console.log('[gtuee.js] updating', req.params.username, '...');
+
+  // TOOD: Make approperiate checks for the busy
+  // busy should be in ObjectId('id') format
+  var busy = req.body;
+  console.log('[gtuee]', busy)
+
+  OE.update({'username': req.params.username},
+    { $pull : {'busy' : busy} },
+    function(err, msg){
+      if (err) return console.error(err);
+      console.log(msg);
+      res.send(msg);
+  });
+});
 
 
 module.exports = router;

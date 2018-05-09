@@ -1,0 +1,105 @@
+<div *ngIf="kisi">
+  <header class="btn-toolbar header-custom" role="toolbar">
+    <h2 class="title-custom">{{ kisi.fullname }}</h2>
+    <button *ngIf="!edit" type="button" class="btn btn-sm btn-info" (click)="toggleEdit()"><span class="glyphicon glyphicon-edit"></span></button>
+
+    <!--<button *ngIf="!edit" type="button" class="btn btn-default navbar-right navbar-right-custom" (click)="goBack()">Geri Dön</button>-->
+  </header>
+
+  <main class="row">
+    <section class="col-md-3">
+      <kisi-profile [profile]="kisi" [edit]="edit" (submitEvent)="handleMessage($event)"></kisi-profile>
+
+      <fieldset class="btn-group">
+        <button *ngIf="edit" type="button" class="btn btn-danger" (click)="deleteKisi()">Kişiyi Sil</button>
+      </fieldset>
+    </section>
+ <!--
+    <section class="col-md-8 col-md-offset-1">
+      <table class="table table-hover">
+
+        <caption class="btn-toolbar" role="toolbar">
+          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busy?.length}}</span></h4>
+          <button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
+        </caption>
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Gun Baslangic</th>
+            <th>Gun Bitis</th>
+            <th>Saat Baslangic</th>
+            <th>Saat Bitis</th>
+            <th>Sure</th>
+            <th>Tekrar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of busy; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{b.dateStart}}</td>
+            <td>{{b.dateEnd}}</td>
+            <td>{{b.timeStart}}</td>
+            <td>{{b.timeEnd}}</td>
+            <td>{{b.duration}}</td>
+            <td>{{b.doesRepeat}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <section *ngIf="tasks?.length == 0">
+        <strong><em>Aktif Görevlerndirmesi bulunmamaktadır.</em></strong>
+      </section>
+
+      <section *ngIf="tasks?.length > 0">
+        <table class="table table-hover">
+          <caption class="btn-toolbar" role="toolbar">
+            <h4 class="title-custom">Aktif Görevlerndirmeler <span class="badge">{{tasks?.length}}</span></h4>
+          </caption>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Baslik</th>
+              <th>Gun Baslangic</th>
+              <th>Gun Bitis</th>
+              <th>Saat Baslangic</th>
+              <th>Saat Bitis</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{task.title}}</td>
+              <td>{{task.dateStart}}</td>
+              <td>{{task.dateEnd}}</td>
+              <td>{{task.timeStart}}</td>
+              <td>{{task.timeEnd}}</td>
+              <td>{{task.duration}}</td>
+              <td>{{task.doesRepeat}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+-->
+  </main>
+<!--
+  <busy-add #modal1>
+    <div class="busy-add-header">
+      header
+    </div>
+    <div class="busy-add-body">
+      Whatever content you like, form fields, anything
+      <input type="text">
+    </div>
+    <div class="busy-add-footer">
+      <button type="button" class="btn btn-default" (click)="modal1.hide()">Close</button>
+      <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+  </busy-add>
+-->
+  {{ diagnostic }}
+
+</div>

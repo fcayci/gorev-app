@@ -1,0 +1,59 @@
+  <!-- form modal start -->
+  <div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+    <section class="modal-dialog modal-custom modal-content">
+      <header class="modal-header">
+        <h2>Meşguliyet ekle</h2>
+        <aside *ngIf="aSuccess" class="alert alert-success">
+          Kişi eklendi...
+        </aside>
+        <aside *ngIf="aFail" class="alert alert-danger">
+          Kişi sistemde mevcut...
+        </aside>
+      </header>
+
+      <form class="modal-body" #timeForm="ngForm">
+
+        <section class="col-md-8">
+          <fieldset class="form-group">
+            <label for="dateStart">Start Date</label>
+            <input type="date" class="form-control" min="2018-01-01" max="2018-12-31" id="dateStart"   autocomplete="user-date" required [(ngModel)]="zmodel.dateStart" name="dateStart">
+          </fieldset>
+
+          <fieldset class="form-group">
+            <label for="timeStart">Start Time</label>
+            <input type="time" class="form-control" min="08:00" max="17:00" id="timeStart" required [disabled] = "zmodel.allDay ? true : null" [(ngModel)]="zmodel.timeStart" name="timeStart">
+          </fieldset>
+
+          <fieldset class="form-group">
+            <label for="dateEnd">End Date</label>
+            <input type="date" class="form-control" min="2018-01-01" max="2018-12-31" id="dateEnd"   autocomplete="user-date" required [disabled] = "zmodel.allDay ? true : null" [(ngModel)]="zmodel.dateEnd" name="dateEnd">
+          </fieldset>
+
+          <fieldset class="form-group">
+            <label for="timeEnd">End Time</label>
+            <input type="time" class="form-control" min="08:00" max="17:00" id="timeEnd"  autocomplete="user-time" required [disabled] = "zmodel.allDay ? true : null" [(ngModel)]="zmodel.timeEnd" name="timeEnd">
+          </fieldset>
+        </section>
+
+        <section class="col-md-3 col-md-offset-1">
+          <fieldset class="checkbox">
+            <input type="checkbox" value="" id="allDay" [(ngModel)]="zmodel.allDay" name="allDay">
+            <label for="allDay">All day</label>
+          </fieldset>
+          <br />
+          <fieldset class="checkbox">
+            <input type="checkbox" value="" id="doesRepeat" [(ngModel)]="zmodel.doesRepeat" name="doesRepeat">
+            <label for="doesRepeat">Weekly Repeat?</label>
+          </fieldset>
+
+        </section>
+      </form>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="hide();timeForm.reset()">İptal</button>
+        <button type="submit" class="btn btn-success" [disabled]="!timeForm.form.valid" (click)="addBusy();timeForm.reset()">Ekle</button>
+      </footer>
+
+    </section>
+  </div>
+  <!-- form modal end -->

@@ -3,14 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { OE } from '../../../ogretimelemani';
-import { DataService } from '../../services/data.service';
-
+import { OE } from '../../../schemas';
+import { UserDataService } from '../../services/userdata.service';
 
 @Component({
   selector: 'kisi-add',
-  templateUrl: '../kisi-detail/kisi-detail.component.html',
-  styleUrls: ['../kisi-detail/kisi-detail.component.css']
+  templateUrl: '../kisi/kisi-profile/kisi-profile.component.html',
+  styleUrls: ['../kisi/kisi-profile/kisi-profile.component.css']
 })
 
 export class KisiAddComponent {
@@ -24,7 +23,7 @@ export class KisiAddComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private dataService:DataService,
+    private userDataService:UserDataService,
     private location: Location) {}
 
   ngOnInit(): void {
@@ -34,7 +33,7 @@ export class KisiAddComponent {
   }
 
   getKadro() : void {
-    this.dataService.getKadro()
+    this.userDataService.getKadro()
       .subscribe(kadro => {
         this.kadro = kadro;
       });
@@ -46,7 +45,7 @@ export class KisiAddComponent {
 
       // TODO: remove this for production
       console.log('[kadro.component.ts] Adding kisi');
-      this.dataService.addKisi(this.kisi)
+      this.userDataService.addKisi(this.kisi)
         .subscribe(res => {
           this.kadro.push(res);
         });

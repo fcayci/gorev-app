@@ -7,8 +7,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { KadroComponent } from './components/kadro/kadro.component';
-import { KisiDetailComponent } from './components/kisi-detail/kisi-detail.component';
+import { KisiComponent } from './components/kisi/kisi.component';
+import { KisiProfileComponent } from './components/kisi/kisi-profile/kisi-profile.component';
+import { BusyListComponent } from './components/kisi/busy-list/busy-list.component';
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
+import { BusyAddComponent } from './components/kisi/busy-add/busy-add.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -25,8 +28,8 @@ const ROUTES : Routes = [
     component: KadroComponent
   },
   {
-    path: 'kadro/:id',
-    component: KisiDetailComponent
+    path: 'kadro/:username',
+    component: KisiComponent
   }
 ];
 
@@ -36,8 +39,11 @@ const ROUTES : Routes = [
     AppComponent,
     HomeComponent,
     KadroComponent,
-    KisiDetailComponent,
-    KisiAddComponent
+    KisiComponent,
+    KisiProfileComponent,
+    BusyListComponent,
+    KisiAddComponent,
+    BusyAddComponent
   ],
   imports: [
     BrowserModule,

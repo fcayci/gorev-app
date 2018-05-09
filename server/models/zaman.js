@@ -1,21 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+// TODO: add repeat and units
 var ZamanSchema = new Schema(
   {
-    dateStart: {
+    startData: {
       type: Date,
       required: true
     },
-    dateEnd: {
+    endDate: {
       type: Date,
-      required: true
-    },
-    timeStart: {
-      type: String,
-      required: true
-    },
-    timeEnd: {
-      type: String,
       required: true
     },
     duration: {
