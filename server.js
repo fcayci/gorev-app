@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var home = require('./server/routes/home');
-var tasks = require('./server/routes/tasks');
+var angarya = require('./server/routes/angarya');
 var kadro = require('./server/routes/kadro');
 var busy = require('./server/routes/busy');
 
@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({extended : false}));
 
 app.use('/', home);
 app.use('/api', kadro);
-app.use('/api', tasks);
+app.use('/api', angarya);
 app.use('/api', busy);
 
 // Catch all other routes and return the index file

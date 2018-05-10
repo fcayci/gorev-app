@@ -15,7 +15,7 @@
       <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span>Filtrele</button>
     </div>
     <div class="col-lg-3">
-      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span> Yeni Görev Ekle</button>
+      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/gorevekle"><span class="glyphicon glyphicon-plus"></span> Yeni Görev Ekle</button>
     </div>
   </section>
 
@@ -32,17 +32,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let g of gs; let i = index">
+      <tr *ngFor="let g of angarya; let i = index">
         <td>{{i + 1}}</td>
         <td>{{g.title}}</td>
         <td>{{g.type}}</td>
-        <td>{{g.startDate}}</td>
-        <td>{{g.endDate}}</td>
-        <td>{{g.startDate}}</td>
-        <td>{{g.endDate}}</td>
+        <td>{{g.startDate | date: "EE, dd MMMM"}}</td>
+        <td>{{g.endDate | date: "EE, dd MMMM"}}</td>
+        <td>{{g.startDate | date: "HH:mm"}}</td>
+        <td>{{g.endDate | date: "HH:mm"}}</td>
         <td>
-          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/tasks/{{g._id}}" />
+          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/angarya/{{g._id}}" />
         </td>
       </tr>
     </tbody>
   </table>
+  {{ diagnostic }}

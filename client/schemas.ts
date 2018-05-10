@@ -30,6 +30,8 @@ export class Gorev {
   customType: string;
   startDate: string;
   endDate: string;
+  startTime: string;
+  endTime: string;
   peopleCount: number;
   //choosenPeople: [];
   status: string;

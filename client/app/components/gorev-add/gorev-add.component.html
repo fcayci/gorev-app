@@ -1,0 +1,47 @@
+    <section class="custom-new-person">
+      <h2>{{title}}</h2>
+      <form class="form-group" (ngSubmit)="onSubmit()" #modelForm="ngForm">
+
+        <fieldset class="form-group">
+          <label for="title">Baslik</label>
+          <input type="text" class="form-control" id="title" autocomplete="user-title" required [readonly] = "edit ? null : true" [(ngModel)]="model.title" name="title">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="type">Tur</label>
+          <input type="type" class="form-control" id="type" autocomplete="user-type" required [readonly] = "edit ? null : true" [(ngModel)]="model.type" name="type">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startDate" name="dateStart">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateStart">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="startTime">Start Time</label>
+          <input type="time" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startTime" name="dateStart">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="timeEnd">End Time</label>
+          <input type="time" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.endTime" name="dateStart">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="num">Kisi sayisi</label>
+          <input type="string" class="form-control" id="num" autocomplete="user-num" pattern="[0-9]{1}" required [readonly] = "edit ? null : true" [(ngModel)]="model.peopleCount" name="num">
+        </fieldset>
+
+        <fieldset class="btn-group">
+          <button type="button" class="btn btn-default" name="cancel" (click)="returnBackToInfinity()">İptal</button>
+          <button type="button" class="btn btn-primary" name="save" [disabled]="!modelForm.form.valid" (click)="saveTask()">Kaydet</button>
+        </fieldset>
+      </form>
+    </section>
+
+    {{ diagnostic }}

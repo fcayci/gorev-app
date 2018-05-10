@@ -42,7 +42,8 @@ export class KisiComponent implements OnInit {
     this.userDataService.updateKisi(this.kisi)
       .subscribe(res => {
         // Update original with the new changes.
-        this.kisi_orig = JSON.parse(JSON.stringify(this.kisi));
+        this.kisi_orig = res;
+        this.kisi = res;
     });
     this.toggleEdit();
   }

@@ -88,7 +88,8 @@ router.put('/kadro/:username', function(req, res, next){
 
   console.log('[kadro.js] New candidate to update: id: ', id, 'candidate: ', candidate);
 
-  OE.findByIdAndUpdate(id, req.body, {new: true}, (err, kisi) => {
+  // new: true makes it return the updated kisi object.
+  OE.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
     if (err) return console.error(err);
     return res.send(kisi);
   })

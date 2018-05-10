@@ -17,13 +17,11 @@ var GorevSchema = new Schema(
       required: false
     },
     startDate: {
-      type: Schema.ObjectId,
-      ref: 'Zaman',
+      type: Date,
       required: true
     },
     endDate: {
-      type: Schema.ObjectId,
-      ref: 'Zaman',
+      type: Date,
       required: true
     },
     peopleCount: {
