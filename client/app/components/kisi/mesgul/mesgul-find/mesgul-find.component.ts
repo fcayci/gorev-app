@@ -37,7 +37,7 @@ export class MesgulFindComponent implements OnInit {
   ngOnInit(): void {
     this.busyDataService.getBusyAll()
       .subscribe(res => {
-        console.log('wanted', res)
+        //console.log('[mesgul-find] wanted', res)
         //console.log(this.interval)
         this.busydb = res;
         this.today = new Date().toString();

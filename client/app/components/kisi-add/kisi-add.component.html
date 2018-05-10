@@ -1,4 +1,6 @@
-      <form class="form-group custom-new-person" (ngSubmit)="onSubmit()" #profileForm="ngForm">
+    <section class="custom-new-person">
+      <h2>{{title}}</h2>
+      <form class="form-group" (ngSubmit)="onSubmit()" #profileForm="ngForm">
 
         <fieldset class="form-group">
           <label for="fullname">Isim</label>
@@ -26,7 +28,8 @@
         </fieldset>
 
         <fieldset class="btn-group">
-          <button *ngIf="edit" type="button" class="btn btn-default" name="cancel" (click)="sendMessage($event)">İptal</button>
-          <button *ngIf="edit" type="button" class="btn btn-primary  pull-right" name="save" [disabled]="!profileForm.form.valid" (click)="sendMessage($event)">Kaydet</button>
+          <button type="button" class="btn btn-default" name="cancel" (click)="returnBackToInfinity()">İptal</button>
+          <button type="button" class="btn btn-primary" name="save" [disabled]="!profileForm.form.valid" (click)="savePerson()">Kaydet</button>
         </fieldset>
       </form>
+    </section>

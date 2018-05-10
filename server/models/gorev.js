@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
 var GorevSchema = new Schema(
   {
     title: {
@@ -15,7 +16,12 @@ var GorevSchema = new Schema(
       type: String,
       required: false
     },
-    when: {
+    startDate: {
+      type: Schema.ObjectId,
+      ref: 'Zaman',
+      required: true
+    },
+    endDate: {
       type: Schema.ObjectId,
       ref: 'Zaman',
       required: true

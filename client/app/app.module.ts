@@ -6,9 +6,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+import { TasksComponent } from './components/tasks/tasks.component';
 import { KadroComponent } from './components/kadro/kadro.component';
 import { KisiComponent } from './components/kisi/kisi.component';
 import { KisiProfileComponent } from './components/kisi/kisi-profile/kisi-profile.component';
+import { KisiTasksComponent } from './components/kisi/kisi-tasks/kisi-tasks.component';
 import { MesgulComponent } from './components/kisi/mesgul/mesgul.component';
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
 import { MesgulFindComponent } from './components/kisi/mesgul/mesgul-find/mesgul-find.component';
@@ -30,7 +32,11 @@ const ROUTES : Routes = [
   {
     path: 'kadro/:username',
     component: KisiComponent
-  }
+  },
+  {
+    path: 'tasks',
+    component: TasksComponent
+  },
 ];
 
 
@@ -38,12 +44,14 @@ const ROUTES : Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
+    TasksComponent,
     KadroComponent,
     KisiComponent,
     KisiProfileComponent,
     MesgulComponent,
     MesgulFindComponent,
-    KisiAddComponent
+    KisiAddComponent,
+    KisiTasksComponent
   ],
   imports: [
     BrowserModule,

@@ -40,7 +40,7 @@ export class MesgulComponent implements OnInit {
   ngOnInit(): void {
     this.busyDataService.getBusyByOwnerId(this.profile._id)
       .subscribe(res => {
-        console.log('wanted', res)
+        //console.log('[mesgul.component] wanted', res)
         this.busydb = res;
         this.today = moment().format('LLLL (Z)');
     });

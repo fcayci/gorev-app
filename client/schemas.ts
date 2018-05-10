@@ -1,4 +1,4 @@
-export class OE{
+export class OE {
   _id: string;
   // password: string;
   fullname: string;
@@ -13,7 +13,7 @@ export class OE{
   // vacation: boolean
 }
 
-export class Zaman{
+export class Zaman {
   owner_id : string;
   startDate : string;
   endDate : string;
@@ -21,4 +21,16 @@ export class Zaman{
   endTime : string;
   recur : boolean;
   tor : number;  // type of recur
+}
+
+
+export class Gorev {
+  title: string;
+  type: string;
+  customType: string;
+  startDate: string;
+  endDate: string;
+  peopleCount: number;
+  //choosenPeople: [];
+  status: string;
 }

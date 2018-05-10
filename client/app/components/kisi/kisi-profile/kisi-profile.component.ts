@@ -1,9 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
 
 import { OE } from '../../../../schemas';
-import { UserDataService } from '../../../services/userdata.service';
 
 @Component({
   selector: 'kisi-profile',
@@ -18,9 +16,6 @@ export class KisiProfileComponent{
   @Output() submitEvent = new EventEmitter<string>();
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private userDataService:UserDataService
   ) {}
 
   sendMessage(e) {

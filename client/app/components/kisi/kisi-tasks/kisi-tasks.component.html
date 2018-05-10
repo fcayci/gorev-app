@@ -1,0 +1,34 @@
+      <section *ngIf="tasks?.length == 0">
+        <strong><em>Aktif Görevlerndirmesi bulunmamaktadır.</em></strong>
+      </section>
+
+      <section *ngIf="tasks?.length > 0">
+        <table class="table table-hover">
+          <caption class="btn-toolbar" role="toolbar">
+            <h4 class="title-custom">Aktif Görevlerndirmeler <span class="badge">{{tasks?.length}}</span></h4>
+          </caption>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Baslik</th>
+              <th>Gun Baslangic</th>
+              <th>Gun Bitis</th>
+              <th>Saat Baslangic</th>
+              <th>Saat Bitis</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{task.title}}</td>
+              <td>{{task.dateStart}}</td>
+              <td>{{task.dateEnd}}</td>
+              <td>{{task.timeStart}}</td>
+              <td>{{task.timeEnd}}</td>
+              <td>{{task.duration}}</td>
+              <td>{{task.doesRepeat}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>

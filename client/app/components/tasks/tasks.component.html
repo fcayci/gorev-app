@@ -1,0 +1,48 @@
+  <header>
+    <h2>Görev Listesi <span class="badge">{{gs?.length}}</span></h2>
+  </header>
+
+  <section class="row midbar-custom">
+    <div class="col-lg-6">
+      <form class="input-group">
+        <input type="text" class="form-control" placeholder="Search">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+      </form>
+    </div>
+    <div class="col-lg-3">
+      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span>Filtrele</button>
+    </div>
+    <div class="col-lg-3">
+      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span> Yeni Görev Ekle</button>
+    </div>
+  </section>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Baslik</th>
+        <th>Tür</th>
+        <th>Gun Baslangic</th>
+        <th>Gun Bitis</th>
+        <th>Saat Baslangic</th>
+        <th>Saat Bitis</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let g of gs; let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{g.title}}</td>
+        <td>{{g.type}}</td>
+        <td>{{g.startDate}}</td>
+        <td>{{g.endDate}}</td>
+        <td>{{g.startDate}}</td>
+        <td>{{g.endDate}}</td>
+        <td>
+          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/tasks/{{g._id}}" />
+        </td>
+      </tr>
+    </tbody>
+  </table>

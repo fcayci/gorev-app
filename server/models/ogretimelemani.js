@@ -3,6 +3,7 @@ const mongoose   = require('mongoose'),
 
 const Schema = mongoose.Schema;
 
+// TODO add ObjectID for Zaman
 const OESchema = new Schema(
   {
     fullname: {
@@ -64,7 +65,7 @@ OESchema.plugin(timestamps);
 OESchema
 .virtual('url')
 .get(function () {
-  return '/people/' + this._id;
+  return '/kadro/' + this._id;
 });
 
 //Export model

@@ -27,7 +27,7 @@ export class UserDataService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    console.log('[userdata.service]. ' + kisi);
+    console.log('[userdata.service] creating', kisi);
     return this.http.post('http://localhost:4200/api/kadro', JSON.stringify(kisi), {headers: headers})
       .map(res => res.json());
   }
@@ -43,6 +43,7 @@ export class UserDataService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
+    console.log('[userdata.service] updating', kisi);
     return this.http.put('http://localhost:4200/api/kadro/' + kisi.username, JSON.stringify(kisi), {headers: headers})
       .map(res => res.json());
   }

@@ -13,7 +13,6 @@
             <th>Gun Bitis</th>
             <th>Saat Baslangic</th>
             <th>Saat Bitis</th>
-            <th>Sure (Saat)</th>
             <th>Tekrar</th>
           </tr>
         </thead>
@@ -45,19 +44,12 @@
           </tr>
           <tr *ngFor="let busy of busydb; let i = index">
             <td>{{i + 1}}</td>
-            <!--<td>{{busy.startDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
+            <td>{{busy.startDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
             <td>{{busy.endDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
             <td>{{busy.startDate | date: "HH:mm"}}</td>
             <td>{{busy.endDate | date: "HH:mm"}}</td>
             <td>{{busy.recur ? "iviit" : ""}}</td>
-            <td></td>-->
-
-            <td>{{busy.startDate}}</td>
-            <td>{{busy.endDate}}</td>
-            <td>{{busy.startDate | date: "HH:mm"}}</td>
-            <td>{{busy.endDate | date: "HH:mm"}}</td>
             <td></td>
-            <td>{{busy.recur ? "iviit" : ""}}</td>
           </tr>
         </tbody>
       </table>

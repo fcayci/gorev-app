@@ -1,16 +1,17 @@
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const bodyParser = require('body-parser');
+var express = require('express');
+var path = require('path');
+var http = require('http');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
-const home = require('./server/routes/home');
-//const tasks = require('./server/routes/tasks');
-//const kadro = require('./server/routes/kadro');
-const gtuee = require('./server/routes/gtuee');
+var home = require('./server/routes/home');
+var tasks = require('./server/routes/tasks');
+var kadro = require('./server/routes/kadro');
+var busy = require('./server/routes/busy');
 
 const port = 3000;
 
-const app = express();
+var app = express();
 
 // Cross Origin Request (CORS)
 // app.use(function(req, res, next) {
@@ -19,6 +20,12 @@ const app = express();
 //   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 //   next();
 // });
+
+var mongoDB = 'mongodb://127.0.0.1:27017/gtuee';
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine
 //app.set('views', 'views');
@@ -33,9 +40,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : false}));
 
 app.use('/', home);
-//app.use('/api', tasks);
-//app.use('/api', kadro);
-app.use('/api', gtuee);
+app.use('/api', kadro);
+app.use('/api', tasks);
+app.use('/api', busy);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {

@@ -24,7 +24,7 @@ export class KisiComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private userDataService:UserDataService
-    ) {}
+  ) {}
 
   ngOnInit(): void {
     // Decide who to get based on the passed argument
@@ -43,15 +43,15 @@ export class KisiComponent implements OnInit {
       .subscribe(res => {
         // Update original with the new changes.
         this.kisi_orig = JSON.parse(JSON.stringify(this.kisi));
-      });
+    });
     this.toggleEdit();
   }
 
   deleteKisi(): void {
     this.userDataService.deleteKisi(this.kisi)
-        .subscribe(res => {
-          console.log(res)
-        });
+      .subscribe(res => {
+        console.log(res)
+    });
     setTimeout(() => this.router.navigate(['/kadro']), 800);
   }
 
@@ -64,10 +64,9 @@ export class KisiComponent implements OnInit {
   }
 
   handleMessage(e){
-    console.log(e);
     if (e.target.name == "save"){
+      console.log("[kisi] saving person");
       this.updateKisi();
-      console.log('save');
     } else if(e.target.name == "cancel"){
       this.resetKisi();
     }
