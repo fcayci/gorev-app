@@ -11,6 +11,7 @@ import { KisiComponent } from './components/kisi/kisi.component';
 import { KisiProfileComponent } from './components/kisi/kisi-profile/kisi-profile.component';
 import { MesgulComponent } from './components/kisi/mesgul/mesgul.component';
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
+import { MesgulFindComponent } from './components/kisi/mesgul/mesgul-find/mesgul-find.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -41,6 +42,7 @@ const ROUTES : Routes = [
     KisiComponent,
     KisiProfileComponent,
     MesgulComponent,
+    MesgulFindComponent,
     KisiAddComponent
   ],
   imports: [

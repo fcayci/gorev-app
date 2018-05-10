@@ -143,4 +143,32 @@ router.put('/kadro/:username', function(req, res, next){
 });
 
 
+// get busy times
+router.get('/busy', function(req, res, next){
+  Zaman.find(function (err, busy){
+    if (err) return console.error(err);
+    res.status(200);
+    res.json(busy);
+  });
+});
+
+
+// set a busy time for a user
+router.post('/busy/:id', function(req, res, next){
+
+  // TOOD: Make approperiate checks for the timeframe
+  // TODO: Prevent duplicates
+  var timeframe = req.body;
+  console.log('[gtuee]', timeframe)
+
+  // Probably not needed since we use new below.
+  delete timeframe._id;
+  var time = new Zaman(timeframe);
+  time.save(function(err){
+    if (err) return console.error(err);
+    res.status(200);
+    res.json(time);
+  });
+});
+
 module.exports = router;

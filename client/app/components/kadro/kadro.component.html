@@ -29,15 +29,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let kisi of kadro; let i = index">
+      <tr *ngFor="let k of kadro; let i = index">
         <td>{{i + 1}}</td>
-        <td>{{kisi.fullname}}</td>
-        <td>{{kisi.email}}</td>
-        <td>{{kisi.office}}</td>
-        <td>{{kisi.phone}}</td>
-        <td>{{kisi.mobile}}</td>
+        <td>{{k.fullname}}</td>
+        <td>{{k.email}}</td>
+        <td>{{k.office}}</td>
+        <td>{{k.phone}}</td>
+        <td>{{k.mobile}}</td>
         <td>
-          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/kadro/{{kisi.username}}" />
+          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/kadro/{{k.username}}" />
         </td>
       </tr>
     </tbody>

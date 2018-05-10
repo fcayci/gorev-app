@@ -19,6 +19,6 @@ export class Zaman{
   endDate : string;
   startTime : string;
   endTime : string;
-  duration : number;
-  repeat : boolean;
+  recur : boolean;
+  tor : number;  // type of recur
 }

@@ -1,0 +1,10 @@
+<div>
+  <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startDate" name="dateStart">
+  <input type="date" min="2018-01-01" max="2018-12-31" id="dateEnd" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateEnd">
+  <input type="time" min="08:00" max="17:00" id="timeStart"required [(ngModel)]="model.startTime" name="timeStart">
+  <input type="time" min="08:00" max="17:00" id="timeEnd" autocomplete="user-time" [(ngModel)]="model.endTime" required  name="timeEnd">
+  <input type="button" id="doesRepeat" value="search" (click)="searchHandler()" name="doesRepeat">
+</div>
+<br />
+
+{{ diagnostic }}

@@ -10,6 +10,12 @@ export class BusyDataService {
     console.log('[busydata.service.ts] Busy Data service initialized...');
   }
 
+  // get busy times for everybody
+  getBusyAll(){
+    return this.http.get('http://localhost:4200/api/busy')
+      .map(res => res.json());
+  }
+
   // get busy times for the given Owner ID
   getBusyByOwnerId(owner_id){
     return this.http.get('http://localhost:4200/api/busy/' + owner_id)
@@ -24,12 +30,12 @@ export class BusyDataService {
 
 
   // set busy times for the given Owner ID
-  setBusyByOwnerId(owner_id, timeframe){
+  setBusyByOwnerId(timeframe){
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
     //console.log('[userdata.service]. ', owner_id, timeframe);
-    return this.http.post('http://localhost:4200/api/busy/' + owner_id, JSON.stringify(timeframe) {headers: headers})
+    return this.http.post('http://localhost:4200/api/busy/' + timeframe.owner_id, JSON.stringify(timeframe), {headers: headers})
       .map(res => res.json());
   }
 

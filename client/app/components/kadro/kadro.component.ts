@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-//import { OE } from '../../../schemas';
+import { OE } from '../../../schemas';
 import { UserDataService } from '../../services/userdata.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class KadroComponent implements OnInit {
 
   // TODO: See if there is a better way to instantiate an object.
   // kadro will hold the current kadro
-  kadro = {};
+  kadro : OE[];
 
   constructor(private userDataService: UserDataService) {}
 

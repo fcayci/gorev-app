@@ -1,7 +1,9 @@
       <table class="table table-hover">
         <caption class="btn-toolbar" role="toolbar">
-          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busy?.length}}</span></h4>
-          <button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
+          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busydb?.length}}</span> <small class="badge">{{today}}</small></h4>
+
+          <!--<button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>-->
+          <button type="button" class="label label-success navbar-right navbar-right-custom" (click)="toggleAddBusyField()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
         </caption>
 
         <thead>
@@ -16,15 +18,49 @@
           </tr>
         </thead>
         <tbody>
+          <tr *ngIf="showAddBusy">
+            <td></td>
+            <td>
+              <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startDate" name="dateStart">
+            </td>
+            <td>
+                <input type="date" min="2018-01-01" max="2018-12-31" id="dateEnd" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateEnd">
+            </td>
+            <td>
+              <input type="time" min="08:00" max="17:00" id="timeStart" required [(ngModel)]="model.startTime" name="timeStart">
+            </td>
+            <td>
+              <input type="time" min="08:00" max="17:00" id="timeEnd" autocomplete="user-time" [(ngModel)]="model.endTime" required  name="timeEnd">
+            </td>
+            <td><input type="checkbox" id="recur" [(ngModel)]="model.recur" name="recur"></td>
+            <td>
+              <select id="tor" [(ngModel)]="model.tor" name="tor">
+                <option value="1">Günlük</option>
+                <option value="7">Haftalık</option>
+              </select>
+            </td>
+            <td>
+              <input type="button" id="addtime" (click)="adderHandler()" name="addtime" value="ekle">
+            </td>
+          </tr>
           <tr *ngFor="let busy of busydb; let i = index">
             <td>{{i + 1}}</td>
-            <td>{{busy.startDate | date: "EE, d MMMM"}}</td>
-            <td>{{busy.endDate | date: "dd/MM"}}</td>
+            <!--<td>{{busy.startDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
+            <td>{{busy.endDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
+            <td>{{busy.startDate | date: "HH:mm"}}</td>
+            <td>{{busy.endDate | date: "HH:mm"}}</td>
+            <td>{{busy.recur ? "iviit" : ""}}</td>
+            <td></td>-->
+
+            <td>{{busy.startDate}}</td>
+            <td>{{busy.endDate}}</td>
             <td>{{busy.startDate | date: "HH:mm"}}</td>
             <td>{{busy.endDate | date: "HH:mm"}}</td>
             <td></td>
+            <td>{{busy.recur ? "iviit" : ""}}</td>
           </tr>
         </tbody>
       </table>
 
-      <!-- {{ diagnostic }} -->
+      <mesgul-find></mesgul-find>
+      <!--{{ diagnostic }}-->
