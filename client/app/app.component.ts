@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserDataService } from './services/userdata.service';
 import { TaskDataService } from './services/taskdata.service';
+import { BusyDataService } from './services/busydata.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,8 @@ import { TaskDataService } from './services/taskdata.service';
   styleUrls: ['./app.component.css'],
   providers: [
     UserDataService,
-    TaskDataService
+    TaskDataService,
+    BusyDataService
   ]
 })
 

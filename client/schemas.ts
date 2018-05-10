@@ -1,5 +1,5 @@
 export class OE{
-  // username: string;
+  _id: string;
   // password: string;
   fullname: string;
   email: string;
@@ -7,16 +7,18 @@ export class OE{
   office: string;
   phone: string;
   mobile: string;
+  username: string;
   // load: number;
   // busy: null;
   // vacation: boolean
 }
 
 export class Zaman{
-  dateStart : string;
-  timeStart : string;
-  dateEnd : string;
-  timeEnd : string;
-  allDay : boolean;
-  doesRepeat : boolean
+  owner_id : string;
+  startDate : string;
+  endDate : string;
+  startTime : string;
+  endTime : string;
+  duration : number;
+  repeat : boolean;
 }

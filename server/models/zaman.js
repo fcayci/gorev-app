@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // TODO: add repeat and units
+// TODO: add ObjectId for OE
 var ZamanSchema = new Schema(
   {
     startData: {

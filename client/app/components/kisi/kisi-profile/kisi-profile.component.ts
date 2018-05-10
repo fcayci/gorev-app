@@ -28,5 +28,4 @@ export class KisiProfileComponent{
   }
 
   //get diagnostic() { return JSON.stringify(this.profile); }
-
 }

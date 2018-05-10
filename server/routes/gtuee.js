@@ -18,7 +18,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 router.get('/kadro', function(req, res, next){
   OE.find(function (err, kadro) {
     if (err) return console.error(err);
-    console.log(kadro);
+    //console.log(kadro);
     res.send(kadro);
   });
 });
@@ -29,8 +29,17 @@ router.get('/kadro', function(req, res, next){
 router.get('/kadro/:username', function(req, res, next){
   OE.findOne({ 'username': req.params.username }, function (err, kisi) {
     if (err) return console.error(err);
-    console.log(kisi);
     res.send(kisi);
+  });
+});
+
+
+// get single kisi busy time
+// return time
+router.get('/busy/:id', function(req, res, next){
+  Zaman.find({ 'owner_id': mongoose.Types.ObjectId(req.params.id) }, function (err, busy) {
+    if (err) return console.error(err);
+    res.send(busy);
   });
 });
 
@@ -80,10 +89,14 @@ router.put('/kadro/:username', function(req, res, next){
 
   // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
-  console.log('[gtuee]', candidate)
+  var id = candidate._id;
+  delete candidate._id;
+  console.log('[gtuee]', id, candidate);
 
-  OE.update({'username': req.params.username},
-    { $set : {candidate} },
+  // FIXME: Seems working, but not actually working.
+  // Probably the rest will not work as well.
+  OE.update({ _id: id},
+    { $set : { candidate } },
     function(err, msg){
       if (err) return console.error(err);
       console.log(msg);

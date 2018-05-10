@@ -9,9 +9,8 @@ import { HomeComponent } from './components/home/home.component';
 import { KadroComponent } from './components/kadro/kadro.component';
 import { KisiComponent } from './components/kisi/kisi.component';
 import { KisiProfileComponent } from './components/kisi/kisi-profile/kisi-profile.component';
-import { BusyListComponent } from './components/kisi/busy-list/busy-list.component';
+import { MesgulComponent } from './components/kisi/mesgul/mesgul.component';
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
-import { BusyAddComponent } from './components/kisi/busy-add/busy-add.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -41,9 +40,8 @@ const ROUTES : Routes = [
     KadroComponent,
     KisiComponent,
     KisiProfileComponent,
-    BusyListComponent,
-    KisiAddComponent,
-    BusyAddComponent
+    MesgulComponent,
+    KisiAddComponent
   ],
   imports: [
     BrowserModule,

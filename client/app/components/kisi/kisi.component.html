@@ -14,39 +14,10 @@
         <button *ngIf="edit" type="button" class="btn btn-danger" (click)="deleteKisi()">Kişiyi Sil</button>
       </fieldset>
     </section>
- <!--
-    <section class="col-md-8 col-md-offset-1">
-      <table class="table table-hover">
 
-        <caption class="btn-toolbar" role="toolbar">
-          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busy?.length}}</span></h4>
-          <button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
-        </caption>
+    <section class="col-md-9">
 
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Gun Baslangic</th>
-            <th>Gun Bitis</th>
-            <th>Saat Baslangic</th>
-            <th>Saat Bitis</th>
-            <th>Sure</th>
-            <th>Tekrar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let b of busy; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{b.dateStart}}</td>
-            <td>{{b.dateEnd}}</td>
-            <td>{{b.timeStart}}</td>
-            <td>{{b.timeEnd}}</td>
-            <td>{{b.duration}}</td>
-            <td>{{b.doesRepeat}}</td>
-          </tr>
-        </tbody>
-      </table>
-
+      <mesgul [profile]="kisi" [edit]="edit"></mesgul>
 
       <section *ngIf="tasks?.length == 0">
         <strong><em>Aktif Görevlerndirmesi bulunmamaktadır.</em></strong>
@@ -83,7 +54,7 @@
         </table>
       </section>
     </section>
--->
+
   </main>
 <!--
   <busy-add #modal1>
@@ -100,6 +71,6 @@
     </div>
   </busy-add>
 -->
-  {{ diagnostic }}
+  <!--{{ diagnostic }}-->
 
 </div>
