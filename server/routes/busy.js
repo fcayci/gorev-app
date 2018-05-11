@@ -41,7 +41,7 @@ router.post('/busy/:id', function(req, res, next){
   // TOOD: Make approperiate checks for the timeframe
   // TODO: Prevent duplicates
   var timeframe = req.body;
-  console.log('[gtuee]', timeframe)
+  //console.log('[busy]', timeframe)
 
   // Probably not needed since we use new below.
   delete timeframe._id;
@@ -52,6 +52,20 @@ router.post('/busy/:id', function(req, res, next){
     res.json(time);
   });
 });
+
+/* title: Remove busy
+ *
+ * return: status msg
+ */
+router.delete('/busy/:id', function(req, res, next){
+
+  Zaman.deleteOne({ '_id': req.params.id }, function (err, msg) {
+    if (err) return console.error(err);
+      //console.log('[busy.js] ', req.params.id, ' successfully deleted with msg...', msg);
+      res.send(msg);
+  });
+});
+
 
 
 module.exports = router;

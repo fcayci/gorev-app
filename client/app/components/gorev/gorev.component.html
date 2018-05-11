@@ -1,0 +1,31 @@
+<section *ngIf="gorev">
+  <header>
+    <h2>Görev<span class="badge">{{gorev?.status}}</span></h2>
+  </header>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Baslik</th>
+        <th>Gorev Tür</th>
+        <th>Gun Baslangic</th>
+        <th>Gun Bitis</th>
+        <th>Saat Baslangic</th>
+        <th>Saat Bitis</th>
+        <th>Kisi Sayisi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr >
+        <td>{{gorev.title}}</td>
+        <td>{{gorev.type}}</td>
+        <td>{{gorev.startDate | date: "EE, dd MMMM"}}</td>
+        <td>{{gorev.endDate | date: "EE, dd MMMM"}}</td>
+        <td>{{gorev.startDate | date: "HH:mm"}}</td>
+        <td>{{gorev.endDate | date: "HH:mm"}}</td>
+        <td>{{gorev.peopleCount}}</td>
+      </tr>
+    </tbody>
+  </table>
+  {{ diagnostic }}
+</section>

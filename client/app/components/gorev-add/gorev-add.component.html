@@ -3,13 +3,18 @@
       <form class="form-group" (ngSubmit)="onSubmit()" #modelForm="ngForm">
 
         <fieldset class="form-group">
-          <label for="title">Baslik</label>
-          <input type="text" class="form-control" id="title" autocomplete="user-title" required [readonly] = "edit ? null : true" [(ngModel)]="model.title" name="title">
+          <label for="title">Görev Adı</label>
+          <input type="text" class="form-control" id="title" autocomplete="user-title" placeholder="Ornek: ELM000 vize gozetmenligi" required [readonly] = "edit ? null : true" [(ngModel)]="model.title" name="title">
         </fieldset>
 
         <fieldset class="form-group">
-          <label for="type">Tur</label>
-          <input type="type" class="form-control" id="type" autocomplete="user-type" required [readonly] = "edit ? null : true" [(ngModel)]="model.type" name="type">
+          <label for="type">Görev Türü</label>
+          <select class="form-control" id="type" autocomplete="user-type" required [disabled] = "edit ? null : true" [(ngModel)]="model.type" name="type">
+            <option value="1">Gözetmenlik</option>
+            <option value="2">Sekreterlik</option>
+            <option value="3">Lab Asistanlığı</option>
+            <option value="4">Diğer</option>
+          </select>
         </fieldset>
 
         <fieldset class="form-group">
@@ -35,6 +40,16 @@
         <fieldset class="form-group">
           <label for="num">Kisi sayisi</label>
           <input type="string" class="form-control" id="num" autocomplete="user-num" pattern="[0-9]{1}" required [readonly] = "edit ? null : true" [(ngModel)]="model.peopleCount" name="num">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <label for="type">Gorevlendirilecek Kişi</label>
+          <select class="form-control" id="type" autocomplete="user-type" required [disabled] = "edit ? null : true" [(ngModel)]="model.choosenPeople" name="type">
+            <option value="1">hede</option>
+            <option value="2">hode</option>
+            <option value="3">asdf</option>
+            <option value="4">asdf</option>
+          </select>
         </fieldset>
 
         <fieldset class="btn-group">

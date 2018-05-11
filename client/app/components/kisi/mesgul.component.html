@@ -3,7 +3,7 @@
           <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busies?.length}}</span>  <small class="badge">{{today}}</small></h4>
 
           <!--<button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>-->
-          <button type="button" class="label label-success navbar-right navbar-right-custom" (click)="toggleAddBusyField()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
+          <button type="button" class="label label-success navbar-right navbar-right-custom" (click)="toggleField()"><span class="glyphicon glyphicon-plus"></span> meşguliyet düzenle</button>
         </caption>
 
         <thead>
@@ -14,6 +14,7 @@
             <th>Saat Baslangic</th>
             <th>Saat Bitis</th>
             <th>Tekrar</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -23,13 +24,13 @@
               <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startDate" name="dateStart">
             </td>
             <td>
-                <input type="date" min="2018-01-01" max="2018-12-31" id="dateEnd" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateEnd">
+              <input type="date" min="2018-01-01" max="2018-12-31" id="dateEnd" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateEnd">
             </td>
             <td>
               <input type="time" min="08:00" max="17:00" id="timeStart" required [(ngModel)]="model.startTime" name="timeStart">
             </td>
             <td>
-              <input type="time" min="08:00" max="17:00" id="timeEnd" autocomplete="user-time" [(ngModel)]="model.endTime" required  name="timeEnd">
+              <input type="time" min="08:00" max="20:00" id="timeEnd" autocomplete="user-time" [(ngModel)]="model.endTime" required  name="timeEnd">
             </td>
             <td><input type="checkbox" id="recur" [(ngModel)]="model.recur" name="recur"></td>
             <td>
@@ -49,7 +50,7 @@
             <td>{{busy.startDate | date: "HH:mm"}}</td>
             <td>{{busy.endDate | date: "HH:mm"}}</td>
             <td>{{busy.recur ? "iviit" : ""}}</td>
-            <td></td>
+            <td><input *ngIf="showAddBusy" type="button" class="btn btn-sm btn-danger" id="addtime" (click)="removeBusy(i)" name="addtime" value="del"></td>
           </tr>
         </tbody>
       </table>

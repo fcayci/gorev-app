@@ -21,7 +21,6 @@ export class AngaryaComponent implements OnInit {
     this.taskDataService.getAllTasks()
       .subscribe((angarya: Gorev[]) => {
         this.angarya = angarya;
-        console.log(angarya);
       });
   }
 

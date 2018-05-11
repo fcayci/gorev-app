@@ -42,9 +42,12 @@ export class BusyDataService {
   }
 
   // delete busy time for given Time ID
-  delBusyByTimeId(timeframe_id){
-    return this.http.delete(busyUrl + '/' + timeframe_id)
-//      .map(res => res.json());
+  delBusyByTimeId(busy){
+    return this.http.delete(busyUrl + '/' + 'busy._id')
+      .pipe(
+        //tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
+        catchError(this.handleError)
+      );
   }
 
 

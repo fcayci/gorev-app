@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 
 import { AngaryaComponent } from './components/angarya/angarya.component';
+import { GorevComponent } from './components/gorev/gorev.component';
 import { GorevAddComponent } from './components/gorev-add/gorev-add.component';
 
 import { KadroComponent } from './components/kadro/kadro.component';
@@ -42,6 +43,10 @@ const ROUTES : Routes = [
     component: AngaryaComponent
   },
   {
+    path: 'angarya/:id',
+    component: GorevComponent
+  },
+  {
     path: 'gorevekle',
     component: GorevAddComponent
   },
@@ -53,6 +58,7 @@ const ROUTES : Routes = [
     AppComponent,
     HomeComponent,
     AngaryaComponent,
+    GorevComponent,
     GorevAddComponent,
     KadroComponent,
     KisiWrapperComponent,

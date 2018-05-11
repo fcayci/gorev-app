@@ -18,6 +18,18 @@ router.get('/angarya', function(req, res, next){
   });
 });
 
+/* title: Get gorev
+ *
+ * return: angarya/gorev - depending on owner_id or _id
+ */
+router.get('/angarya/:id', function(req, res, next){
+  Gorev.findOne({ '_id': req.params.id }, function (err, gorev) {
+    if (err) return console.error(err);
+    res.send(gorev);
+  });
+});
+
+
 /* title: Add a gorev to angarya
  *
  * return: single person

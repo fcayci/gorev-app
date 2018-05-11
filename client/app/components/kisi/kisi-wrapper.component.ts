@@ -27,9 +27,9 @@ export class KisiWrapperComponent implements OnInit {
 
   getKisi(): void {
     var username = this.route.snapshot.paramMap.get('username');
-      this._user.getKisi(username)
-        .subscribe((kisi : OE) => {
-          this.kisi = kisi;
+    this._user.getKisi(username)
+      .subscribe((kisi : OE) => {
+        this.kisi = kisi;
     });
   }
 
@@ -37,7 +37,6 @@ export class KisiWrapperComponent implements OnInit {
   updateKisi(): void {
     this._user.updateKisi(this.kisi)
       .subscribe((kisi : OE) => {
-        // Update original with the new changes.
         this.kisi = kisi;
     });
     this.toggleEdit();
@@ -46,12 +45,10 @@ export class KisiWrapperComponent implements OnInit {
   deleteKisi(): void {
     this._user.deleteKisi(this.kisi)
       .subscribe(res => {
-        console.log(res)
     });
     setTimeout(() => this.router.navigate(['/kadro']), 800);
   }
 
-  // go back to original form when hit cancel.
   resetKisi(): void {
     this.getKisi();
     this.toggleEdit();
@@ -68,7 +65,5 @@ export class KisiWrapperComponent implements OnInit {
   toggleEdit(){
     this.edit = !this.edit;
   }
-
-  //get diagnostic1() { return JSON.stringify(this.kisi); }
 
 }

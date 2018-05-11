@@ -6,6 +6,11 @@ import { OE } from '../../oe';
 import { Zaman } from '../../zaman';
 import { BusyDataService } from '../../services/busydata.service';
 
+export class msg {
+  'ok': number;
+  'n' : number
+}
+
 @Component({
   selector: 'mesgul',
   templateUrl: './mesgul.component.html'
@@ -22,12 +27,12 @@ export class MesgulComponent implements OnInit {
   showAddBusy : boolean = false;
 
   // FIXME: Better way to initialize todays values?
-  model : Zaman = {
+  model = {
     owner_id : '',
-    startDate : new Date("2018-05-10"),
-    endDate  : new Date("2018-05-10"),
-    startTime : "11:00",
-    endTime  : "15:00",
+    startDate : new Date().toISOString().substring(0,10),
+    endDate  : new Date().toISOString().substring(0,10),
+    startTime : '08:00',
+    endTime  : '10:00',
     recur : false,
     tor : 0,
   }
@@ -37,13 +42,8 @@ export class MesgulComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._busy.getBusyByOwnerId(this.profile._id)
-      .subscribe((busies : Zaman[]) => {
-        this.busies = busies;
-    });
-
+    this.getBusies();
     this.today = moment().format('LLLL (Z)');
-
   }
 
   parseBusyInput(): void {
@@ -54,13 +54,30 @@ export class MesgulComponent implements OnInit {
     this.busy.tor = this.model.recur ? this.model.tor : 0;
   }
 
-  // Add busy to times colleciton
+  getBusies(): void {
+    this._busy.getBusyByOwnerId(this.profile._id)
+      .subscribe((busies : Zaman[]) => {
+        this.busies = busies;
+    });
+  }
+
   addBusy(): void {
     this._busy.setBusyByOwnerId(this.busy)
       .subscribe(res => {
-         console.log('response from addBusy', res);
+        console.log(res)
       });
   }
+
+  removeBusy(s): void {
+    // TODO: Remove from user's busy list as well
+    this._busy.delBusyByTimeId(this.busies[s])
+      .subscribe((res: msg) => {
+         if (res.ok == 1){
+            this.busies.splice(s,1);
+         }
+      });
+  }
+
 
   adderHandler() : void {
     this.parseBusyInput();
@@ -74,7 +91,7 @@ export class MesgulComponent implements OnInit {
     // TODO implement this
   }
 
-  toggleAddBusyField(): void {
+  toggleField(): void {
     this.showAddBusy = !this.showAddBusy;
   }
 

@@ -18,7 +18,6 @@ export class KadroComponent implements OnInit {
 
     this._user.getKadro()
       .subscribe((kadro : OE[]) => {
-        console.log(kadro)
         this.kadro = kadro;
       });
   }
