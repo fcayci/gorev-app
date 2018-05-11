@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { OE } from '../../../../schemas';
+import { OE } from '../../../oe';
 
 @Component({
   selector: 'kisi-profile',

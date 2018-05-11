@@ -1,25 +1,33 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map} from 'rxjs/operators';
 
-import 'rxjs/add/operator/map';
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+    'Authorization': 'SUPERSECRET'
+  })
+};
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TaskDataService {
 
-  constructor(private http:Http) {
+  constructor(private http:HttpClient) {
     console.log('[taskdata.service.ts] Task Data service initialized...');
   }
 
   // get all angarya in the db
   getAllTasks(){
     return this.http.get('http://localhost:4200/api/angarya')
-      .map(res => res.json());
+ //     .map(res => res.json());
   }
 
   // get a single task by passing username as an argument
   getTasksByOwnerId(id){
     return this.http.get('http://localhost:4200/api/angarya/' + id)
-      .map(res => res.json());
+ //     .map(res => res.json());
   }
 
   // add a task to the db by passing the task object
@@ -28,7 +36,7 @@ export class TaskDataService {
     headers.append('Content-Type', 'application/json');
 
     console.log('[taskdata.service] creating', task);
-    return this.http.post('http://localhost:4200/api/angarya', JSON.stringify(task), {headers: headers})
-      .map(res => res.json());
+    return this.http.post('http://localhost:4200/api/angarya', JSON.stringify(task), httpOptions)
+ //     .map(res => res.json());
   }
 }

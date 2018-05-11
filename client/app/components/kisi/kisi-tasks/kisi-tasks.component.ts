@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { OE } from '../../../../schemas';
+import { OE } from '../../../oe';
 import { UserDataService } from '../../../services/userdata.service';
 import { TaskDataService } from '../../../services/taskdata.service';
 

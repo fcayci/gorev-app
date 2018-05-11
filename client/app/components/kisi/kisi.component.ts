@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { OE, Zaman } from '../../../schemas';
+import { OE } from '../../oe';
 import { UserDataService } from '../../services/userdata.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class KisiComponent implements OnInit {
     // Decide who to get based on the passed argument
     var username = this.route.snapshot.paramMap.get('username');
     this.userDataService.getKisi(username)
-      .subscribe(kisi => {
+      .subscribe((kisi : OE) => {
         this.kisi = kisi;
         this.kisi_orig = JSON.parse(JSON.stringify(kisi));
     });
@@ -40,10 +40,10 @@ export class KisiComponent implements OnInit {
     // res will return {n: 1, nModified: 1, ok: 1}
     // TODO: Show an alert based on the modified/non-modified value
     this.userDataService.updateKisi(this.kisi)
-      .subscribe(res => {
+      .subscribe((kisi : OE) => {
         // Update original with the new changes.
-        this.kisi_orig = res;
-        this.kisi = res;
+        this.kisi_orig = kisi;
+        this.kisi = kisi;
     });
     this.toggleEdit();
   }

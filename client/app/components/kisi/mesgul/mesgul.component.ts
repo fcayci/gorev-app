@@ -3,7 +3,8 @@ import { FormsModule } from '@angular/forms';
 //import { MatDatepickerModule } from '@angular/material/datepicker';
 import * as moment from 'moment';
 
-import { OE, Zaman } from '../../../../schemas';
+import { OE } from '../../../oe';
+import { Zaman } from '../../../zaman';
 import { BusyDataService } from '../../../services/busydata.service';
 
 @Component({
@@ -29,7 +30,7 @@ export class MesgulComponent implements OnInit {
     tor : 0,
   }
 
-  busy : Zaman = new Zaman();
+  busy : Zaman;
   today : string;
   showAddBusy : boolean = false;
 
@@ -39,7 +40,7 @@ export class MesgulComponent implements OnInit {
 
   ngOnInit(): void {
     this.busyDataService.getBusyByOwnerId(this.profile._id)
-      .subscribe(res => {
+      .subscribe((res : Zaman[]) => {
         //console.log('[mesgul.component] wanted', res)
         this.busydb = res;
         this.today = moment().format('LLLL (Z)');
@@ -49,7 +50,7 @@ export class MesgulComponent implements OnInit {
   parseBusyInput(): void {
     this.busy.startDate = new Date(this.model.startDate + 'T' + this.model.startTime).toISOString();
     this.busy.endDate = new Date(this.model.endDate + 'T' + this.model.endTime).toISOString();
-    this.busy.owner_id = this.profile._id;
+    this.busy.owner_id = this.profile; //this.profile._id
     this.busy.recur = this.model.recur;
     this.busy.tor = this.model.recur ? this.model.tor : 0;
   }

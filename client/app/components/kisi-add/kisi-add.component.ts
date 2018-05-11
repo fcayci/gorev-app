@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { OE } from '../../../schemas';
+import { OE } from '../../oe';
 import { UserDataService } from '../../services/userdata.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { UserDataService } from '../../services/userdata.service';
 
 export class KisiAddComponent {
 
-  profile : OE = new OE();
+  profile : OE;
   title = 'Yeni Kişi Ekle';
   edit = true;
   newKisi = true;

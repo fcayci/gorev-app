@@ -20,11 +20,13 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>Isim</th>
-        <th>E-mail</th>
+        <th>İsim</th>
+        <th>E-posta</th>
+        <th>Ünvan</th>
         <th>Oda #</th>
         <th>Dahili</th>
         <th>Cep</th>
+        <th>Yük</th>
         <th></th>
       </tr>
     </thead>
@@ -33,9 +35,11 @@
         <td>{{i + 1}}</td>
         <td>{{k.fullname}}</td>
         <td>{{k.email}}</td>
+        <td>{{k.position}}</td>
         <td>{{k.office}}</td>
         <td>{{k.phone}}</td>
         <td>{{k.mobile}}</td>
+        <td>{{k.load}}</td>
         <td>
           <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/kadro/{{k.username}}" />
         </td>

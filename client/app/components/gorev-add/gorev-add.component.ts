@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 
-import { Gorev } from '../../../schemas';
+import { Gorev } from '../../gorev';
 import { TaskDataService } from '../../services/taskdata.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { TaskDataService } from '../../services/taskdata.service';
 
 export class GorevAddComponent {
 
-  model : Gorev = new Gorev();
+  model : Gorev;
   title = 'Yeni Gorev Ekle';
   edit = true;
   newGorev = true;
@@ -27,7 +27,7 @@ export class GorevAddComponent {
 
   saveTask() {
     console.log('[gorev-add.component.ts] Adding kisi');
-    var candidate = new Gorev();
+    var candidate : Gorev;
     candidate.title = this.model.title;
     candidate.type = this.model.type;
     candidate.startDate = new Date(this.model.startDate + 'T' + this.model.startTime).toISOString();

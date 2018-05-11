@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import * as moment from 'moment';
 import 'moment-recur-ts';
 
-import { OE, Zaman } from '../../../../../schemas';
+import { Zaman } from '../../../../zaman';
 import { BusyDataService } from '../../../../services/busydata.service';
 import { UserDataService } from '../../../../services/userdata.service';
 
@@ -15,7 +15,7 @@ import { UserDataService } from '../../../../services/userdata.service';
 export class MesgulFindComponent implements OnInit {
 
   busydb : Zaman[];
-  query : Zaman = new Zaman();
+  query : Zaman;
   answer : {};
   today : string;
 
@@ -36,7 +36,7 @@ export class MesgulFindComponent implements OnInit {
 
   ngOnInit(): void {
     this.busyDataService.getBusyAll()
-      .subscribe(res => {
+      .subscribe((res : Zaman[]) => {
         //console.log('[mesgul-find] wanted', res)
         //console.log(this.interval)
         this.busydb = res;

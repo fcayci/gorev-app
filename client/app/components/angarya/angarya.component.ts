@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { OE, Gorev } from '../../../schemas';
+import { Gorev } from '../../gorev';
 import { TaskDataService } from '../../services/taskdata.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class AngaryaComponent implements OnInit {
   ngOnInit(): void {
 
     this.taskDataService.getAllTasks()
-      .subscribe(angarya => {
+      .subscribe((angarya: Gorev[]) => {
         this.angarya = angarya;
         console.log(angarya);
       });

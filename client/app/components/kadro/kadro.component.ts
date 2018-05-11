@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { OE } from '../../../schemas';
+import { OE } from '../../oe';
 import { UserDataService } from '../../services/userdata.service';
 
 @Component({
@@ -10,19 +10,16 @@ import { UserDataService } from '../../services/userdata.service';
 
 export class KadroComponent implements OnInit {
 
-  // TODO: See if there is a better way to instantiate an object.
-  // kadro will hold the current kadro
   kadro : OE[];
 
-  constructor(private userDataService: UserDataService) {}
+  constructor(private _user: UserDataService) {}
 
   ngOnInit(): void {
 
-    // get current kadro from db using user data service
-    this.userDataService.getKadro()
-      .subscribe(kadro => {
+    this._user.getKadro()
+      .subscribe((kadro : OE[]) => {
+        console.log(kadro)
         this.kadro = kadro;
       });
   }
-
 }
