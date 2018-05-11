@@ -2,7 +2,7 @@ import { OE } from './oe';
 
 export interface Zaman {
   _id?: string;
-  owner_id: OE;
+  owner_id: string;
   startDate: Date;
   endDate: Date;
   startTime?: string;
@@ -12,3 +12,17 @@ export interface Zaman {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+// interface User {
+//    username: string;
+//    password: string;
+//    somethingElse: string;
+// }
+
+// export interface UserJSON extends User {
+//    _id : string
+// }
+
+// export interface UserDB extends User {
+//    _id : mongodb.ObjectId
+// }

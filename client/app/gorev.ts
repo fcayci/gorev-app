@@ -10,7 +10,7 @@ export interface Gorev {
   startTime?: string;
   endTime?: string;
   peopleCount: number;
-  choosenPeople: Array<OE>;
+  choosenPeople: Array<string>;
   status: string;
   createdAt?: Date;
   updatedAt?: Date

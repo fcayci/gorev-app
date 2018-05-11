@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import * as moment from 'moment';
 import 'moment-recur-ts';
 
-import { Zaman } from '../../../../zaman';
-import { BusyDataService } from '../../../../services/busydata.service';
-import { UserDataService } from '../../../../services/userdata.service';
+import { Zaman } from '../../../zaman';
+import { BusyDataService } from '../../../services/busydata.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'mesgul-find',
@@ -31,7 +31,7 @@ export class MesgulFindComponent implements OnInit {
 
   constructor(
     private busyDataService: BusyDataService,
-    private userDataService: UserDataService
+    private userDataService: UserService
   ) {}
 
   ngOnInit(): void {

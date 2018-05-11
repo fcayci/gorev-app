@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { OE } from '../../oe';
-import { UserDataService } from '../../services/userdata.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'kadro',
@@ -12,7 +12,7 @@ export class KadroComponent implements OnInit {
 
   kadro : OE[];
 
-  constructor(private _user: UserDataService) {}
+  constructor(private _user: UserService) {}
 
   ngOnInit(): void {
 

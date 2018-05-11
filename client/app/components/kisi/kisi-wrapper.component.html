@@ -6,7 +6,7 @@
 
   <main class="row">
     <section class="col-md-3">
-      <kisi-profile [profile]="kisi" [edit]="edit" (submitEvent)="handleMessage($event)"></kisi-profile>
+      <profile [profile]="kisi" [edit]="edit" (submitEvent)="handleMessage($event)"></profile>
 
       <fieldset class="btn-group">
         <button *ngIf="edit" type="button" class="btn btn-danger" (click)="deleteKisi()">Kişiyi Sil</button>
@@ -17,11 +17,9 @@
 
       <mesgul [profile]="kisi" [edit]="edit"></mesgul>
 
-      <kisi-tasks [profile]="kisi" [edit]="edit"></kisi-tasks>
+      <tasks [profile]="kisi" [edit]="edit"></tasks>
 
     </section>
   </main>
-
-  <!--{{ diagnostic }}-->
 
 </div>

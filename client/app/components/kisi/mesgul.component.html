@@ -1,6 +1,6 @@
       <table class="table table-hover">
         <caption class="btn-toolbar" role="toolbar">
-          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busydb?.length}}</span> <small class="badge">{{today}}</small></h4>
+          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busies?.length}}</span>  <small class="badge">{{today}}</small></h4>
 
           <!--<button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>-->
           <button type="button" class="label label-success navbar-right navbar-right-custom" (click)="toggleAddBusyField()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>
@@ -42,7 +42,7 @@
               <input type="button" id="addtime" (click)="adderHandler()" name="addtime" value="ekle">
             </td>
           </tr>
-          <tr *ngFor="let busy of busydb; let i = index">
+          <tr *ngFor="let busy of busies; let i = index">
             <td>{{i + 1}}</td>
             <td>{{busy.startDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
             <td>{{busy.endDate | date: busy.recur ? "EE" : "EE, dd MMMM"}}</td>
@@ -55,4 +55,5 @@
       </table>
 
       <mesgul-find></mesgul-find>
-      <!--{{ diagnostic }}-->
+
+      {{ diagnostic }}

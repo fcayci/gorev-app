@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { OE } from '../oe';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -10,34 +11,49 @@ const httpOptions = {
   })
 };
 
+const kadroUrl = 'http://localhost:4200/api/kadro';
+
 @Injectable({
   providedIn: 'root',
 })
-export class UserDataService {
+export class UserService {
 
   constructor(private http: HttpClient) {
     console.log('[userdata.service.ts] User Data service initialized...');
   }
 
-  // get a single kisi by passing username as an argument
-  getKisi(username){
-    return this.http.get('http://localhost:4200/api/kadro/' + username)
- //     .map(res => res.json());
-  }
-
-  // get all kadro in the db
-  getKadro(){
-    return this.http.get('http://localhost:4200/api/kadro')
+  getKadro(): Observable<OE[]> {
+    return this.http.get<OE[]>(kadroUrl)
       .pipe(
+        tap(_ => console.log(`[user service] fetched kadro ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  // add a kisi to the db by passing the kisi object
-  addKisi(kisi){
-    console.log('[userdata.service] creating', kisi);
-    return this.http.post('http://localhost:4200/api/kadro', JSON.stringify(kisi), httpOptions)
- //     .map(res => res.json());
+  getKisi(username){
+    return this.http.get<OE>(kadroUrl + '/' + username)
+      .pipe(
+        tap(_ => console.log(`[user service] fetched kisi ${JSON.stringify(_)}`)),
+        catchError(this.handleError)
+      );
+  }
+
+  updateKisi(kisi){
+    return this.http.put<OE>(kadroUrl + '/' + kisi.username,
+      kisi, httpOptions)
+      .pipe(
+        tap(_ => console.log(`[user service] updated kisi ${JSON.stringify(_)}`)),
+        catchError(this.handleError)
+      );
+  }
+
+  addKisi(kisi: OE): Observable<OE> {
+    //console.log('[user service] creating', kisi);
+    return this.http.post<OE>('http://localhost:4200/api/kadro', JSON.stringify(kisi), httpOptions)
+      .pipe(
+        tap(_ => console.log(`[user service] added kisi`)),
+        catchError(this.handleError)
+      );
   }
 
   // delete a kisi by passing the kisi
@@ -46,12 +62,6 @@ export class UserDataService {
  //     .map(res => res.json());
   }
 
-  // update kisi
-  updateKisi(kisi){
-    console.log('[userdata.service] updating', kisi);
-    return this.http.put('http://localhost:4200/api/kadro/' + kisi.username, JSON.stringify(kisi), httpOptions)
-//      .map(res => res.json());
-  }
 
 
   private handleError(error: HttpErrorResponse) {

@@ -1,16 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { OE } from '../../../oe';
-import { UserDataService } from '../../../services/userdata.service';
-import { TaskDataService } from '../../../services/taskdata.service';
+import { OE } from '../../oe';
+import { UserService } from '../../services/user.service';
+import { TaskDataService } from '../../services/taskdata.service';
 
 @Component({
-  selector: 'kisi-tasks',
-  templateUrl: './kisi-tasks.component.html'
+  selector: 'tasks',
+  templateUrl: './tasks.component.html'
 })
 
-export class KisiTasksComponent implements OnInit {
+export class TasksComponent implements OnInit {
 
   @Input() profile: OE;
   @Input() edit: boolean;
@@ -18,7 +18,7 @@ export class KisiTasksComponent implements OnInit {
   tasks : {};
 
   constructor(
-    private userDataService:UserDataService,
+    private userDataService:UserService,
     private taskDataService:TaskDataService
   ) {}
 
