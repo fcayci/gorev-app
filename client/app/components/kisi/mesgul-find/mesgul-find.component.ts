@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import 'moment-recur-ts';
 
 import { Zaman } from '../../../zaman';
-import { BusyDataService } from '../../../services/busydata.service';
+import { BusyService } from '../../../services/busy.service';
 import { UserService } from '../../../services/user.service';
 
 @Component({
@@ -15,7 +15,16 @@ import { UserService } from '../../../services/user.service';
 export class MesgulFindComponent implements OnInit {
 
   busydb : Zaman[];
-  query : Zaman;
+  query = {
+    owner_id : '',
+    startDate : new Date().toISOString().substring(0,10),
+    endDate  : new Date().toISOString().substring(0,10),
+    startTime : '08:00',
+    endTime  : '10:00',
+    recur : false,
+    tor : 0,
+  }
+
   answer : {};
   today : string;
 
@@ -30,12 +39,12 @@ export class MesgulFindComponent implements OnInit {
   }
 
   constructor(
-    private busyDataService: BusyDataService,
-    private userDataService: UserService
+    private _busy: BusyService,
+    private _user: UserService
   ) {}
 
   ngOnInit(): void {
-    this.busyDataService.getBusyAll()
+    this._busy.getBusyAll()
       .subscribe((res : Zaman[]) => {
         //console.log('[mesgul-find] wanted', res)
         //console.log(this.interval)

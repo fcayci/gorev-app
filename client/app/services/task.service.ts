@@ -16,7 +16,7 @@ const angaryaUrl = 'http://localhost:4200/api/angarya';
 @Injectable({
   providedIn: 'root',
 })
-export class TaskDataService {
+export class TaskService {
 
   constructor(private http:HttpClient) {
     console.log('[taskdata.service.ts] Task Data service initialized...');
@@ -57,6 +57,16 @@ export class TaskDataService {
         catchError(this.handleError)
       );
   }
+
+  // delete busy time for given Time ID
+  delTaskById(task){
+    return this.http.delete(angaryaUrl + '/' + task._id)
+      .pipe(
+        //tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
+        catchError(this.handleError)
+      );
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

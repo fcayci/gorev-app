@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 import { OE } from '../../oe';
 import { Zaman } from '../../zaman';
-import { BusyDataService } from '../../services/busydata.service';
+import { BusyService } from '../../services/busy.service';
 
 export class msg {
   'ok': number;
@@ -38,7 +38,7 @@ export class MesgulComponent implements OnInit {
   }
 
   constructor(
-    private _busy: BusyDataService
+    private _busy: BusyService
   ) {}
 
   ngOnInit(): void {

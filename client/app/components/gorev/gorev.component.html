@@ -13,6 +13,7 @@
         <th>Saat Baslangic</th>
         <th>Saat Bitis</th>
         <th>Kisi Sayisi</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -24,6 +25,7 @@
         <td>{{gorev.startDate | date: "HH:mm"}}</td>
         <td>{{gorev.endDate | date: "HH:mm"}}</td>
         <td>{{gorev.peopleCount}}</td>
+        <td><button type="button" class="btn btn-danger" (click)="removeTask()">Sil</button></td>
       </tr>
     </tbody>
   </table>

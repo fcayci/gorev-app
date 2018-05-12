@@ -16,8 +16,8 @@ export class KisiWrapperComponent implements OnInit {
   edit = false; // allow/disallow edits
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    private _router: Router,
+    private _route: ActivatedRoute,
     private _user:UserService
   ) {}
 
@@ -26,7 +26,7 @@ export class KisiWrapperComponent implements OnInit {
   }
 
   getKisi(): void {
-    var username = this.route.snapshot.paramMap.get('username');
+    var username = this._route.snapshot.paramMap.get('username');
     this._user.getKisi(username)
       .subscribe((kisi : OE) => {
         this.kisi = kisi;
@@ -46,7 +46,7 @@ export class KisiWrapperComponent implements OnInit {
     this._user.deleteKisi(this.kisi)
       .subscribe(res => {
     });
-    setTimeout(() => this.router.navigate(['/kadro']), 800);
+    setTimeout(() => this._router.navigate(['/kadro']), 800);
   }
 
   resetKisi(): void {

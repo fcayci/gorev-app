@@ -35,9 +35,8 @@ router.get('/angarya/:id', function(req, res, next){
  * return: single person
  */
 router.post('/angarya', function(req, res, next){
-  console.log('[angarya.js] /angarya will be posted to create new gorev...');
 
-// TOOD: Make approperiate checks for the candidate
+  // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
   console.log('[angarya.js] Candidate: ', candidate);
 
@@ -50,5 +49,18 @@ router.post('/angarya', function(req, res, next){
   });
 });
 
+
+/* title: Remove task by id
+ *
+ * return: status msg
+ */
+router.delete('/angarya/:id', function(req, res, next){
+
+  Gorev.deleteOne({ '_id': req.params.id }, function (err, msg) {
+    if (err) return console.error(err);
+      console.log('[angarya.js] ', req.params.id, ' successfully deleted with msg...', msg);
+      res.send(msg);
+  });
+});
 
 module.exports = router;

@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import * as moment from 'moment';
 
 import { Gorev } from '../../gorev';
-import { TaskDataService } from '../../services/taskdata.service';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'gorev-add',
@@ -21,9 +21,9 @@ export class GorevAddComponent {
   newGorev = true;
 
   constructor(
-    private router: Router,
-    private taskDataService:TaskDataService,
-    private location: Location) {}
+    private _router: Router,
+    private _task:TaskService,
+    private _location: Location) {}
 
   saveTask() {
     var candidate : Gorev = {...};
@@ -33,15 +33,15 @@ export class GorevAddComponent {
     candidate.endDate = new Date(this.model.endDate + 'T' + this.model.endTime);
     candidate.peopleCount = this.model.peopleCount;
 
-    this.taskDataService.addTask(candidate)
+    this._task.addTask(candidate)
       .subscribe(res => {
     });
 
-    setTimeout(() => this.router.navigate(['/angarya']), 800);
+    setTimeout(() => this._router.navigate(['/angarya']), 800);
   }
 
   returnBackToInfinity(): void {
-    this.location.back();
+    this._location.back();
   }
 
   get diagnostic() { return JSON.stringify(this.model); }

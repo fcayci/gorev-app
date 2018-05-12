@@ -1,7 +1,6 @@
 import { Component} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { OE } from '../../oe';
 import { UserService } from '../../services/user.service';
@@ -18,15 +17,14 @@ export class KisiAddComponent {
   title = 'Yeni Kişi Ekle';
 
   constructor(
-    private router: Router,
-    private _user: UserService,
-    private location: Location) {}
+    private _router: Router,
+    private _user: UserService) {}
 
   savePerson() {
     this._user.addKisi(this.profile)
       .subscribe(res => {
     });
 
-    setTimeout(() => this.router.navigate(['/kadro']), 800);
+    setTimeout(() => this._router.navigate(['/kadro']), 800);
   }
 }

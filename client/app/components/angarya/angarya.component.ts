@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Gorev } from '../../gorev';
-import { TaskDataService } from '../../services/taskdata.service';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'angarya',
@@ -14,11 +14,11 @@ export class AngaryaComponent implements OnInit {
   // kadro will hold the current kadro
   angarya : Gorev[];
 
-  constructor(private taskDataService: TaskDataService) {}
+  constructor(private _task: TaskService) {}
 
   ngOnInit(): void {
 
-    this.taskDataService.getAllTasks()
+    this._task.getAllTasks()
       .subscribe((angarya: Gorev[]) => {
         this.angarya = angarya;
       });

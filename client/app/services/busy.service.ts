@@ -17,7 +17,7 @@ const busyUrl = 'http://localhost:4200/api/busy';
 @Injectable({
   providedIn: 'root',
 })
-export class BusyDataService {
+export class BusyService {
 
   constructor(private http:HttpClient) {
     console.log('[busydata.service.ts] Busy Data service initialized...');
@@ -43,7 +43,7 @@ export class BusyDataService {
 
   // delete busy time for given Time ID
   delBusyByTimeId(busy){
-    return this.http.delete(busyUrl + '/' + 'busy._id')
+    return this.http.delete(busyUrl + '/' + busy._id)
       .pipe(
         //tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
