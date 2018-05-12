@@ -11,7 +11,7 @@ const httpOptions = {
   })
 };
 
-const angaryaUrl = 'http://localhost:4200/api/angarya';
+const angaryaUrl = '/api/angarya';
 
 @Injectable({
   providedIn: 'root',
@@ -32,41 +32,40 @@ export class TaskService {
   }
 
   // get a single task by passing username as an argument
-  getTaskById(id): Observable<Gorev>{
+  getTaskById(id: string): Observable<Gorev>{
     return this.http.get<Gorev>(angaryaUrl + '/' + id)
       .pipe(
-        tap(_ => console.log(`[user service] fetched task by id ${JSON.stringify(_)}`)),
+        tap(_ => console.log(`[task service] fetched task by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
 
-  // get a single task by passing username as an argument
-  getTasksByOwnerId(id): Observable<Gorev[]>{
+  // get tasks of a given owner
+  getTasksByOwnerId(id: string): Observable<Gorev[]>{
     return this.http.get<Gorev[]>(angaryaUrl + '/' + id)
       .pipe(
-        tap(_ => console.log(`[user service] fetched tasks by owner id ${JSON.stringify(_)}`)),
+        tap(_ => console.log(`[task service] fetched tasks by owner id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  addTask(task): Observable<Gorev>{
+  addTask(task: Gorev): Observable<Gorev>{
     return this.http.post<Gorev>(angaryaUrl, JSON.stringify(task), httpOptions)
       .pipe(
-        tap(_ => console.log(`[user service] added kisi`)),
+        tap(_ => console.log(`[task service] added task`)),
         catchError(this.handleError)
       );
   }
 
-  // delete busy time for given Time ID
-  delTaskById(task){
+  // delete given task
+  delTaskById(task: Gorev): Observable<{}>{
     return this.http.delete(angaryaUrl + '/' + task._id)
       .pipe(
-        //tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
+        tap(_ => console.log(`[task service] removed task by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
-
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

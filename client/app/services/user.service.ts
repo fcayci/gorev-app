@@ -11,7 +11,7 @@ const httpOptions = {
   })
 };
 
-const kadroUrl = 'http://localhost:4200/api/kadro';
+const kadroUrl = '/api/kadro';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +30,7 @@ export class UserService {
       );
   }
 
-  getKisi(username){
+  getKisi(username: string): Observable<OE> {
     return this.http.get<OE>(kadroUrl + '/' + username)
       .pipe(
         tap(_ => console.log(`[user service] fetched kisi ${JSON.stringify(_)}`)),
@@ -38,7 +38,7 @@ export class UserService {
       );
   }
 
-  updateKisi(kisi){
+  updateKisi(kisi: OE): Observable<OE> {
     return this.http.put<OE>(kadroUrl + '/' + kisi.username,
       kisi, httpOptions)
       .pipe(
@@ -49,7 +49,7 @@ export class UserService {
 
   addKisi(kisi: OE): Observable<OE> {
     //console.log('[user service] creating', kisi);
-    return this.http.post<OE>('http://localhost:4200/api/kadro', JSON.stringify(kisi), httpOptions)
+    return this.http.post<OE>(kadroUrl, JSON.stringify(kisi), httpOptions)
       .pipe(
         tap(_ => console.log(`[user service] added kisi`)),
         catchError(this.handleError)
@@ -57,11 +57,13 @@ export class UserService {
   }
 
   // delete a kisi by passing the kisi
-  deleteKisi(kisi){
-    return this.http.delete('http://localhost:4200/api/kadro/' + kisi.username)
- //     .map(res => res.json());
+  deleteKisi(kisi: OE): Observable<{}> {
+    return this.http.delete(kadroUrl + '/' + kisi.username)
+      .pipe(
+        tap(_ => console.log(`[user service] deleted kisi`)),
+        catchError(this.handleError)
+      );
   }
-
 
 
   private handleError(error: HttpErrorResponse) {
