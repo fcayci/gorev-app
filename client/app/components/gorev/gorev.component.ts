@@ -16,8 +16,6 @@ export class msg {
 
 export class GorevComponent implements OnInit {
 
-  // TODO: See if there is a better way to instantiate an object.
-  // kadro will hold the current kadro
   gorev : Gorev;
 
   constructor(
@@ -42,7 +40,6 @@ export class GorevComponent implements OnInit {
          }
       });
   }
-
 
   get diagnostic() { return JSON.stringify(this.gorev); }
 }

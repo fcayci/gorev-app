@@ -13,6 +13,6 @@ export interface OE {
   load: number;
   busy?: Array<string>;
   vacation: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }

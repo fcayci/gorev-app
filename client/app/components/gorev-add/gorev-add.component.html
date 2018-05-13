@@ -1,62 +1,62 @@
-    <section class="custom-new-person">
+    <section class="custom-new-gorev">
       <h2>{{title}}</h2>
-      <form class="form-group" (ngSubmit)="onSubmit()" #modelForm="ngForm">
+      <form class="form-group" [formGroup]="gorevForm" (ngSubmit)="onSubmit()">
 
         <fieldset class="form-group">
           <label for="title">Görev Adı</label>
-          <input type="text" class="form-control" id="title" autocomplete="user-title" placeholder="Ornek: ELM000 vize gozetmenligi" required [readonly] = "edit ? null : true" [(ngModel)]="model.title" name="title">
+          <input type="text" class="form-control" placeholder="Ornek: ELM 000 vize gozetmenligi"  formControlName="title">
         </fieldset>
-
+        <div class="error"
+          *ngIf="gorevForm.get('title').hasError('required') && gorevForm.get('title').touched">
+          Name is required
+        </div>
         <fieldset class="form-group">
           <label for="type">Görev Türü</label>
-          <select class="form-control" id="type" autocomplete="user-type" required [disabled] = "edit ? null : true" [(ngModel)]="model.type" name="type">
-            <option value="1">Gözetmenlik</option>
-            <option value="2">Sekreterlik</option>
-            <option value="3">Lab Asistanlığı</option>
-            <option value="4">Diğer</option>
+          <select class="form-control" formControlName="type">
+            <option *ngFor="let pos of positions" [value]="pos">{{pos}}</option>
           </select>
         </fieldset>
 
         <fieldset class="form-group">
           <label for="startDate">Start Date</label>
-          <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startDate" name="dateStart">
+          <input type="date" min="2018-01-01" max="2018-12-31" formControlName="startDate">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="endDate">End Date</label>
-          <input type="date" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.endDate" name="dateStart">
+          <input type="date" min="2018-01-01" max="2018-12-31" formControlName="endDate">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="startTime">Start Time</label>
-          <input type="time" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.startTime" name="dateStart">
+          <input type="time" min="2018-01-01" max="2018-12-31" formControlName="startTime">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="timeEnd">End Time</label>
-          <input type="time" min="2018-01-01" max="2018-12-31" id="dateStart" autocomplete="user-date" required [(ngModel)]="model.endTime" name="dateStart">
+          <input type="time" min="2018-01-01" max="2018-12-31" formControlName="endTime">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="num">Kisi sayisi</label>
-          <input type="string" class="form-control" id="num" autocomplete="user-num" pattern="[0-9]{1}" required [readonly] = "edit ? null : true" [(ngModel)]="model.peopleCount" name="num">
+          <input type="string" class="form-control" formControlName="peopleCount">
         </fieldset>
 
-        <fieldset class="form-group">
+        <!--<fieldset class="form-group" *ngFor="let address of secretLairs.controls; let i=index" [formGroupName]="i" >-->
+        <fieldset >
           <label for="type">Gorevlendirilecek Kişi</label>
-          <select class="form-control" id="type" autocomplete="user-type" required [disabled] = "edit ? null : true" [(ngModel)]="model.choosenPeople" name="type">
-            <option value="1">hede</option>
-            <option value="2">hode</option>
-            <option value="3">asdf</option>
-            <option value="4">asdf</option>
+          <select class="form-control" formControlName="choosenPeople">
+            <option *ngFor="let person of available" [value]="person._id">{{person.fullname}}</option>
           </select>
         </fieldset>
 
         <fieldset class="btn-group">
-          <button type="button" class="btn btn-default" name="cancel" (click)="returnBackToInfinity()">İptal</button>
-          <button type="button" class="btn btn-primary" name="save" [disabled]="!modelForm.form.valid" (click)="saveTask()">Kaydet</button>
+          <button type="button" class="btn btn-default" (click)="returnBackToInfinity()">İptal</button>
+          <button type="submit" class="btn btn-primary" [disabled]="gorevForm.valid">Kaydet</button>
         </fieldset>
       </form>
     </section>
 
     {{ diagnostic }}
+    <p>gorevForm value: {{ gorevForm.value | json}}</p>
+    <p>gorevForm status: {{ gorevForm.status | json }}</p>

@@ -10,8 +10,6 @@ import { TaskService } from '../../services/task.service';
 
 export class AngaryaComponent implements OnInit {
 
-  // TODO: See if there is a better way to instantiate an object.
-  // kadro will hold the current kadro
   angarya : Gorev[];
 
   constructor(private _task: TaskService) {}
