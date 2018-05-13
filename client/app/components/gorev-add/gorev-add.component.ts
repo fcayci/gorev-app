@@ -7,9 +7,13 @@ import { Observable, of} from 'rxjs';
 import * as moment from 'moment';
 import 'moment-recur-ts';
 import 'moment-duration-format';
+import { extendMoment } from 'moment-range';
 
 import { OE } from '../../oe';
+import { Zaman } from '../../zaman';
+
 import { Gorev, POSITIONS, GSTATES } from '../../gorev';
+import { BusyService } from '../../services/busy.service';
 import { TaskService } from '../../services/task.service';
 
 
@@ -23,6 +27,7 @@ export class GorevAddComponent {
 
   gorevForm : FormGroup;
   gorev : Gorev;
+  busytimes : Zaman[];
   gstates = GSTATES;
   positions = POSITIONS;
   available : OE[];
@@ -32,11 +37,17 @@ export class GorevAddComponent {
 
   constructor(
     private _fb: FormBuilder,
+    private _busy: BusyService,
     private _router: Router,
     private _task:TaskService,
     private _location: Location) {
 
     this.createForm();
+
+    this._busy.getBusyAll()
+      .subscribe((res : Zaman[]) => {
+        this.busytimes = res;
+    });
   }
 
   returnBackToInfinity(): void {
@@ -59,10 +70,63 @@ export class GorevAddComponent {
   }
 
   onSubmit() {
-    this.gorev = this.validateTask()
+    this.findAvailable()
+    //this.gorev = this.validateTask()
 
   // addTask();
   // returnBackToInfinity();
+  }
+
+  // Should be complete except the FIXME's.
+  // FIXME: UTC - GMT+3 double/triple/quadrople check.
+  findAvailable() {
+    const { range } = extendMoment(moment);
+
+    // FIXME: this is the owner_id array. Do something with this.
+    const ids = [];
+    // FIXME: get the date from form.
+    // const start = moment(this.gorevForm.value.startDate + 'T' + this.gorevForm.value.startTime);
+    // const end = moment(this.gorevForm.value.endDate + 'T' + this.gorevForm.value.endTime);
+    const start = moment('2018-05-16' + 'T' + '10:50');
+    const end = moment('2018-05-16' + 'T' + '22:01');
+
+    const gorevrange = range(start, end);
+    console.log("gorevrange", gorevrange)
+
+    for (let busy of this.busytimes){
+
+      if (busy.recur){
+        let interval = moment(busy.startDate).recur().every(busy.tor).days();
+
+        if (interval.matches(start)){
+          // FIXME: get the date from form.
+          let bs = moment('2018-05-16' + 'T' + moment(busy.startDate).format('HH:mm'));
+          let es = moment('2018-05-16' + 'T' + moment(busy.endDate).format('HH:mm'));
+          console.log(bs, es)
+
+          let busyrange = range(bs, es);
+          if (!busyrange.overlaps(gorevrange)) {
+            ids.push(busy.owner_id);
+            console.log('recur1 doesnt overlap', busy._id)
+          } else { console.log('recur1 overlaps', busy._id)
+          }
+        }
+        else {
+          console.log('recur2 doesnt overlap', busy._id)
+        }
+      }
+      else {
+        let bs = moment(busy.startDate);
+        let es = moment(busy.endDate);
+        let busyrange = range(bs, es);
+
+        if (!busyrange.overlaps(gorevrange)) {
+          ids.push(busy.owner_id);
+          console.log('doesnt overlap', busy._id)
+        } else { console.log('overlaps', busy._id)
+        }
+      }
+    }
   }
 
   validateTask(): Gorev {
