@@ -26,16 +26,15 @@ import { UserService } from '../../services/user.service';
 
 export class GorevAddComponent implements OnInit {
 
+  kadro : OE[];
+  available : OE[];
+  notAvailable : OE[];
   gorevForm : FormGroup;
   gorev : Gorev;
   busytimes : Zaman[];
   gstates = GSTATES;
   positions = TYPES;
-  available : OE[];
-  notAvailable : OE[];
-  kadro : OE[];
 
-  msg = ""
 
   title = 'Yeni Gorev Ekle';
   edit = true;
@@ -68,18 +67,21 @@ export class GorevAddComponent implements OnInit {
   onTimeChanges() {
     this.gorevForm.get('time').valueChanges.subscribe(time => {
       if(time.startDate && time.endDate && time.startTime && time.endTime){
+        // Get duration - will be moved to submission
         var d = this.getDuration(time.startDate, time.endDate, time.startTime, time.endTime);
-        console.log('duration', d)
+
+        // get busy people's owner_ids
         var busies = this.findAvailable(time.startDate, time.endDate, time.startTime, time.endTime);
-        console.log('busies', busies)
-        this.available = this.getAvailableOEs(busies);
-        this.msg =
-        `Hello, ${time.startDate} ${time.startTime}
-                ${time.endDate} ${time.endTime} ${d}
-        `;
+
+        // get availabe and busy people
+        var people = this.getAvailableOEs(busies);
+        this.available = people[0];
+        this.notAvailable = people[1];
       }
       else {
+        // reset arrays
         this.available = [];
+        this.notAvailable = [];
       }
     },
     err => {
@@ -109,11 +111,10 @@ export class GorevAddComponent implements OnInit {
   }
 
   onSubmit() {
-    //this.findAvailable()
-    //this.gorev = this.validateTask()
-
-  // addTask();
-  // returnBackToInfinity();
+    // var gorev = this.createTask()
+    // addTaskToDB(gorev);
+    // addBusyToOE();
+    // returnBackToInfinity();
   }
 
   getDuration(startDate, endDate, startTime, endTime) {
@@ -130,22 +131,15 @@ export class GorevAddComponent implements OnInit {
     return duration.asHours()
   }
 
-  // Should be complete except the FIXME's.
   // FIXME: UTC - GMT+3 double/triple/quadrople check.
   findAvailable(startDate, endDate, startTime, endTime) {
     const { range } = extendMoment(moment);
-    // const start = moment(this.gorevForm.value.startDate + 'T' + this.gorevForm.value.startTime);
-    // const end = moment(this.gorevForm.value.endDate + 'T' + this.gorevForm.value.endTime);
-    // const start = moment('2018-05-16' + 'T' + '10:50');
-    // const end = moment('2018-05-16' + 'T' + '22:01');
-    let start = moment(startDate + 'T' + startTime);
-    let end = moment(endDate + 'T' + endTime);
+    const start = moment(startDate + 'T' + startTime);
+    const end = moment(endDate + 'T' + endTime);
 
-    // FIXME: this is the owner_id array. Do something with this.
     const ids = [];
 
     const gorevrange = range(start, end);
-    //console.log("gorevrange", gorevrange)
 
     for (let busy of this.busytimes){
 
@@ -156,20 +150,12 @@ export class GorevAddComponent implements OnInit {
           // busy.startDate has the time information in it.
           let bs = moment(startDate + 'T' + moment(busy.startDate).format('HH:mm'));
           let es = moment(endDate + 'T' + moment(busy.endDate).format('HH:mm'));
-          //console.log(bs, es)
 
           let busyrange = range(bs, es);
           if (busyrange.overlaps(gorevrange)) {
             ids.push(busy.owner_id);
-            //console.log('recur1 overlaps', busy._id)
           }
-          // else {
-          //   console.log('recur1 doesnt overlap', busy._id)
-          // }
         }
-        // else {
-        //   console.log('recur2 doesnt overlap', busy._id)
-        // }
       }
       else {
         let bs = moment(busy.startDate);
@@ -178,11 +164,7 @@ export class GorevAddComponent implements OnInit {
 
         if (busyrange.overlaps(gorevrange)) {
           ids.push(busy.owner_id);
-          //console.log('overlaps', busy._id)
         }
-        // else {
-        //   console.log('doesnt overlap', busy._id)
-        // }
       }
     }
 
@@ -190,53 +172,19 @@ export class GorevAddComponent implements OnInit {
   }
 
   getAvailableOEs(busies) {
-    var available = [];
+    var available: OE[] = [];
+    var notAvailable: OE[] = [];
     for (let kisi of this.kadro){
-      console.log(kisi._id)
       if (busies.includes(kisi._id)){
-        console.log(kisi.fullname, ' is not available')
+        notAvailable.push(kisi);
       }
       else {
         available.push(kisi);
       }
     }
-    return available;
+    return [available, notAvailable];
   }
 
-  // validateTask(): Gorev {
-  //   const formModel = this.gorevForm.value;
-  //   const start = moment(formModel.startDate + 'T' + formModel.startTime);
-  //   const end = moment(formModel.endDate + 'T' + formModel.endTime);
-
-  //   if ( !end.isAfter(start) ) {
-  //     console.log('ERROR');
-  //   }
-
-  //   var duration = moment.duration(end.diff(start));
-
-  //   console.log(duration.asHours())
-  //   console.log(duration.format("dd:hh:mm"))
-
-  //   console.log(duration);
-
-  //   const n: Gorev = {
-  //     title : formModel.title,
-  //     type: formModel.type,
-  //     startDate: start.format(),
-  //     endDate: end.format(),
-  //     duration: duration,
-  //     peopleCount: formModel.peopleCount,
-  //     status: formModel.status,
-  //     choosenPeople: []
-  //   }
-
-  //   // // deep copy of form model
-  //   // const secretLairsDeepCopy: Address[] = formModel.secretLairs.map(
-  //   //   (address: Address) => Object.assign({}, address)
-  //   // );
-
-  //   return n;
-  // }
 
   // hede() {
   //   var candidates : OE[];

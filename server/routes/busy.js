@@ -39,12 +39,11 @@ router.get('/busy/:id', function(req, res, next){
 router.post('/busy/:id', function(req, res, next){
 
   // TOOD: Make approperiate checks for the timeframe
-  // TODO: Prevent duplicates
+  // if (!timeframe.owner_id){
+  // }
   var timeframe = req.body;
-  //console.log('[busy]', timeframe)
 
   // Probably not needed since we use new below.
-  delete timeframe._id;
   var time = new Zaman(timeframe);
   time.save(function(err){
     if (err) return console.error(err);
@@ -58,14 +57,11 @@ router.post('/busy/:id', function(req, res, next){
  * return: status msg
  */
 router.delete('/busy/:id', function(req, res, next){
-
   Zaman.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
-      //console.log('[busy.js] ', req.params.id, ' successfully deleted with msg...', msg);
       res.send(msg);
   });
 });
-
 
 
 module.exports = router;

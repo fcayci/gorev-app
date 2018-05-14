@@ -38,12 +38,10 @@ router.post('/angarya', function(req, res, next){
 
   // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
-  console.log('[angarya.js] Candidate: ', candidate);
 
   var gorev = new Gorev(candidate);
   gorev.save(function(err){
     if (err) return console.error(err);
-    console.log('[angarya.js] New gorev created...');
     res.status(200);
     res.json(gorev);
   });
@@ -58,7 +56,6 @@ router.delete('/angarya/:id', function(req, res, next){
 
   Gorev.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
-      console.log('[angarya.js] ', req.params.id, ' successfully deleted with msg...', msg);
       res.send(msg);
   });
 });

@@ -64,7 +64,7 @@ export class MesgulComponent implements OnInit {
   addBusy(): void {
     this._busy.setBusyByOwnerId(this.busy)
       .subscribe(res => {
-        console.log(res)
+        this.busies.push(res);
       });
   }
 
@@ -78,12 +78,10 @@ export class MesgulComponent implements OnInit {
       });
   }
 
-
   adderHandler() : void {
     this.parseBusyInput();
     this.addBusy();
     this.pushBusyToUser();
-    this.busies.push(this.busy);
   }
 
   // FIXME: Add the busy object ot users busy field
@@ -95,5 +93,5 @@ export class MesgulComponent implements OnInit {
     this.showAddBusy = !this.showAddBusy;
   }
 
-  get diagnostic() { return JSON.stringify(this.model); }
+  //get diagnostic() { return JSON.stringify(this.model); }
 }

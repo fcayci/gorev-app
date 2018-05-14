@@ -53,7 +53,7 @@ export class BusyService {
   setBusyByOwnerId(busy: Zaman): Observable<Zaman>{
     return this.http.post<Zaman>(busyUrl + '/' + busy.owner_id, JSON.stringify(busy), httpOptions)
       .pipe(
-        tap(_ => console.log(`[busy service] fetched busy by owner id ${JSON.stringify(_)}`)),
+        tap(_ => console.log(`[busy service] created busy by owner id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
