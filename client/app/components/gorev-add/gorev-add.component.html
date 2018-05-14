@@ -4,7 +4,7 @@
 
         <fieldset class="form-group">
           <label for="title">Görev Adı</label>
-          <input type="text" class="form-control" placeholder="Ornek: ELM 000 vize gozetmenligi"  formControlName="title">
+          <input type="text" class="form-control" placeholder="Ornek: ELM 000 vize gozetmenligi" formControlName="title">
         </fieldset>
         <div class="error"
           *ngIf="gorevForm.get('title').hasError('required') && gorevForm.get('title').touched">
@@ -17,25 +17,27 @@
           </select>
         </fieldset>
 
-        <fieldset class="form-group">
-          <label for="startDate">Start Date</label>
-          <input type="date" min="2018-01-01" max="2018-12-31" formControlName="startDate">
-        </fieldset>
+        <div formGroupName="time">
+          <fieldset class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" formControlName="startDate">
+          </fieldset>
 
-        <fieldset class="form-group">
-          <label for="endDate">End Date</label>
-          <input type="date" min="2018-01-01" max="2018-12-31" formControlName="endDate">
-        </fieldset>
+          <fieldset class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" formControlName="endDate">
+          </fieldset>
 
-        <fieldset class="form-group">
-          <label for="startTime">Start Time</label>
-          <input type="time" min="2018-01-01" max="2018-12-31" formControlName="startTime">
-        </fieldset>
+          <fieldset class="form-group">
+            <label for="startTime">Start Time</label>
+            <input type="time" formControlName="startTime">
+          </fieldset>
 
-        <fieldset class="form-group">
-          <label for="timeEnd">End Time</label>
-          <input type="time" min="2018-01-01" max="2018-12-31" formControlName="endTime">
-        </fieldset>
+          <fieldset class="form-group">
+            <label for="timeEnd">End Time</label>
+            <input type="time" formControlName="endTime">
+          </fieldset>
+        </div>
 
         <fieldset class="form-group">
           <label for="num">Kisi sayisi</label>
@@ -56,6 +58,8 @@
         </fieldset>
       </form>
     </section>
+
+    {{msg}}
 
     {{ diagnostic }}
     <p>gorevForm value: {{ gorevForm.value | json}}</p>

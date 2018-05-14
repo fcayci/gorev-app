@@ -1,16 +1,17 @@
-import { OE } from './oe';
-
-export interface Zaman {
+export interface ZamanDB {
   _id?: string;
   owner_id: string;
   startDate: string;
   endDate: string;
-  startTime?: string;
-  endTime?: string;
   recur: boolean;
   tor: number;  // type of recur
-  createdAt?: string;
-  updatedAt?: string;
+  // createdAt?: string;
+  // updatedAt?: string;
+}
+
+export interface Zaman extends ZamanDB {
+  startTime?: string;
+  endTime?: string;
 }
 
 // interface User {
