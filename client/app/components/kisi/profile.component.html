@@ -25,6 +25,11 @@
           <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" pattern="[0-9 ]{11,14}" [readonly] = "edit ? null : true" [(ngModel)]="profile.mobile" name="mobile">
         </fieldset>
 
+        <fieldset class="form-group">
+          <label for="load">Toplam Yük</label>
+          <input type="load" class="form-control" id="load" autocomplete="user-load" [readonly] = "edit ? null : true" [(ngModel)]="profile.load" name="load">
+        </fieldset>
+
         <fieldset class="btn-group">
           <button *ngIf="edit" type="button" class="btn btn-default" name="cancel" (click)="sendMessage($event)">İptal</button>
           <button *ngIf="edit" type="button" class="btn btn-primary  pull-right" name="save" [disabled]="!profileForm.form.valid" (click)="sendMessage($event)">Kaydet</button>

@@ -1,8 +1,9 @@
-<div *ngIf="kisi">
+<div class="container-fluid" *ngIf="kisi">
   <header class="btn-toolbar header-custom" role="toolbar">
     <h2 class="title-custom">{{ kisi.fullname }}</h2>
     <button *ngIf="!edit" type="button" class="btn btn-sm btn-info" (click)="toggleEdit()"><span class="glyphicon glyphicon-edit"></span></button>
   </header>
+
 
   <main class="row">
     <section class="col-md-3">

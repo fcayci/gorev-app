@@ -34,9 +34,10 @@ export class GorevAddComponent implements OnInit {
   busytimes : Zaman[];
   gstates = GSTATES;
   positions = TYPES;
+  assigned = false;
 
 
-  title = 'Yeni Gorev Ekle';
+  title = 'Yeni Görev Oluştur';
   edit = true;
 
   constructor(
@@ -62,6 +63,7 @@ export class GorevAddComponent implements OnInit {
       });
 
     this.onTimeChanges();
+    this.onPeopleChanges();
   }
 
   onTimeChanges() {
@@ -90,6 +92,15 @@ export class GorevAddComponent implements OnInit {
 
   }
 
+  onPeopleChanges() {
+    this.gorevForm.get('peopleCount').valueChanges.subscribe(pc => {
+
+    },
+    err => {
+      console.log('ERROR');
+    });
+  }
+
   returnBackToInfinity(): void {
     this._location.back();
   }
@@ -99,18 +110,28 @@ export class GorevAddComponent implements OnInit {
       title: ['', Validators.required],
       type: ['', Validators.required],
       time: this._fb.group({
-        startDate: ['', Validators.required],
-        endDate: ['', Validators.required],
-        startTime: ['', Validators.required],
-        endTime: ['', Validators.required],
+        startDate: [moment().format("YYYY-MM-DD"), Validators.required],
+        endDate: [moment().format("YYYY-MM-DD"), Validators.required],
+        startTime: [moment().startOf('hour').add(1, 'hours').format("HH:mm"), Validators.required],
+        endTime: [moment().startOf('hour').add(2, 'hours').format("HH:mm"), Validators.required],
       }),
       peopleCount: [1, Validators.required],
-      choosenPeople: [],
+      choosenPeople: [[],],
       status: this.gstates[0]
     });
   }
 
   onSubmit() {
+    var model = this.gorevForm.value;
+    for ( let i = model.choosenPeople.length; i < model.peopleCount; i++){
+      let pick : OE = this.pickKisi()
+      console.log(i, 'picked', pick.fullname)
+      model.choosenPeople.push(pick._id)
+      this.available.splice(0, 1)
+      this.notAvailable.push(pick)
+    }
+    console.log(' not picked', model.choosenPeople.length, model.peopleCount)
+
     // var gorev = this.createTask()
     // addTaskToDB(gorev);
     // addBusyToOE();
@@ -185,81 +206,14 @@ export class GorevAddComponent implements OnInit {
     return [available, notAvailable];
   }
 
-
-  // hede() {
-  //   var candidates : OE[];
-
-  //   var n : Gorev = {
-  //     title : this.model.title,
-  //     type : this.model.type,
-  //     startDate : new Date(this.model.startDate + 'T' + this.model.startTime),
-  //     endDate : new Date(this.model.endDate + 'T' + this.model.endTime),
-  //     peopleCount : this.model.peopleCount,
-  //     choosenPeople : this.model.choosenPeople,
-  //     status : this.model.status
-  //   }
-
-  //   if (n.choosenPeople.length > n.peopleCount){
-  //     console.log('Error, too many people for the job.')
-  //   }
-  //   else if (n.choosenPeople.length == n.peopleCount){
-  //     console.log('Aferin')
-  //   }
-  //   else {
-  //     // For loop until peopleCount is staisfied
-  //     for (let i=0; i<n.peopleCount; i++){
-  //       if (n.choosenPeople.length < n.peopleCount){
-  //            this.findAvailableKadro(n.startDate, n.endDate){
-  //            }
-  //            // sort based on load
-  //            //n.choosenPeople.push(candidates[0]);
-  //       }
-  //     }
-  //   }
-
-    // this._task.addTask(n)
-    //   .subscribe(res => {
-    // });
-
-    // setTimeout(() => this._router.navigate(['/angarya']), 800);
-  // }
-
-  // parseBusyInput(): void {
-  //   this.query.startDate = new Date(this.model.startDate + 'T' + this.model.startTime).toISOString();
-  //   this.query.endDate = new Date(this.model.endDate + 'T' + this.model.endTime).toISOString();
-  // }
-
-  // searchHandler(): void {
-  //   this.parseBusyInput();
-  //   this.answer = this.busydb.filter(this.filterByID);
-  //   // FIXME: Ugh, Find a proper way to search with id but display with username.
-  //   //this.userDataService.getKisi(this.answer.owner_id);
-  // }
-
-  // isNumber(obj) {
-  //   return obj!== undefined && typeof(obj) === 'number' && !isNaN(obj);
-  // }
-
-  // filterByID(item) {
-  //   let x = new Date('2018-06-11');
-  //   let y = new Date('2018-06-02');
-
-  //   // if (((item.startDate <= x) && (item.endDate > x)) || ((item.startDate < y) && (item.endDate >= y)))
-  //   // {
-  //   //   console.log('yea', item.startDate, x, item.endDate, y);
-  //   //   //return true;
-  //   // }
-  //   if (item.recur){
-  //     var interval = moment(item.startDate).recur().every(item.tor).days();
-  //     console.log(interval)
-  //     if (interval.matches(x)){
-  //       console.log('yea')
-  //       return true
-  //     }
-
-  //   }
-
-  // }
+  pickKisi(): OE {
+    Array.prototype.min = function(attrib) {
+      return this.reduce(function(prev, curr){
+          return prev[attrib] < curr[attrib] ? prev : curr;
+      });
+    }
+    return this.available.min('load')
+  }
 
   get diagnostic() { return JSON.stringify(this.gorev); }
 }

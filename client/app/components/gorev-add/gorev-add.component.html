@@ -1,4 +1,4 @@
-    <section class="custom-new-gorev">
+    <section class="col-md-4">
       <h2>{{title}}</h2>
       <form class="form-group" [formGroup]="gorevForm" (ngSubmit)="onSubmit()">
 
@@ -44,21 +44,23 @@
           <input type="string" class="form-control" formControlName="peopleCount">
         </fieldset>
 
-        <!--<fieldset class="form-group" *ngFor="let address of secretLairs.controls; let i=index" [formGroupName]="i" >-->
         <fieldset >
           <label for="type">Gorevlendirilecek Kişi</label>
           <select class="form-control" formControlName="choosenPeople">
-            <option *ngFor="let person of available" [value]="person._id">{{person.fullname}}</option>
+            <option *ngFor="let person of available" [value]="person._id">{{person.fullname}} | {{ person.load}}</option>
           </select>
         </fieldset>
 
         <fieldset class="btn-group">
-          <button type="button" class="btn btn-default" routerLink="/angarya">İptal</button>
-          <button type="submit" class="btn btn-primary" [disabled]="gorevForm.valid">Kaydet</button>
+          <button type="button" class="btn btn-default" routerLink="/angarya">Geri Dön</button>
+          <button type="button" class="btn btn-default" (click)="resetForm">Sıfırla</button>
+          <button type="button" class="btn btn-success" [disabled]="!gorevForm.valid" (click)="pickKisi">Kişi ata</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!assigned">Kaydet</button>
         </fieldset>
       </form>
     </section>
-
+    <section class="col-md-8">
+    </section>
     {{ diagnostic }}
     <p>gorevForm value: {{ gorevForm.value | json}}</p>
     <p>gorevForm status: {{ gorevForm.status | json }}</p>
