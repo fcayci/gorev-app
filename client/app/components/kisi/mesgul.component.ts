@@ -22,17 +22,15 @@ export class MesgulComponent implements OnInit {
   @Input() edit: string;
 
   busies : Zaman[];
-  busy : Zaman = {...};
   today : string;
   showAddBusy : boolean = false;
 
-  // FIXME: Better way to initialize todays values?
   model = {
     owner_id : '',
-    startDate : new Date().toISOString().substring(0,10),
-    endDate  : new Date().toISOString().substring(0,10),
-    startTime : '08:00',
-    endTime  : '10:00',
+    startDate : moment().format("YYYY-MM-DD"),
+    endDate  : moment().format("YYYY-MM-DD"),
+    startTime : moment().startOf('hour').add(1, 'hours').format("HH:mm"),
+    endTime  : moment().startOf('hour').add(2, 'hours').format("HH:mm"),
     recur : false,
     tor : 0,
   }
@@ -46,14 +44,6 @@ export class MesgulComponent implements OnInit {
     this.today = moment().format('LLLL (Z)');
   }
 
-  parseBusyInput(): void {
-    this.busy.startDate = new Date(this.model.startDate + 'T' + this.model.startTime);
-    this.busy.endDate = new Date(this.model.endDate + 'T' + this.model.endTime);
-    this.busy.owner_id = this.profile._id
-    this.busy.recur = this.model.recur;
-    this.busy.tor = this.model.recur ? this.model.tor : 0;
-  }
-
   getBusies(): void {
     this._busy.getBusyByOwnerId(this.profile._id)
       .subscribe((busies : Zaman[]) => {
@@ -61,8 +51,40 @@ export class MesgulComponent implements OnInit {
     });
   }
 
-  addBusy(): void {
-    this._busy.setBusyByOwnerId(this.busy)
+  onSubmit() : void {
+    const busy : Zaman = this.parseBusyInput();
+    this.addBusyToOwner(busy);
+    this.pushBusyToUser(busy);
+  }
+
+  parseBusyInput(): Zaman {
+    var busy : Zaman = {
+      startDate : '',
+      endDate : '',
+      owner_id : '',
+      recur : false,
+      tor : 0,
+    };
+
+    busy.startDate = moment(this.model.startDate + 'T' + this.model.startTime).format();
+    busy.recur = this.model.recur;
+    if (busy.recur) {
+      busy.endDate = moment(this.model.startDate + 'T' + this.model.endTime).format();
+    } else {
+      busy.endDate = moment(this.model.endDate + 'T' + this.model.endTime).format();
+    }
+    busy.owner_id = this.profile._id
+    busy.tor = this.model.recur ? this.model.tor : 0;
+
+    if (busy.recur && !busy.tor) {
+        console.log('ERROR')
+    }
+
+    return busy
+  }
+
+  addBusyToOwner(b): void {
+    this._busy.setBusyByOwnerId(b)
       .subscribe(res => {
         this.busies.push(res);
       });
@@ -78,14 +100,8 @@ export class MesgulComponent implements OnInit {
       });
   }
 
-  adderHandler() : void {
-    this.parseBusyInput();
-    this.addBusy();
-    this.pushBusyToUser();
-  }
-
   // FIXME: Add the busy object ot users busy field
-  pushBusyToUser(): void {
+  pushBusyToUser(busy): void {
     // TODO implement this
   }
 
@@ -93,5 +109,5 @@ export class MesgulComponent implements OnInit {
     this.showAddBusy = !this.showAddBusy;
   }
 
-  //get diagnostic() { return JSON.stringify(this.model); }
+  get diagnostic() { return JSON.stringify(this.model); }
 }

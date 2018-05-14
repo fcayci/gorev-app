@@ -1,35 +1,35 @@
     <section class="custom-new-person">
       <h2>{{title}}</h2>
-      <form class="form-group" (ngSubmit)="onSubmit()" #f="ngForm">
+      <form class="form-group" [formGroup]="kisiForm" (ngSubmit)="onSubmit()">
 
         <fieldset class="form-group">
           <label for="fullname">Isim</label>
-          <input type="text" class="form-control" id="fullname" autocomplete="user-fullname" required [(ngModel)]="profile.fullname" name="fullname">
+          <input type="text" class="form-control" formControlName="fullname">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="email">E-mail</label>
-          <div class="input-group"><input type="email" class="form-control" id="email" autocomplete="user-email" pattern="[a-zA-Z0-9._%+-]+" required [(ngModel)]="profile.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
+          <div class="input-group"><input type="email" class="form-control" pattern="[a-zA-Z0-9._%+-]+" formControlName="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
         </fieldset>
 
         <fieldset class="form-group">
           <label for="office">Oda No</label>
-          <input type="string" class="form-control" id="office" autocomplete="user-office" [(ngModel)]="profile.office" name="office">
+          <input type="string" class="form-control" formControlName="office">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="phone">Telefon (Dahili)</label>
-          <input type="string" class="form-control" id="phone" autocomplete="user-phone" pattern="[0-9]{4}" required [(ngModel)]="profile.phone" name="phone">
+          <input type="string" class="form-control" formControlName="phone">
         </fieldset>
 
         <fieldset class="form-group">
           <label for="mobile">Telefon (Cep)</label>
-          <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" pattern="[0-9 ]{11,14}" [(ngModel)]="profile.mobile" name="mobile">
+          <input type="phone" class="form-control" formControlName="mobile">
         </fieldset>
 
         <fieldset class="btn-group">
-          <button type="button" class="btn btn-default" name="cancel" routerLink="/kadro">İptal</button>
-          <button type="button" class="btn btn-primary" name="save" [disabled]="!f.form.valid" (click)="savePerson()">Kaydet</button>
+          <button type="button" class="btn btn-default" routerLink="/kadro">İptal</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!kisiForm.valid">Kaydet</button>
         </fieldset>
       </form>
     </section>

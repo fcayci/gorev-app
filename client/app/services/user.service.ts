@@ -48,7 +48,6 @@ export class UserService {
   }
 
   addKisi(kisi: OE): Observable<OE> {
-    //console.log('[user service] creating', kisi);
     return this.http.post<OE>(kadroUrl, JSON.stringify(kisi), httpOptions)
       .pipe(
         tap(_ => console.log(`[user service] added kisi`)),

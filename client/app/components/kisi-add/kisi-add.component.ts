@@ -1,5 +1,5 @@
-import { Component} from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { OE } from '../../oe';
@@ -11,17 +11,35 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./kisi-add.component.css']
 })
 
-export class KisiAddComponent {
+export class KisiAddComponent implements OnInit  {
 
-  profile : OE = {...};
+  kisiForm : FormGroup;
   title = 'Yeni Kişi Ekle';
 
   constructor(
+    private _fb: FormBuilder,
     private _router: Router,
     private _user: UserService) {}
 
-  savePerson() {
-    this._user.addKisi(this.profile)
+  ngOnInit() {
+
+    this.createForm();
+  }
+
+  createForm() {
+    this.kisiForm = this._fb.group({
+      fullname: ['', Validators.required],
+      email: ['', Validators.required],
+      office: ['', Validators.required],
+      phone: ['', Validators.required],
+      mobile: ''
+    });
+  }
+
+  onSubmit() {
+    const profile: OE = this.kisiForm.value;
+
+    this._user.addKisi(profile)
       .subscribe(res => {
     });
 
