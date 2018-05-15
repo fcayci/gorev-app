@@ -6,7 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule, MatInputModule, MatButtonModule,
-  MatChipsModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+  MatChipsModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
+  MatTooltipModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -85,10 +86,12 @@ const ROUTES : Routes = [
     MatInputModule,
     MatChipsModule,
     MatMenuModule,
+    MatSelectModule,
     MatTableModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MatSortModule,
+    MatTooltipModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

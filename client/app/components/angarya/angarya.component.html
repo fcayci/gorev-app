@@ -1,115 +1,67 @@
   <header>
     <h2>Görev Listesi </h2>
   </header>
-<!--
-  <span class="badge">{{dataSource.angarya?.length}}</span>
 
-  <section class="row midbar-custom">
-    <div class="col-lg-6">
-      <form class="input-group">
-        <input type="text" class="form-control" placeholder="Search">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-        </span>
-      </form>
-    </div>
-    <div class="col-lg-3">
-      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span>Filtrele</button>
-    </div>
-    <div class="col-lg-3">
-      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/gorevekle"><span class="glyphicon glyphicon-plus"></span> Yeni Görev Ekle</button>
+  <section>
+    <div class="mat-elevation-z8">
+
+      <div class="table-header">
+        <mat-form-field class="half-width">
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
+        </mat-form-field>
+        <span class="fill-remaining-space"></span>
+        <button mat-raised-button color="primary" routerLink="/gorevekle">Yeni Görev Ekle</button>
+      </div>
+
+  <!--     <div *ngIf="dataSource.loading$ | async">
+          <mat-spinner></mat-spinner>
+      </div> -->
+
+      <mat-table #table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="no">
+          <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
+          <mat-cell *matCellDef="let row; let i = index">{{i+1}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Baslik</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Tur</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "EE, dd MMMM"}} - {{row.endDate | date: "EE, dd MMMM"}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
+        </ng-container>
+
+  <!--
+        <ng-container matColumnDef="load">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Yük</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.load}}</mat-cell>
+        </ng-container> -->
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+      </mat-table>
+
+      <mat-paginator #paginator
+        [pageSize]="50"
+        [pageSizeOptions]="[10, 25, 50]">
+      </mat-paginator>
     </div>
   </section>
-
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Baslik</th>
-        <th>Tür</th>
-        <th>Gun Baslangic</th>
-        <th>Gun Bitis</th>
-        <th>Saat Baslangic</th>
-        <th>Saat Bitis</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let g of angarya; let i = index">
-        <td>{{i + 1}}</td>
-        <td>{{g.title}}</td>
-        <td>{{g.type}}</td>
-        <td>{{g.startDate | date: "EE, dd MMMM"}}</td>
-        <td>{{g.endDate | date: "EE, dd MMMM"}}</td>
-        <td>{{g.startDate | date: "HH:mm"}}</td>
-        <td>{{g.endDate | date: "HH:mm"}}</td>
-        <td>
-          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/angarya/{{g._id}}" />
-        </td>
-      </tr>
-    </tbody>
-  </table> -->
-
-<section>
-  <div class="mat-elevation-z8">
-
-    <div class="table-header">
-      <mat-form-field class="half-width">
-        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
-      </mat-form-field>
-      <span class="fill-remaining-space"></span>
-      <button mat-raised-button color="primary" routerLink="/gorevekle">Yeni Görev Ekle</button>
-    </div>
-
-<!--     <div *ngIf="dataSource.loading$ | async">
-        <mat-spinner></mat-spinner>
-    </div> -->
-
-    <mat-table #table [dataSource]="dataSource" matSort>
-
-      <ng-container matColumnDef="no">
-        <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
-        <mat-cell *matCellDef="let row; let i = index">{{i+1}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Baslik</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="type">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Tur</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="date">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.startDate | date: "EE, dd MMMM"}} - {{row.endDate | date: "EE, dd MMMM"}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="time">
-        <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
-      </ng-container>
-
-<!--
-      <ng-container matColumnDef="load">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Yük</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.load}}</mat-cell>
-      </ng-container> -->
-
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
-    </mat-table>
-
-    <mat-paginator #paginator
-      [pageIndex]="0"
-      [pageSize]="50"
-      [pageSizeOptions]="[10, 25, 50]">
-    </mat-paginator>
-  </div>
-</section>

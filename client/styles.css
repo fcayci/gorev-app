@@ -27,23 +27,21 @@ body {
   flex: 1 1 auto;
 }
 
-.full-width {
-  width: 100%;
+.new-person {
+  display: flex;
+  flex-direction: column;
 }
 
-.half-width {
-  width: 50%;
-  margin: 0;
+.new-person > * {
+  width: 40%;
+  margin: auto;
 }
 
-.quarter-width {
-  width: 25%;
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
-
-.three-thirds-width {
-  width: 75%;
-}
-
 
 /*
 .navbar-right-custom {

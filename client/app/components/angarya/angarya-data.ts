@@ -68,7 +68,7 @@ export class AngaryaDataTable extends DataSource<Gorev> {
       this.sort.sortChange
     ];
 
-    this.paginator.length = this.angarya.length || 1
+    this.paginator.length = this.angarya.length
 
     return merge(...dataMutations).pipe(map(() => {
       return this.getFilteredData(this.getPagedData(this.getSortedData([...this.angarya])));

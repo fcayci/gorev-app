@@ -1,5 +1,5 @@
 const mongoose   = require('mongoose'),
-      timestamps = require('mongoose-timestamp');
+//      timestamps = require('mongoose-timestamp');
 
 const Schema = mongoose.Schema;
 
@@ -30,11 +30,13 @@ const OESchema = new Schema(
       required: false,
       max: 100
     },
+    position: {
+      type: String,
+      required: true
+    },
     office: {
       type: String,
-      required: false,
-      min: 3,
-      max: 4
+      required: true
     },
     phone: {
       type: String,
@@ -50,16 +52,21 @@ const OESchema = new Schema(
     },
     load: {
       type: Number,
-      required: false
+      required: true
     },
     busy: [{
       type: Schema.ObjectId,
       ref: 'Zaman'
-    }]
+    }],
+    vacation: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
   }, {collection: 'users'}
 );
 
-OESchema.plugin(timestamps);
+//OESchema.plugin(timestamps);
 
 // Virtual for person's URL
 OESchema

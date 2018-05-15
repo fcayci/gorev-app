@@ -1,35 +1,50 @@
-    <section class="custom-new-person">
-      <h2>{{title}}</h2>
-      <form class="form-group" [formGroup]="kisiForm" (ngSubmit)="onSubmit()">
+  <section class="new-person" [formGroup]="kisiForm">
+  <h3>{{title}}</h3>
 
-        <fieldset class="form-group">
-          <label for="fullname">Isim</label>
-          <input type="text" class="form-control" formControlName="fullname">
-        </fieldset>
+    <div class="button-row">
+      <mat-form-field style="width:40%">
+        <mat-select formControlName="position" placeholder="Akademik Ünvan">
+          <mat-option *ngFor="let pos of positions" [value]="pos">{{[pos]}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="email">E-mail</label>
-          <div class="input-group"><input type="email" class="form-control" pattern="[a-zA-Z0-9._%+-]+" formControlName="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
-        </fieldset>
+      <mat-form-field style="width:55%">
+        <input matInput formControlName="fullname" placeholder="İsim">
+        <!-- <mat-error *ngIf="!kisiForm.hasError('required')">
+          Lütfen bir isim giriniz
+        </mat-error> -->
+      </mat-form-field>
+    </div>
 
-        <fieldset class="form-group">
-          <label for="office">Oda No</label>
-          <input type="string" class="form-control" formControlName="office">
-        </fieldset>
+    <div class="button-row">
+      <mat-form-field style="width:30%">
+        <input matInput formControlName="office" placeholder="Oda No.">
+      </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="phone">Telefon (Dahili)</label>
-          <input type="string" class="form-control" formControlName="phone">
-        </fieldset>
+      <mat-form-field style="width:65%">
+        <input matInput pattern="[a-zA-Z0-9._%+-]+" formControlName="email" placeholder="e-Posta">
+        <span matSuffix><span matTooltip="GTÜ e-Posta adresiniz">@gtu.edu.tr</span></span>
+      </mat-form-field>
+    </div>
 
-        <fieldset class="form-group">
-          <label for="mobile">Telefon (Cep)</label>
-          <input type="phone" class="form-control" formControlName="mobile">
-        </fieldset>
+    <div class="button-row">
+      <mat-form-field style="width:40%">
+        <input matInput formControlName="phone" placeholder="Dahili No.">
+        <mat-hint align="end">Son 4 hane</mat-hint>
+      </mat-form-field>
 
-        <fieldset class="btn-group">
-          <button type="button" class="btn btn-default" routerLink="/kadro">İptal</button>
-          <button type="submit" class="btn btn-primary" [disabled]="!kisiForm.valid">Kaydet</button>
-        </fieldset>
-      </form>
-    </section>
+      <mat-form-field style="width:55%">
+        <input matInput formControlName="mobile" placeholder="Telefon (Cep) No.">
+      </mat-form-field>
+    </div>
+
+    <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
+    <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
+    Your selection is invalid
+    </mat-error> -->
+    <div class="button-row">
+    <button mat-raised-button color="warn" routerLink="/kadro">İptal</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!kisiForm.valid">Kaydet</button>
+    </div>
+
+  </section>
