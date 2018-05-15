@@ -1,4 +1,4 @@
-  <nav class="navbar navbar-default">
+<!--   <nav class="navbar navbar-default">
     <ul class="nav navbar-nav">
       <li><a class="nav-link" routerLink="" routerLinkActive="active">Home</a></li>
       <li><a class="nav-link" routerLink="kadro" routerLinkActive="active">Kadro</a></li>
@@ -7,6 +7,22 @@
     <button type="button" class="btn btn-default navbar-btn navbar-right navbar-right-custom">Sign out</button>
     <button type="button" class="btn btn-default navbar-btn navbar-right navbar-right-custom">Sign in</button>
     <button type="button" class="btn btn-default navbar-btn navbar-right navbar-right-custom"><span class="glyphicon glyphicon-user"></span></button>
-  </nav>
+  </nav> -->
 
-  <router-outlet></router-outlet>
+<mat-toolbar>
+  <button mat-button routerLink="" routerLinkActive="active">Home</button>
+  <button mat-button routerLink="kadro" routerLinkActive="active">Kadro</button>
+  <button mat-button routerLink="angarya" routerLinkActive="active">Görevler</button>
+
+  <span class="fill-remaining-space"></span>
+
+  <button mat-button>Sign out</button>
+  <button mat-button>Sign in</button>
+  <button mat-button><span matTooltip="Profile">
+<span class="glyphicon glyphicon-user"></span></span></button>
+  <mat-icon>home</mat-icon>
+  <mat-icon>favorite</mat-icon>
+</mat-toolbar>
+
+
+<router-outlet></router-outlet>

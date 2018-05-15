@@ -26,7 +26,7 @@ export class BusyService {
   getBusyAll(): Observable<Zaman[]>{
     return this.http.get<Zaman[]>(busyUrl)
       .pipe(
-        tap(_ => console.log(`[busy service] fetched busies ${JSON.stringify(_)}`)),
+        //tap(_ => console.log(`[busy service] fetched busies ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }

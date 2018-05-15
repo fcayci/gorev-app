@@ -15,7 +15,7 @@ export class KadroComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   kadro : OE[];
-  displayedColumns = ['fullname', 'email', 'position', 'office', 'phone', 'load'];
+  displayedColumns = ['no', 'fullname', 'email', 'position', 'office', 'phone', 'load'];
   dataSource: KadroDataTable;
   filterValue: string;
 
@@ -28,5 +28,9 @@ export class KadroComponent implements OnInit {
   applyFilter(term: string) {
     this.filterValue = term.trim().toLowerCase();
     this.dataSource.filter = this.filterValue;
+  }
+
+  onRowClicked(row) {
+    console.log('Row clicked: ', row);
   }
 }

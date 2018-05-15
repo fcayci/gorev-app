@@ -5,7 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule,MatFormFieldModule, MatProgressSpinnerModule, MatInputModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule, MatInputModule, MatButtonModule,
+  MatChipsModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -82,6 +83,7 @@ const ROUTES : Routes = [
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatChipsModule,
     MatMenuModule,
     MatTableModule,
     MatProgressSpinnerModule,

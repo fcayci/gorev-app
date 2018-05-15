@@ -25,7 +25,7 @@ export class UserService {
   getKadro(): Observable<OE[]> {
     return this.http.get<OE[]>(kadroUrl)
       .pipe(
-        tap(_ => console.log(`[user service] fetched kadro ${JSON.stringify(_)}`)),
+        //tap(_ => console.log(`[user service] fetched kadro ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }

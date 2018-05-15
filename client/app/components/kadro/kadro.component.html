@@ -1,109 +1,65 @@
   <header>
-    <h2>Kişi Listesi <span class="badge">{{kadro?.length}}</span></h2>
+    <h2>Kişi Listesi </h2>
   </header>
 
- <section class="row midbar-custom">
-<!--     <div class="col-lg-6">
-      <form class="input-group">
-        <input type="text" class="form-control" placeholder="Search">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-        </span>
-      </form>
-    </div> -->
-    <div class="col-lg-6">
-      <button type="button" class="btn btn-success navbar-right navbar-right-custom" routerLink="/kisiekle"><span class="glyphicon glyphicon-plus"></span> Yeni Kişi Ekle</button>
-    </div>
-  </section>
- <!--
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>İsim</th>
-        <th>E-posta</th>
-        <th>Ünvan</th>
-        <th>Oda #</th>
-        <th>Dahili</th>
-        <th>Cep</th>
-        <th>Yük</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let k of kadro; let i = index">
-        <td>{{i + 1}}</td>
-        <td>{{k.fullname}}</td>
-        <td>{{k.email}}</td>
-        <td>{{k.position}}</td>
-        <td>{{k.office}}</td>
-        <td>{{k.phone}}</td>
-        <td>{{k.mobile}}</td>
-        <td>{{k.load}}</td>
-        <td>
-          <input type="button" class="btn btn-default pull-right" name="details" value="Detaylar" role="button" routerLink="/kadro/{{k.username}}" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
- -->
 <section>
   <div class="mat-elevation-z8">
 
     <div class="table-header">
-      <mat-form-field>
-        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      <mat-form-field class="half-width">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
       </mat-form-field>
+      <span class="fill-remaining-space"></span>
+      <button mat-raised-button color="warn" routerLink="/kisiekle">Yeni Kişi Ekle</button>
     </div>
 
-    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+<!--     <div *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
-    </div>
+    </div> -->
 
     <mat-table #table [dataSource]="dataSource" matSort>
 
-      <!-- fullname -->
+      <ng-container matColumnDef="no">
+        <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
+        <mat-cell *matCellDef="let row; let i = index">{{i+1}}</mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="fullname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>İsim</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.fullname}}</mat-cell>
       </ng-container>
 
-      <!-- email -->
       <ng-container matColumnDef="email">
         <mat-header-cell *matHeaderCellDef mat-sort-header>E-posta</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.email + "@gtu.edu.tr"}}</mat-cell>
       </ng-container>
 
-      <!-- position -->
       <ng-container matColumnDef="position">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Kadro</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.position}}</mat-cell>
       </ng-container>
 
-      <!-- office -->
       <ng-container matColumnDef="office">
         <mat-header-cell *matHeaderCellDef>Ofis</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.office}}</mat-cell>
       </ng-container>
 
-      <!-- phone -->
       <ng-container matColumnDef="phone">
         <mat-header-cell *matHeaderCellDef>Dahili</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.phone}}</mat-cell>
       </ng-container>
 
-      <!-- load -->
       <ng-container matColumnDef="load">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Yük</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.load}}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
     </mat-table>
 
     <mat-paginator #paginator
-      [length]="dataSource.length"
+      [length]="dataSource.kadro?.length"
       [pageIndex]="0"
       [pageSize]="50"
       [pageSizeOptions]="[10, 25, 50]">

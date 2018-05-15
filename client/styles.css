@@ -7,10 +7,43 @@ body {
   font-family: Roboto, Arial, sans-serif;
 }
 
-.table-header {
-  min-height: 64px;
+<header> {
+  min-height: 34px;
   padding: 8px 24px 0;
+  display: flex;
 }
+
+.table-header {
+  min-height: 34px;
+  padding: 8px 24px 0;
+  display: flex;
+}
+
+.mat-column-no {
+  flex: 0 0 50px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 50%;
+  margin: 0;
+}
+
+.quarter-width {
+  width: 25%;
+}
+
+.three-thirds-width {
+  width: 75%;
+}
+
 
 /*
 .navbar-right-custom {

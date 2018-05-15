@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
 
+import { AngaryaDataTable } from './angarya-data';
 import { Gorev } from '../../gorev';
 import { TaskService } from '../../services/task.service';
 
@@ -9,18 +11,27 @@ import { TaskService } from '../../services/task.service';
 })
 
 export class AngaryaComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   angarya : Gorev[];
+  displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status'];
+  dataSource: AngaryaDataTable;
+  filterValue: string;
 
   constructor(private _task: TaskService) {}
 
   ngOnInit(): void {
-
-    this._task.getAllTasks()
-      .subscribe((angarya: Gorev[]) => {
-        this.angarya = angarya;
-      });
+    this.dataSource = new AngaryaDataTable(this.paginator, this.sort, this._task);
   }
 
-  get diagnostic() { return JSON.stringify(this.angarya); }
+  applyFilter(term: string) {
+    this.filterValue = term.trim().toLowerCase();
+    this.dataSource.filter = this.filterValue;
+  }
+
+  onRowClicked(row) {
+    console.log('Row clicked: ', row);
+  }
 }
+

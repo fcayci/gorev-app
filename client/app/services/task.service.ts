@@ -26,7 +26,7 @@ export class TaskService {
   getAllTasks(): Observable<Gorev[]>{
     return this.http.get<Gorev[]>(angaryaUrl)
       .pipe(
-        tap(_ => console.log(`[task service] fetched all tasks ${JSON.stringify(_)}`)),
+        //tap(_ => console.log(`[task service] fetched all tasks ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
