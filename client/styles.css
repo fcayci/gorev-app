@@ -1,9 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
 body {
   max-width: 960px;
   margin: auto;
+  font-family: Roboto, Arial, sans-serif;
 }
 
+.table-header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+/*
 .navbar-right-custom {
   margin-right: 10px!important;
 }
@@ -28,9 +37,9 @@ body {
 }
 
 .ng-valid[required]:not([readonly]), .ng-valid.required  {
-  border-left: 5px solid #42A948; /* green */
+  border-left: 5px solid #42A948; // green
 }
 
 .ng-invalid:not(form)  {
-  border-left: 5px solid #a94442; /* red */
-}
+  border-left: 5px solid #a94442; // red
+}*/
