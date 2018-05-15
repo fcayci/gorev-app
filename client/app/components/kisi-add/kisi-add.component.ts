@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { OE, POSITIONS } from '../../oe';
 import { UserService } from '../../services/user.service';
@@ -17,12 +18,11 @@ export class KisiAddComponent implements OnInit  {
   title = 'Yeni Kişi Ekle';
 
   constructor(
+    public dialogRef: MatDialogRef<KisiAddComponent>,
     private _fb: FormBuilder,
-    private _router: Router,
     private _user: UserService) {}
 
   ngOnInit() {
-
     this.createForm();
   }
 
@@ -37,13 +37,17 @@ export class KisiAddComponent implements OnInit  {
     });
   }
 
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
   onSubmit() {
+    this.dialogRef.close();
     const profile: OE = this.kisiForm.value;
-    console.log(profile)
     this._user.addKisi(profile)
       .subscribe(res => {
     });
 
-    setTimeout(() => this._router.navigate(['/kadro']), 800);
+    this.dialogRef.close(this.kisiForm.value);
   }
 }

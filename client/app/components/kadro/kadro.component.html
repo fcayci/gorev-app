@@ -6,14 +6,14 @@
   <div class="mat-elevation-z8">
 
     <div class="table-header">
-      <mat-form-field class="half-width">
+      <mat-form-field style="width:50%">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
       </mat-form-field>
       <span class="fill-remaining-space"></span>
-      <button mat-raised-button color="warn" routerLink="/kisiekle">Yeni Kişi Ekle</button>
+      <button class="add-button" mat-raised-button color="warn" (click)="openDialog()">Yeni Kişi Ekle</button>
     </div>
 
-<!--     <div *ngIf="dataSource.loading$ | async">
+<!-- <div *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
     </div> -->
 

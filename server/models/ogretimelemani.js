@@ -1,4 +1,4 @@
-const mongoose   = require('mongoose'),
+const mongoose   = require('mongoose'); //,
 //      timestamps = require('mongoose-timestamp');
 
 const Schema = mongoose.Schema;
@@ -52,7 +52,8 @@ const OESchema = new Schema(
     },
     load: {
       type: Number,
-      required: true
+      required: true,
+      default: 0
     },
     busy: [{
       type: Schema.ObjectId,

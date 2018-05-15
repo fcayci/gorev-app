@@ -37,6 +37,10 @@ body {
   margin: auto;
 }
 
+.add-button {
+  align-self: center;
+}
+
 .button-row {
   display: flex;
   justify-content: space-between;

@@ -1,5 +1,5 @@
-  <section class="new-person" [formGroup]="kisiForm">
-  <h3>{{title}}</h3>
+  <section [formGroup]="kisiForm">
+    <h2 mat-dialog-title>{{title}}</h2>
 
     <div class="button-row">
       <mat-form-field style="width:40%">
@@ -42,9 +42,10 @@
     <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
     Your selection is invalid
     </mat-error> -->
+    <mat-dialog-actions>
     <div class="button-row">
-    <button mat-raised-button color="warn" routerLink="/kadro">İptal</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!kisiForm.valid">Kaydet</button>
+      <button mat-raised-button color="warn" (click)="onNoClick()">İptal</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!kisiForm.valid">Kaydet</button>
     </div>
-
+    </mat-dialog-actions>
   </section>
