@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { OE } from '../../oe';
@@ -21,7 +21,7 @@ export class KadroDataTable extends DataSource<OE> {
     private paginator: MatPaginator,
     private sort: MatSort,
     private _user: UserService) {
-    super(); // FIXME: Figure out what super() does.
+    super();
 
     this._filter = new BehaviorSubject('');
 
@@ -30,15 +30,24 @@ export class KadroDataTable extends DataSource<OE> {
         this.kadro = kadro;
     });
 
+    /**
+     * Checks if a data object matches the data source's filter string. By default, each data object
+     * is converted to a string of its properties and returns true if the filter has
+     * at least one occurrence in that string. By default, the filter string has its whitespace
+     * trimmed and the match is case-insensitive. May be overridden for a custom implementation of
+     * filter matching.
+     * @param data Data object used to check against the filter.
+     * @param filter Filter string that has been set on the data source.
+     * @return Whether the filter matches against the data
+     */
     this.filterPredicate = (data, filter) => {
-      // Transform the data into a lowercase string of all property values.
-      const accumulator = (currentTerm, key) => currentTerm + data[key];
-      const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
-      // Transform the filter by converting it to lowercase and removing whitespace.
-      const transformedFilter = filter.trim().toLowerCase();
-      return dataStr.indexOf(transformedFilter) != -1;
+        // Transform the data into a lowercase string of all property values.
+        const accumulator = (currentTerm, key) => currentTerm + data[key];
+        const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
+        // Transform the filter by converting it to lowercase and removing whitespace.
+        const transformedFilter = filter.trim().toLowerCase();
+        return dataStr.indexOf(transformedFilter) != -1;
     };
-
   }
 
   /**
@@ -51,16 +60,15 @@ export class KadroDataTable extends DataSource<OE> {
     // stream for the data-table to consume.
     const dataMutations = [
       observableOf(this.kadro),
+      this._filter,
       this.paginator.page,
       this.sort.sortChange
     ];
-
     // Set the paginators length
     this.paginator.length = this.kadro.length;
 
-
     return merge(...dataMutations).pipe(map(() => {
-      return this.getPagedData(this.getSortedData([...this.kadro]));
+      return this.getFilteredData(this.getPagedData(this.getSortedData([...this.kadro])));
     }));
   }
 
@@ -79,17 +87,19 @@ export class KadroDataTable extends DataSource<OE> {
   }
 
   /**
-   * Filter data (client-side).
+   * Filter data (client-side) using filterPredicate
    */
-  private getFilteredData(filter: string) {
-    console.log('Filtre', filter)
-    if (filter){
-      return this.kadro.filter(kadro => kadro.fullname.toLowerCase().indexOf(filter) > -1)
-    }
-    else {
-      return this.kadro
-    }
+  private getFilteredData(kadro: OE[]){
+    let search = this._filter.value;
+    // If there is a filter string, filter out data that does not contain it.
+    // Each data object is converted to a string using the function defined by filterTermAccessor.
+    // May be overridden for customization.
+    this.filteredKadro =
+        !search ? kadro : kadro.filter(obj => this.filterPredicate(obj, this.filter));
+    console.log('this.filteredKadro', this.filteredKadro)
+    return this.filteredKadro;
   }
+
 
   //set filter(filter) { this._filter.next(filter); }
   /**
@@ -111,23 +121,15 @@ export class KadroDataTable extends DataSource<OE> {
     });
   }
 
-  get filter() { return this._filter.value }
-  set filter(filter) { this._filter.next(filter); }
+  get filter() {
+    console.log('filter get', this._filter.value)
+    return this._filter.value }
 
-  private  _filterData(data) {
-        // If there is a filter string, filter out data that does not contain it.
-        // Each data object is converted to a string using the function defined by filterTermAccessor.
-        // May be overridden for customization.
-        this.filteredKadro =
-            !this.filter ? data : data.filter(obj => this.filterPredicate(obj, this.filter));
-        console.log('this.filteredKadro', this.filteredKadro)
-        return this.filteredKadro;
-    }
-
+  set filter(filter) {
+    console.log('filter set', filter )
+    this._filter.next(filter); }
 
 }
-
-
 
 
 /** Simple sort comparator for columns (for client-side sorting). */

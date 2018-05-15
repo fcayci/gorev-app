@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import { Observable, Subject } from 'rxjs';
-import { MatTableDataSource } from '@angular/material';
 
 import { KadroDataTable } from './kadro-data';
 import { OE } from '../../oe';
@@ -27,7 +25,7 @@ export class KadroComponent implements OnInit {
     this.dataSource = new KadroDataTable(this.paginator, this.sort, this._user);
   }
 
-  search(term: string) {
+  applyFilter(term: string) {
     this.filterValue = term.trim().toLowerCase();
     this.dataSource.filter = this.filterValue;
   }
