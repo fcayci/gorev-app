@@ -10,7 +10,7 @@
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
         </mat-form-field>
         <span class="fill-remaining-space"></span>
-        <button class="add-button" mat-raised-button color="primary" routerLink="/gorevekle">Yeni Görev Ekle</button>
+        <span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="primary" routerLink="/gorevekle"><mat-icon>note_add</mat-icon></button></span>
       </div>
 
   <!--     <div *ngIf="dataSource.loading$ | async">
@@ -48,12 +48,6 @@
           <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
           <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
         </ng-container>
-
-  <!--
-        <ng-container matColumnDef="load">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>Yük</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.load}}</mat-cell>
-        </ng-container> -->
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>

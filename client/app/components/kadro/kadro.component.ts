@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
@@ -19,7 +21,7 @@ export class KadroComponent implements OnInit {
   dataSource: any;
   filterValue: string;
 
-  constructor(private _user: UserService, public dialog: MatDialog) {}
+  constructor(private _user: UserService, private _router: Router, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.getKadro();
@@ -67,6 +69,6 @@ export class KadroComponent implements OnInit {
   }
 
   onRowClicked(row) {
-    console.log('Row clicked: ', row);
+    this._router.navigate(['/kadro/'+ row.username])
   }
 }

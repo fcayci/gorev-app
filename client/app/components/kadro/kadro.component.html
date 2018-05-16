@@ -10,10 +10,10 @@
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
       </mat-form-field>
       <span class="fill-remaining-space"></span>
-      <button class="add-button" mat-raised-button color="warn" (click)="openDialog()">Yeni Kişi Ekle</button>
+      <span matTooltip="Yeni Kişi Ekle"><button class="add-button" mat-fab color="warn" (click)="openDialog()"><mat-icon>person_add</mat-icon></button></span>
     </div>
 
-<!-- <div *ngIf="dataSource.loading$ | async">
+    <!-- <div *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
     </div> -->
 
