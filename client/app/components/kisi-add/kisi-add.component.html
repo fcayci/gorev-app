@@ -1,22 +1,22 @@
   <section [formGroup]="kisiForm">
     <h2 mat-dialog-title>{{title}}</h2>
 
-    <div class="button-row">
+    <div class="form-row">
       <mat-form-field style="width:40%">
         <mat-select formControlName="position" placeholder="Akademik Ünvan">
           <mat-option *ngFor="let pos of positions" [value]="pos">{{[pos]}}</mat-option>
         </mat-select>
+        <mat-error *ngIf="!kisiForm.hasError('position')">
+          Bir ünvan seçiniz giriniz
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field style="width:55%">
         <input matInput formControlName="fullname" placeholder="İsim">
-        <!-- <mat-error *ngIf="!kisiForm.hasError('required')">
-          Lütfen bir isim giriniz
-        </mat-error> -->
       </mat-form-field>
     </div>
 
-    <div class="button-row">
+    <div class="form-row">
       <mat-form-field style="width:30%">
         <input matInput formControlName="office" placeholder="Oda No.">
       </mat-form-field>
@@ -27,14 +27,21 @@
       </mat-form-field>
     </div>
 
-    <div class="button-row">
+    <div class="form-row">
       <mat-form-field style="width:40%">
-        <input matInput formControlName="phone" placeholder="Dahili No.">
-        <mat-hint align="end">Son 4 hane</mat-hint>
+        <input matInput #phonenum pattern="[0-9]{4}" formControlName="phone" placeholder="Dahili No.">
+        <mat-hint align="end">{{phonenum.value.length}} / 4</mat-hint>
+        <mat-error *ngIf="!kisiForm.hasError('phone')">
+          4 haneli dahili numaranizi giriniz.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field style="width:55%">
-        <input matInput formControlName="mobile" placeholder="Telefon (Cep) No.">
+        <input matInput formControlName="mobile" pattern="[0-9]{11}" placeholder="Cep No.">
+        <mat-error *ngIf="!kisiForm.hasError('mobile')">
+          (Keyfi) 11 haneli cep numaranizi giriniz.
+        </mat-error>
+        <mat-hint align="end">Örn: 05003215476</mat-hint>
       </mat-form-field>
     </div>
 
@@ -42,10 +49,11 @@
     <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
     Your selection is invalid
     </mat-error> -->
-    <mat-dialog-actions>
     <div class="button-row">
-      <button mat-raised-button color="warn" (click)="onNoClick()">İptal</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!kisiForm.valid">Kaydet</button>
+      <mat-dialog-actions>
+        <button mat-raised-button color="warn" (click)="onNoClick()">İptal</button>
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!kisiForm.valid">Kaydet</button>
+      </mat-dialog-actions>
     </div>
-    </mat-dialog-actions>
+
   </section>

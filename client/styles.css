@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 body {
   font-family: Roboto, Arial, sans-serif;
@@ -12,18 +12,28 @@ header {
 }
 
 .wrapper {
+  max-width: 960px;
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
   margin: auto;
   margin-bottom: 20px;
-  max-width: 960px;
 }
 
-.toolbar {
-  min-height: 56px!important;
-  height: 56px!important;
-  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+.navbar {
+  min-height: 52px!important;
+  height: 52px!important;
+  position: fixed;
+  -webkit-transform: translate3d(0, 0, 0);
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  border-radius: 0;
 }
 
-.toolbar-row {
+.navbar-row {
   max-width: 960px;
   margin: auto;
   padding: 0!important;
@@ -33,6 +43,10 @@ header {
   min-height: 34px;
   padding: 8px 24px 0;
   display: flex;
+}
+
+.toolbar-title {
+  padding-left: 5px;
 }
 
 .mat-column-no {
@@ -59,16 +73,44 @@ header {
 
 .button-row {
   display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.form-row {
+  display: flex;
   justify-content: space-between;
   margin-top: 10px;
 }
 
-.table-highlight{
+.table-highlight {
   background: #42A948; /* green */
 }
 
+.no-padding {
+  padding: 0!important;
+}
 
+.mat-input-element:disabled {
+  color: inherit;
+}
 
+.toolbar-child{
+  height: 40px!important;
+}
+
+.toolbar-child .toolbar-header {
+  font-size: 14px!important;
+  padding-left: 5px;
+}
+
+.date-align {
+  margin-top: 5px;
+}
+
+[hidden] {
+  display: none!important;
+}
 /*
 .navbar-right-custom {
   margin-right: 10px!important;

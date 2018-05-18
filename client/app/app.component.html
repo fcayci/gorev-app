@@ -1,5 +1,5 @@
-  <mat-toolbar class="toolbar" color="primary">
-    <mat-toolbar-row class="toolbar-row">
+  <mat-toolbar class="navbar mat-elevation-z6" color="primary">
+    <mat-toolbar-row class="navbar-row">
       <button mat-button routerLink="" routerLinkActive="active">Home</button>
       <button mat-button routerLink="kadro" routerLinkActive="active">Kadro</button>
       <button mat-button routerLink="angarya" routerLinkActive="active">Görevler</button>
@@ -15,5 +15,5 @@
   </mat-toolbar>
 
 <div class="wrapper">
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>

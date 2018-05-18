@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { MatDialog, MatPaginator, MatSort } from '@angular/material';
+import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
 import { OE } from '../../oe';
@@ -17,11 +17,16 @@ export class KadroComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns = ['no', 'fullname', 'email', 'position', 'office', 'phone', 'load'];
+  displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
   dataSource: any;
   filterValue: string;
+  title = "Bölüm Kadrosu"
 
-  constructor(private _user: UserService, private _router: Router, public dialog: MatDialog) {}
+  constructor(
+    private _user: UserService,
+    private _router: Router,
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.getKadro();
@@ -59,7 +64,16 @@ export class KadroComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {this.getKadro();}
+      if (result) {
+        this.openSnackBar(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
+        this.getKadro();
+      }
+    });
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 2000,
     });
   }
 

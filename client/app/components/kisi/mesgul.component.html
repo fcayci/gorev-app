@@ -1,57 +1,35 @@
-      <table class="table table-hover">
-        <caption class="btn-toolbar" role="toolbar">
-          <h4 class="title-custom">Meşgul Zamanlar <span class="badge">{{busies?.length}}</span>  <small class="badge">{{today}}</small></h4>
 
-          <!--<button *ngIf="edit" type="button" class="label label-success navbar-right navbar-right-custom" (click)="show()"><span class="glyphicon glyphicon-plus"></span> meşguliyet ekle</button>-->
-          <button type="button" class="label label-success navbar-right navbar-right-custom" (click)="toggleField()"><span class="glyphicon glyphicon-plus"></span> meşguliyet düzenle</button>
-        </caption>
+<mat-card class="no-padding">
+  <div class="mat-elevation-z8">
+    <mat-toolbar class="toolbar-child" color="primary">
+        <h2 class="toolbar-header">{{title}}</h2>
+    </mat-toolbar>
 
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Gun Baslangic</th>
-            <th>Gun Bitis</th>
-            <th>Saat Baslangic</th>
-            <th>Saat Bitis</th>
-            <th>Tekrar</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="showAddBusy">
-            <td></td>
-            <td>
-              <input type="date" id="dateStart" required [(ngModel)]="model.startDate" name="dateStart">
-            </td>
-            <td>
-              <input type="date" id="dateEnd" required [disabled]="model.recur" [(ngModel)]="model.endDate" name="dateEnd">
-            </td>
-            <td>
-              <input type="time" min="07:00" max="17:00" id="timeStart" required [(ngModel)]="model.startTime" name="timeStart">
-            </td>
-            <td>
-              <input type="time" min="08:00" max="20:00" id="timeEnd" [(ngModel)]="model.endTime" required  name="timeEnd">
-            </td>
-            <td><input type="checkbox" id="recur" [(ngModel)]="model.recur" name="recur"></td>
-            <td>
-              <select id="tor" [(ngModel)]="model.tor" name="tor">
-                <option value="1">Günlük</option>
-                <option value="7">Haftalık</option>
-              </select>
-            </td>
-            <td>
-              <input type="button" id="addtime" (click)="onSubmit()" name="addtime" value="ekle">
-            </td>
-          </tr>
-          <tr *ngFor="let busy of busies; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{busy.recur ? busy.tor == 1 ? "Every day" : "Every " + (busy.startDate | date: "EEEE") : (busy.startDate | date: "EE, dd MMMM")}}</td>
-            <td>{{busy.recur ? "" : (busy.endDate | date: "EE, dd MMMM")}}</td>
-            <td>{{busy.startDate | date: "HH:mm"}}</td>
-            <td>{{busy.endDate | date: "HH:mm"}}</td>
-            <td>{{busy.recur ? "evet" : ""}}</td>
-            <td>{{busy.tor}}</td>
-            <td><input *ngIf="showAddBusy" type="button" class="btn btn-sm btn-danger" id="addtime" (click)="removeBusy(i)" name="addtime" value="Sil"></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="table-header">
+      <span class="fill-remaining-space"></span>
+      <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="warn" (click)="openDialog()"><mat-icon>event_busy</mat-icon></button></span>
+    </div>
+
+      <mat-table #table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.recur ? (row.tor == 1 ? 'Günlük' : 'Haftalık ' + (row.startDate | date: 'EE') ) : '' }} {{ row.recur ? '' : row.startDate | date: 'EE, dd MMMM' }} {{ row.recur ? '': '- ' + (row.endDate | date: 'EE, dd MMMM') }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+        </ng-container>
+<!--
+        <ng-container matColumnDef="recur">
+          <mat-header-cell *matHeaderCellDef>Tekrar</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.recur ? (row.tor == 1 ? 'Günlük' : 'Haftalık') : '-'}}</mat-cell>
+        </ng-container> -->
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+      </mat-table>
+
+  </div>
+</mat-card>

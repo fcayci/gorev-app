@@ -207,12 +207,13 @@ export class GorevAddComponent implements OnInit {
   }
 
   pickKisi(): OE {
-    Array.prototype.min = function(attrib) {
-      return this.reduce(function(prev, curr){
-          return prev[attrib] < curr[attrib] ? prev : curr;
-      });
-    }
-    return this.available.min('load')
+  //   Array.prototype.min = function(attrib) {
+  //     return this.reduce(function(prev, curr){
+  //         return prev[attrib] < curr[attrib] ? prev : curr;
+  //     });
+  //   }
+  //   return this.available.min('load')
+    return this.available[0]
   }
 
   get diagnostic() { return JSON.stringify(this.gorev); }

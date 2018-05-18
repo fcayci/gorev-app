@@ -5,9 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule, MatInputModule, MatButtonModule,
-  MatChipsModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
-  MatTooltipModule, MatDialogModule } from '@angular/material';
+import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
+  MatInputModule, MatButtonModule, MatChipsModule, MatSidenavModule,
+  MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
+  MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
+  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+//import { AmazingTimePickerModule } from 'amazing-time-picker';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -23,6 +27,7 @@ import { TasksComponent } from './components/kisi/tasks.component';
 import { MesgulComponent } from './components/kisi/mesgul.component';
 
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
+import { MesgulAddComponent } from './components/mesgul-add/mesgul-add.component';
 
 // define the routes
 const ROUTES : Routes = [
@@ -31,12 +36,16 @@ const ROUTES : Routes = [
     component: HomeComponent
   },
   {
+    path: 'kadro',
+    component: KadroComponent
+  },
+  {
     path: 'kisiekle',
     component: KisiAddComponent
   },
   {
-    path: 'kadro',
-    component: KadroComponent
+    path: 'mesgulekle',
+    component: MesgulAddComponent
   },
   {
     path: 'kadro/:username',
@@ -69,7 +78,8 @@ const ROUTES : Routes = [
     ProfileComponent,
     TasksComponent,
     MesgulComponent,
-    KisiAddComponent
+    KisiAddComponent,
+    MesgulAddComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +102,14 @@ const ROUTES : Routes = [
     MatSortModule,
     MatTooltipModule,
     MatDialogModule,
+    MatSnackBarModule,
     MatIconModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatCheckboxModule,
+    MatMomentDateModule,
+    //MatMomentDateModule,
+    //AmazingTimePickerModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

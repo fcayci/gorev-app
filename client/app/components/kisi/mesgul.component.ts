@@ -1,10 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatTableDataSource } from '@angular/material';
+
 import * as moment from 'moment';
 
 import { OE } from '../../oe';
 import { Zaman } from '../../zaman';
 import { BusyService } from '../../services/busy.service';
+import { MesgulAddComponent } from '../mesgul-add/mesgul-add.component';
+import 'moment-recur-ts';
+import 'moment-duration-format';
+import { extendMoment } from 'moment-range';
 
 export class msg {
   'ok': number;
@@ -16,71 +22,78 @@ export class msg {
   templateUrl: './mesgul.component.html'
 })
 
-export class MesgulComponent implements OnInit {
+export class MesgulComponent implements OnInit, OnChanges{
 
   @Input() profile: OE;
-  @Input() edit: string;
+  @Output() submitEvent = new EventEmitter<string>();
+
+  displayedColumns = ['date', 'time'];//['title', 'date', 'time', 'repeat'];
+  dataSource: any;
 
   busies : Zaman[];
-  today : string;
-  showAddBusy : boolean = false;
-
-  model = {
-    owner_id : '',
-    startDate : moment().format("YYYY-MM-DD"),
-    endDate  : moment().format("YYYY-MM-DD"),
-    startTime : moment().startOf('hour').add(1, 'hours').format("HH:mm"),
-    endTime  : moment().startOf('hour').add(2, 'hours').format("HH:mm"),
-    recur : false,
-    tor : 0,
-  }
+  today = moment().format('LLLL (Z)');
+  title = 'Meşguliyet';
 
   constructor(
-    private _busy: BusyService
-  ) {}
+    private _busy: BusyService,
+    public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.getBusies();
-    this.today = moment().format('LLLL (Z)');
+  }
+
+  ngOnChanges() {
+    if(this.profile){
+      this.getBusies();
+    }
   }
 
   getBusies(): void {
     this._busy.getBusyByOwnerId(this.profile._id)
       .subscribe((busies : Zaman[]) => {
         this.busies = busies;
+        this.dataSource = new MatTableDataSource(this.busies);
     });
   }
 
   onSubmit() : void {
-    const busy : Zaman = this.parseBusyInput();
-    this.addBusyToOwner(busy);
-    this.pushBusyToUser(busy);
+    console.log('will submit');
+    // const busy : Zaman = this.parseBusyInput();
+    // this.addBusyToOwner(busy);
+    // this.pushBusyToUser(busy);
   }
 
-  parseBusyInput(): Zaman {
-    var busy : Zaman = {
+
+  parseForm(f){
+    var model : Zaman = {
+      title : '',
       startDate : '',
       endDate : '',
       owner_id : '',
-      recur : false,
-      tor : 0,
+      recur : 0
     };
 
-    busy.startDate = moment(this.model.startDate + 'T' + this.model.startTime).format();
-    busy.recur = this.model.recur;
-    if (busy.recur) {
-      busy.endDate = moment(this.model.startDate + 'T' + this.model.endTime).format();
-    } else {
-      busy.endDate = moment(this.model.endDate + 'T' + this.model.endTime).format();
-    }
-    busy.owner_id = this.profile._id
-    busy.tor = this.model.recur ? this.model.tor : 0;
-
-    if (busy.recur && !busy.tor) {
-        console.log('ERROR')
+    var sd = moment(f.startDate)
+    var ed = moment(f.endDate)
+    if (sd.isAfter(ed)){
+      return -1
     }
 
-    return busy
+    sd = sd.add(f.startTime.slice(0,2), 'h');
+    sd = sd.add(f.startTime.slice(-2), 'm');
+    ed = ed.add(f.endTime.slice(0,2), 'h');
+    ed = ed.add(f.endTime.slice(-2), 'm');
+
+    if (sd.isSameOrAfter(ed)){
+      return -1
+    }
+
+    model.title = f.title;
+    model.startDate = sd.format();
+    model.endDate = ed.format();
+    model.recur = f.recur;
+    model.owner_id = this.profile._id;
+    console.log(model);
+    return model;
   }
 
   addBusyToOwner(b): void {
@@ -105,9 +118,38 @@ export class MesgulComponent implements OnInit {
     // TODO implement this
   }
 
-  toggleField(): void {
-    this.showAddBusy = !this.showAddBusy;
+  openDialog(): void {
+    let dialogRef = this.dialog.open(MesgulAddComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(mesg => {
+      if (mesg){
+        const busy = this.parseForm(mesg);
+        if (busy != -1) {
+          const { range } = extendMoment(moment);
+
+          var x = moment('2018-05-23T10:00:00+03:00')
+          var y = moment('2018-05-23T12:00:00+03:00')
+          console.log('x: ', x)
+          console.log('y:', y)
+          const rg = range(x, y)
+          console.log('rg:', rg)
+
+          const rb = range(busy.startDate + '/' + busy.endDate);
+          console.log('rb', rb)
+
+          console.log(rb.overlaps(rg))
+
+          //this.openSnackBar(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
+          //this.getKadro();
+        }
+      }
+    });
   }
 
-  get diagnostic() { return JSON.stringify(this.model); }
+  onRowClicked(row) {
+    console.log('Row clicked: ', row);
+  }
 }
+

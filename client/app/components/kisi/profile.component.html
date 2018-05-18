@@ -1,37 +1,72 @@
-      <form class="form-group custom-new-person" (ngSubmit)="onSubmit()" #profileForm="ngForm">
+<mat-card class="no-padding">
+  <div class="mat-elevation-z8">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row >
+        <mat-icon>person</mat-icon>  <h2 style="padding-left:5px;">{{ profile?.position + ' ' + profile?.fullname }}</h2>
+        <button *ngIf="kisiForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup();sendMessage($event)"><span matTooltip="Kişiyi Düzenle"><mat-icon>edit</mat-icon></span></button>
+        <span class="fill-remaining-space"></span>
+        <button *ngIf="!kisiForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="sendMessage($event)"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
-        <fieldset class="form-group">
-          <label for="fullname">İsim</label>
-          <input type="text" class="form-control" id="fullname" autocomplete="user-fullname" required [readonly] = "edit ? null : true" [(ngModel)]="profile.fullname" name="fullname">
-        </fieldset>
+    <mat-card-content style="padding:24px;" [formGroup]="kisiForm">
+      <div class="form-row">
+        <mat-form-field style="width:20%">
+          <mat-select formControlName="position" placeholder="Akademik Ünvan">
+            <mat-option *ngFor="let pos of positions" [value]="pos">{{[pos]}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="!kisiForm.hasError('position')">
+            Bir ünvan seçiniz giriniz
+          </mat-error>
+        </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="email">E-posta</label>
-          <div class="input-group"><input type="email" class="form-control" id="email" autocomplete="user-email" autocomplete="user-email" pattern="[a-zA-Z0-9._%+-]+" required [readonly] = "edit ? null : true" [(ngModel)]="profile.email" name="email" title="Please provide only a GTU email address"><span class="input-group-addon">@gtu.edu.tr</span></div>
-        </fieldset>
+        <mat-form-field style="width:20%">
+          <input matInput formControlName="fullname" placeholder="İsim">
+        </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="office">Oda No</label>
-          <input type="string" class="form-control" id="office" autocomplete="user-office" required [readonly] = "edit ? null : true" [(ngModel)]="profile.office" name="office">
-        </fieldset>
+        <mat-form-field style="width:20%">
+          <input matInput pattern="[a-zA-Z0-9._%+-]+" formControlName="email" placeholder="e-Posta">
+          <span matSuffix>@gtu.edu.tr</span>
+        </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="phone">Telefon (Dahili)</label>
-          <input type="string" class="form-control" id="phone" autocomplete="user-phone" pattern="[0-9]{4}" required [readonly] = "edit ? null : true" [(ngModel)]="profile.phone" name="phone">
-        </fieldset>
+        <mat-slide-toggle style="width:15%;align-self: center;" formControlName="vacation">On Vacation</mat-slide-toggle>
+      </div>
 
-        <fieldset class="form-group">
-          <label for="mobile">Telefon (Cep)</label>
-          <input type="phone" class="form-control" id="mobile" autocomplete="user-tel" pattern="[0-9 ]{11,14}" [readonly] = "edit ? null : true" [(ngModel)]="profile.mobile" name="mobile">
-        </fieldset>
+      <div class="form-row">
+        <mat-form-field style="width:10%">
+          <input matInput formControlName="office" placeholder="Oda No.">
+        </mat-form-field>
 
-        <fieldset class="form-group">
-          <label for="load">Toplam Yük</label>
-          <input type="load" class="form-control" id="load" autocomplete="user-load" [readonly] = "edit ? null : true" [(ngModel)]="profile.load" name="load">
-        </fieldset>
+        <mat-form-field style="width:10%">
+          <input matInput formControlName="phone" placeholder="Dahili No.">
+          <mat-hint *ngIf="!kisiForm.disabled" align="end">{{kisiForm.value.phone.length}} / 4</mat-hint>
+          <mat-error *ngIf="!kisiForm.hasError('phone')">
+            4 haneli dahili numaranizi giriniz.
+          </mat-error>
+        </mat-form-field>
 
-        <fieldset class="btn-group">
-          <button *ngIf="edit" type="button" class="btn btn-default" name="cancel" (click)="sendMessage($event)">İptal</button>
-          <button *ngIf="edit" type="button" class="btn btn-primary  pull-right" name="save" [disabled]="!profileForm.form.valid" (click)="sendMessage($event)">Kaydet</button>
-        </fieldset>
-      </form>
+        <mat-form-field style="width:20%">
+          <input matInput formControlName="mobile" placeholder="Cep No.">
+          <mat-error *ngIf="!kisiForm.hasError('mobile')">
+            (Keyfi) 11 haneli cep numaranizi giriniz.
+          </mat-error>
+          <mat-hint *ngIf="!kisiForm.disabled" align="end">Örn: 05003215476</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field style="width:10%">
+          <input matInput formControlName="load" placeholder="Toplam Yük">
+          <mat-error *ngIf="!kisiForm.hasError('load')">
+            Bir sayı giriniz.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="button-row">
+        <mat-dialog-actions>
+          <button mat-raised-button *ngIf="!kisiForm.disabled" color="warn" (click)="disableGroup();sendMessage($event)">İptal</button>
+          <button mat-raised-button *ngIf="!kisiForm.disabled" color="primary" (click)="sendMessage($event)" [disabled]="!kisiForm.valid">Kaydet</button>
+        </mat-dialog-actions>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>

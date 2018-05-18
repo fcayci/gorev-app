@@ -33,7 +33,6 @@ export class KisiWrapperComponent implements OnInit {
     });
   }
 
-
   updateKisi(): void {
     this._user.updateKisi(this.kisi)
       .subscribe((kisi : OE) => {
@@ -55,10 +54,16 @@ export class KisiWrapperComponent implements OnInit {
   }
 
   handleMessage(e){
-    if (e.target.name == "save"){
-      this.updateKisi();
-    } else if(e.target.name == "cancel"){
+    console.log(e)
+    if (e.target.textContent == "edit"){
+      this.toggleEdit();
+    } else if (e.target.textContent == "Kaydet"){
+      //this.updateKisi();
+    } else if(e.target.textContent == "İptal"){
       this.resetKisi();
+    } else if(e.target.textContent == "delete"){
+      //this.deleteKisi();
+      console.log('delete kisi');
     }
   }
 

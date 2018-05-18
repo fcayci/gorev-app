@@ -1,9 +1,11 @@
-  <header>
-    <h2>Kişi Listesi </h2>
-  </header>
 
-<section>
+<mat-card class="no-padding">
   <div class="mat-elevation-z8">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+      <mat-icon>group</mat-icon>  <h2 style="padding-left:5px;">{{title}}</h2>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
     <div class="table-header">
       <mat-form-field style="width:50%">
@@ -55,7 +57,7 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+      <mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
     </mat-table>
 
     <mat-paginator #paginator
@@ -63,4 +65,4 @@
       [pageSizeOptions]="[3, 5, 10, 25, 50]">
     </mat-paginator>
   </div>
-</section>
+</mat-card>

@@ -42,12 +42,11 @@ export class KisiAddComponent implements OnInit  {
   }
 
   onSubmit() {
-    this.dialogRef.close();
+
     const profile: OE = this.kisiForm.value;
     this._user.addKisi(profile)
       .subscribe(res => {
     });
-
-    this.dialogRef.close(this.kisiForm.value);
+    this.dialogRef.close(profile);
   }
 }

@@ -1,26 +1,6 @@
-<div class="container-fluid" *ngIf="kisi">
-  <header class="btn-toolbar header-custom" role="toolbar">
-    <h2 class="title-custom">{{ kisi.fullname }}</h2>
-    <button *ngIf="!edit" type="button" class="btn btn-sm btn-info" (click)="toggleEdit()"><span class="glyphicon glyphicon-edit"></span></button>
-  </header>
+    <profile [profile]="kisi" (submitEvent)="handleMessage($event)"></profile>
 
+    <mesgul [profile]="kisi" (submitEvent)="handleMessage($event)"></mesgul>
 
-  <main class="row">
-    <section class="col-md-3">
-      <profile [profile]="kisi" [edit]="edit" (submitEvent)="handleMessage($event)"></profile>
+    <tasks [profile]="kisi" [edit]="edit"></tasks>
 
-      <fieldset class="btn-group">
-        <button *ngIf="edit" type="button" class="btn btn-danger" (click)="deleteKisi()">Kişiyi Sil</button>
-      </fieldset>
-    </section>
-
-    <section class="col-md-9">
-
-      <mesgul [profile]="kisi" [edit]="edit"></mesgul>
-
-      <tasks [profile]="kisi" [edit]="edit"></tasks>
-
-    </section>
-  </main>
-
-</div>
