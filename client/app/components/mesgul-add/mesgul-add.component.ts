@@ -2,8 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
@@ -14,18 +12,7 @@ import { Zaman, REPEATS } from '../../zaman';
 
 @Component({
   selector: 'mesgul-add',
-  templateUrl: './mesgul-add.component.html',
-  providers: [
-    // The locale would typically be provided on the root module of your application. We do it at
-    // the component level here, due to limitations of our example generation script.
-    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
-
-    // `MomentDateAdapter` and `MAT_MOMENT_DATE_FORMATS` can be automatically provided by importing
-    // `MatMomentDateModule` in your applications root module. We provide it at the component level
-    // here, due to limitations of our example generation script.
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
-  ],
+  templateUrl: './mesgul-add.component.html'
 })
 
 export class MesgulAddComponent implements OnInit  {
@@ -67,28 +54,29 @@ export class MesgulAddComponent implements OnInit  {
     this.repeats[2] = REPEATS[2] + ' ' +  day
   }
 
+
   onNoClick(): void {
-    var x = this.busyForm.value;
-    console.log( moment(x.startDate).recur().every(1).days())
-    console.log( moment(x.startDate).recur(x.endDate).every(7).days())
+    // var x = this.busyForm.value;
+    // console.log( moment(x.startDate).recur().every(1).days())
+    // console.log( moment(x.startDate).recur(x.endDate).every(7).days())
 
 
-    var sd = moment(x.startDate).dateOnly()
-    var ed = moment(x.endDate).dateOnly()
+    // var sd = moment(x.startDate).dateOnly()
+    // var ed = moment(x.endDate).dateOnly()
 
-    console.log('sd', sd)
-    console.log('ed', ed)
+    // console.log('sd', sd)
+    // console.log('ed', ed)
 
-    sd = sd.add(x.startTime.slice(0,2), 'h');
-    sd = sd.add(x.startTime.slice(-2), 'm');
-    ed = ed.add(x.endTime.slice(0,2), 'h');
-    ed = ed.add(x.endTime.slice(-2), 'm');
+    // sd = sd.add(x.startTime.slice(0,2), 'h');
+    // sd = sd.add(x.startTime.slice(-2), 'm');
+    // ed = ed.add(x.endTime.slice(0,2), 'h');
+    // ed = ed.add(x.endTime.slice(-2), 'm');
 
 
-    var duration = moment.duration(ed.diff(sd));
-    console.log(Math.ceil(duration.asDays()), 'day repeats')
-    console.log(Math.ceil(duration.asWeeks()), 'week repeats')
-    //this.dialogRef.close();
+    // var duration = moment.duration(ed.diff(sd));
+    // console.log(Math.ceil(duration.asDays()), 'day repeats')
+    // console.log(Math.ceil(duration.asWeeks()), 'week repeats')
+    this.dialogRef.close();
   }
 
   onSubmit() {

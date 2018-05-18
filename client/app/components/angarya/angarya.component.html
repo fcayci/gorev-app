@@ -37,7 +37,7 @@
 
         <ng-container matColumnDef="date">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.startDate | date: "EE, dd MMMM"}} - {{row.endDate | date: "EE, dd MMMM"}}</mat-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}} - <br/>{{row.endDate | date: "dd MMMM EEEE": '': 'tr'}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="time">

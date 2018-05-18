@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialog, MatTableDataSource } from '@angular/material';
+import { MatSnackBar, MatDialog, MatTableDataSource } from '@angular/material';
 
 import * as moment from 'moment';
 
@@ -27,15 +27,14 @@ export class MesgulComponent implements OnInit, OnChanges{
   @Input() profile: OE;
   @Output() submitEvent = new EventEmitter<string>();
 
-  displayedColumns = ['date', 'time'];//['title', 'date', 'time', 'repeat'];
-  dataSource: any;
+  displayedColumns = ['title', 'date', 'time', 'recur'];
+  dataSource: MatTableDataSource<Zaman>;
 
-  busies : Zaman[];
-  today = moment().format('LLLL (Z)');
   title = 'Meşguliyet';
 
   constructor(
     private _busy: BusyService,
+    public snackBar: MatSnackBar,
     public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -50,30 +49,16 @@ export class MesgulComponent implements OnInit, OnChanges{
   getBusies(): void {
     this._busy.getBusyByOwnerId(this.profile._id)
       .subscribe((busies : Zaman[]) => {
-        this.busies = busies;
-        this.dataSource = new MatTableDataSource(this.busies);
+        this.dataSource = new MatTableDataSource(busies);
     });
   }
 
-  onSubmit() : void {
-    console.log('will submit');
-    // const busy : Zaman = this.parseBusyInput();
-    // this.addBusyToOwner(busy);
-    // this.pushBusyToUser(busy);
-  }
-
-
   parseForm(f){
-    var model : Zaman = {
-      title : '',
-      startDate : '',
-      endDate : '',
-      owner_id : '',
-      recur : 0
-    };
-
+    // Get the dates as is. if .dateOnly() method is used, we lose timezone.
     var sd = moment(f.startDate)
     var ed = moment(f.endDate)
+
+    // Make sure dates are the same or end is bigger
     if (sd.isAfter(ed)){
       return -1
     }
@@ -83,32 +68,41 @@ export class MesgulComponent implements OnInit, OnChanges{
     ed = ed.add(f.endTime.slice(0,2), 'h');
     ed = ed.add(f.endTime.slice(-2), 'm');
 
+    // Make sure start date is after end.
     if (sd.isSameOrAfter(ed)){
+      console.log('3')
       return -1
     }
 
-    model.title = f.title;
-    model.startDate = sd.format();
-    model.endDate = ed.format();
-    model.recur = f.recur;
-    model.owner_id = this.profile._id;
-    console.log(model);
+    var model : Zaman = {
+      title : f.title,
+      startDate : sd.format(),
+      endDate : ed.format(),
+      owner_id : this.profile._id,
+      recur : f.recur
+    };
+
     return model;
   }
 
   addBusyToOwner(b): void {
     this._busy.setBusyByOwnerId(b)
       .subscribe(res => {
-        this.busies.push(res);
+        this.openSnackBar(res.title + ' başarıyla eklendi.')
+        const oldData = this.dataSource.data;
+        oldData.push(res);
+        this.dataSource.data = oldData;
       });
   }
 
   removeBusy(s): void {
     // TODO: Remove from user's busy list as well
-    this._busy.delBusyByTimeId(this.busies[s])
+    this._busy.delBusyByTimeId(s._id)
       .subscribe((res: msg) => {
          if (res.ok == 1){
-            this.busies.splice(s,1);
+            const oldData = this.dataSource.data;
+            oldData.splice(s,1);
+            this.dataSource.data = oldData;
          }
       });
   }
@@ -127,24 +121,31 @@ export class MesgulComponent implements OnInit, OnChanges{
       if (mesg){
         const busy = this.parseForm(mesg);
         if (busy != -1) {
-          const { range } = extendMoment(moment);
+          // const { range } = extendMoment(moment);
 
-          var x = moment('2018-05-23T10:00:00+03:00')
-          var y = moment('2018-05-23T12:00:00+03:00')
-          console.log('x: ', x)
-          console.log('y:', y)
-          const rg = range(x, y)
-          console.log('rg:', rg)
+          // var x = moment('2018-05-23T10:00:00+03:00')
+          // var y = moment('2018-05-23T12:00:00+03:00')
+          // console.log('x: ', x)
+          // console.log('y:', y)
+          // const rg = range(x, y)
+          // console.log('rg:', rg)
 
-          const rb = range(busy.startDate + '/' + busy.endDate);
-          console.log('rb', rb)
+          // const rb = range(busy.startDate + '/' + busy.endDate);
+          // console.log('rb', rb)
 
-          console.log(rb.overlaps(rg))
-
-          //this.openSnackBar(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
-          //this.getKadro();
+          // console.log(rb.overlaps(rg))
+          this.addBusyToOwner(busy);
+        }
+        else {
+          this.openSnackBar('Hatalı tarih girişi')
         }
       }
+    });
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 2000,
     });
   }
 

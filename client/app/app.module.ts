@@ -11,7 +11,10 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
   MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-//import { AmazingTimePickerModule } from 'amazing-time-picker';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { registerLocaleData } from '@angular/common';
+import localeTr from '@angular/common/locales/tr';
+
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -28,6 +31,8 @@ import { MesgulComponent } from './components/kisi/mesgul.component';
 
 import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
 import { MesgulAddComponent } from './components/mesgul-add/mesgul-add.component';
+
+registerLocaleData(localeTr);
 
 // define the routes
 const ROUTES : Routes = [
@@ -108,14 +113,13 @@ const ROUTES : Routes = [
     MatDatepickerModule,
     MatCheckboxModule,
     MatMomentDateModule,
-    //MatMomentDateModule,
-    //AmazingTimePickerModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'}],
   bootstrap: [AppComponent]
 })
 

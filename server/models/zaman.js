@@ -3,6 +3,10 @@ var Schema = mongoose.Schema;
 
 var ZamanSchema = new Schema(
   {
+    title: {
+      type: String,
+      required: true
+    },
     startDate: {
       type: Date,
       required: true
@@ -12,13 +16,9 @@ var ZamanSchema = new Schema(
       required: true
     },
     recur: {
-      type: Boolean,
-      required: true
-    },
-    tor: {
       type: Number,
-      required: false,
-      enum: [1, 7]  // ['Daily', 'Weekly']
+      required: true,
+      enum: [0, 1, 7]
     },
     owner_id: {
       type: Schema.Types.ObjectId,
