@@ -29,11 +29,12 @@ export class KisiAddComponent implements OnInit  {
   createForm() {
     this.kisiForm = this._fb.group({
       fullname: ['', Validators.required],
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
       office: ['', Validators.required],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern('[0-9]{4}')]],
       position: ['', Validators.required],
-      mobile: ''
+      mobile: ['', Validators.pattern('[0-9]{11}')],
+      vacation: false
     });
   }
 
@@ -42,7 +43,6 @@ export class KisiAddComponent implements OnInit  {
   }
 
   onSubmit() {
-
     const profile: OE = this.kisiForm.value;
     this._user.addKisi(profile)
       .subscribe(res => {

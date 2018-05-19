@@ -11,11 +11,11 @@ export interface OEDB {
   load: number;
   tempLoad?: number;
   busy?: Array<string>;
-  vacation: boolean;
+  vacation: boolean
 }
 
 export interface OE extends OEDB {
-  isAvailable?: string;
+  isAvailable?: string
 }
 
-export const POSITIONS = ['Dr.','Öğretim Görevlisi','Araştırma Görevlisi','Uzman', 'Memur', 'Diğer'];
+export const POSITIONS = ['Dr.', 'Öğretim Görevlisi', 'Araştırma Görevlisi', 'Uzman', 'Memur', 'Diğer'];

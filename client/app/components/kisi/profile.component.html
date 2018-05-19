@@ -3,9 +3,9 @@
     <mat-toolbar color="primary">
       <mat-toolbar-row >
         <mat-icon>person</mat-icon>  <h2 style="padding-left:5px;">{{ profile?.position + ' ' + profile?.fullname }}</h2>
-        <button *ngIf="kisiForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup();sendMessage($event)"><span matTooltip="Kişiyi Düzenle"><mat-icon>edit</mat-icon></span></button>
+        <button *ngIf="kisiForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup();sendEdit($event)"><span matTooltip="Kişiyi Düzenle"><mat-icon>edit</mat-icon></span></button>
         <span class="fill-remaining-space"></span>
-        <button *ngIf="!kisiForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="sendMessage($event)"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+        <button *ngIf="!kisiForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="sendDelete($event)"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
       </mat-toolbar-row>
     </mat-toolbar>
 
@@ -25,7 +25,7 @@
         </mat-form-field>
 
         <mat-form-field style="width:20%">
-          <input matInput pattern="[a-zA-Z0-9._%+-]+" formControlName="email" placeholder="e-Posta">
+          <input matInput formControlName="email" placeholder="e-Posta">
           <span matSuffix>@gtu.edu.tr</span>
         </mat-form-field>
 
@@ -63,8 +63,8 @@
 
       <div class="button-row">
         <mat-dialog-actions>
-          <button mat-raised-button *ngIf="!kisiForm.disabled" color="warn" (click)="disableGroup();sendMessage($event)">İptal</button>
-          <button mat-raised-button *ngIf="!kisiForm.disabled" color="primary" (click)="sendMessage($event)" [disabled]="!kisiForm.valid">Kaydet</button>
+          <button mat-raised-button *ngIf="!kisiForm.disabled" color="warn" (click)="disableGroup();sendCancel($event)">İptal</button>
+          <button mat-raised-button *ngIf="!kisiForm.disabled" color="primary" (click)="sendSave($event)" [disabled]="!kisiForm.valid">Kaydet</button>
         </mat-dialog-actions>
       </div>
     </mat-card-content>

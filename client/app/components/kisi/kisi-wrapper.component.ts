@@ -54,16 +54,14 @@ export class KisiWrapperComponent implements OnInit {
   }
 
   handleMessage(e){
-    console.log(e)
-    if (e.target.textContent == "edit"){
+    if (e == "edit"){
       this.toggleEdit();
-    } else if (e.target.textContent == "Kaydet"){
-      //this.updateKisi();
-    } else if(e.target.textContent == "İptal"){
+    } else if (e == "save"){
+      this.updateKisi();
+    } else if(e == "cancel"){
       this.resetKisi();
-    } else if(e.target.textContent == "delete"){
-      //this.deleteKisi();
-      console.log('delete kisi');
+    } else if(e == "delete"){
+      this.deleteKisi();
     }
   }
 

@@ -6,8 +6,9 @@
     </mat-toolbar>
 
     <div class="table-header">
+      <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="primary" (click)="openDialog()"><mat-icon>library_add</mat-icon></button></span>
       <span class="fill-remaining-space"></span>
-      <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="warn" (click)="openDialog()"><mat-icon>event_busy</mat-icon></button></span>
+      <span matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
     </div>
 
       <mat-table #table [dataSource]="dataSource" matSort>
@@ -32,8 +33,18 @@
           <mat-cell *matCellDef="let row">{{row.recur ? (row.recur == 1 ? 'Günlük' : 'Her ' + (row.startDate | date: 'EEEE': '': 'tr')) : '-'}}</mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="expired">
+          <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
+          <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Süresi Geçmiş' : 'Aktif' }}
+            <span class="fill-remaining-space"></span>
+            <button *ngIf="showdelete" (click)="removeBusy(row, i)" mat-icon-button color="warn">
+              <mat-icon aria-label="delete">cancel</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
 
   </div>

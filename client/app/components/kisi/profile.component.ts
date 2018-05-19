@@ -16,8 +16,20 @@ export class ProfileComponent implements OnChanges, OnInit {
   positions = POSITIONS;
   kisiForm : FormGroup;
 
-  sendMessage(e) {
-    this.submitEvent.emit(e)
+  sendDelete(e) {
+    this.submitEvent.emit('delete')
+  }
+
+  sendSave(e) {
+    this.submitEvent.emit('save')
+  }
+
+  sendEdit(e) {
+    this.submitEvent.emit('edit')
+  }
+
+  sendCancel(e) {
+    this.submitEvent.emit('cancel')
   }
 
   constructor(private _fb: FormBuilder) {}
@@ -36,12 +48,12 @@ export class ProfileComponent implements OnChanges, OnInit {
   createForm() {
     this.kisiForm = this._fb.group({
       fullname: '',
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
       office: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('[0-9]{1,4}')]],
       position: ['', Validators.required],
       mobile: ['', Validators.pattern('[0-9]{11}')],
-      load: [0, [Validators.required, Validators.pattern('[0-9.]{1,4}')]],
+      load: [0, [Validators.required, Validators.pattern('[0-9.]{1,10}')]],
       vacation: [false, Validators.required]
     });
   }

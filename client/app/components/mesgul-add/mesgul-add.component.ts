@@ -22,7 +22,9 @@ export class MesgulAddComponent implements OnInit  {
   tor = [0, 1, 7];
 
   constructor(
+    private _busy: BusyService,
     public dialogRef: MatDialogRef<MesgulAddComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private _fb: FormBuilder) {}
 
   ngOnInit() {
@@ -54,12 +56,54 @@ export class MesgulAddComponent implements OnInit  {
     this.repeats[2] = REPEATS[2] + ' ' +  day
   }
 
+  addBusyToOwner(b): void {
+    this._busy.setBusyByOwnerId(b)
+      .subscribe(res => {
+        // this.openSnackBar(res.title + ' başarıyla eklendi.')
+      });
+  }
+
+  // FIXME: Add the busy object ot users busy field
+  pushBusyToUser(busy): void {
+    // TODO implement this
+  }
+
+  parseForm(f){
+    // Get the dates as is. if .dateOnly() method is used, we lose timezone.
+    var sd = moment(f.startDate)
+    var ed = moment(f.endDate)
+
+    // Make sure dates are the same or end is bigger
+    if (sd.isAfter(ed)){
+      return -1
+    }
+
+    sd = sd.add(f.startTime.slice(0,2), 'h');
+    sd = sd.add(f.startTime.slice(-2), 'm');
+    ed = ed.add(f.endTime.slice(0,2), 'h');
+    ed = ed.add(f.endTime.slice(-2), 'm');
+
+    // Make sure start date is after end.
+    if (sd.isSameOrAfter(ed)){
+      console.log('3')
+      return -1
+    }
+
+    var model : Zaman = {
+      title : f.title,
+      startDate : sd.format(),
+      endDate : ed.format(),
+      owner_id : this.data._id,
+      recur : f.recur
+    };
+
+    return model;
+  }
 
   onNoClick(): void {
     // var x = this.busyForm.value;
     // console.log( moment(x.startDate).recur().every(1).days())
     // console.log( moment(x.startDate).recur(x.endDate).every(7).days())
-
 
     // var sd = moment(x.startDate).dateOnly()
     // var ed = moment(x.endDate).dateOnly()
@@ -80,8 +124,13 @@ export class MesgulAddComponent implements OnInit  {
   }
 
   onSubmit() {
-    // TODO: can add a validator here.
-    //const busy = this.parseForm(this.busyForm.value);
-    this.dialogRef.close(this.busyForm.value);
+    const busy = this.parseForm(this.busyForm.value);
+    if (busy != -1){
+      this.addBusyToOwner(busy);
+      this.dialogRef.close(this.busyForm.value);
+    }
+    else {
+      this.dialogRef.close(-1);
+    }
   }
 }

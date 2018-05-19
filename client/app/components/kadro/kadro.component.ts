@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
-import { OE } from '../../oe';
+import { OE, POSITIONS } from '../../oe';
 import { UserService } from '../../services/user.service';
 import { KisiAddComponent } from '../kisi-add/kisi-add.component';
 
@@ -20,6 +20,7 @@ export class KadroComponent implements OnInit {
   displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
   dataSource: any;
   filterValue: string;
+  position = POSITIONS;
   title = "Bölüm Kadrosu"
 
   constructor(

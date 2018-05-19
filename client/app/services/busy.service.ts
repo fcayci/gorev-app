@@ -40,8 +40,8 @@ export class BusyService {
       );
   }
 
-  // delete busy time for given Time ID
-  delBusyByTimeId(busy: Zaman): Observable<{}>{
+  // delete busy time for given Time
+  delBusyByTime(busy: Zaman): Observable<{}>{
     return this.http.delete(busyUrl + '/' + busy._id)
       .pipe(
         tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
