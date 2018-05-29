@@ -85,7 +85,6 @@ export class MesgulAddComponent implements OnInit  {
 
     // Make sure start date is after end.
     if (sd.isSameOrAfter(ed)){
-      console.log('3')
       return -1
     }
 

@@ -1,66 +1,122 @@
-    <section class="col-md-4">
-      <h2>{{title}}</h2>
-      <form class="form-group" [formGroup]="gorevForm" (ngSubmit)="onSubmit()">
+<mat-card class="no-padding">
+  <div class="mat-elevation-z8">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row >
+        <mat-icon>note_add</mat-icon>  <h2 style="padding-left:5px;">{{ title }}</h2>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
-        <fieldset class="form-group">
-          <label for="title">Görev Adı</label>
-          <input type="text" class="form-control" placeholder="Ornek: ELM 000 vize gozetmenligi" formControlName="title">
-        </fieldset>
-        <div class="error"
-          *ngIf="gorevForm.get('title').hasError('required') && gorevForm.get('title').touched">
-          Name is required
-        </div>
-        <fieldset class="form-group">
-          <label for="type">Görev Türü</label>
-          <select class="form-control" formControlName="type">
-            <option *ngFor="let pos of positions" [value]="pos">{{pos}}</option>
-          </select>
-        </fieldset>
+    <mat-card-content style="padding:24px; width:60%" [formGroup]="gorevForm">
 
-        <div formGroupName="time">
-          <fieldset class="form-group">
-            <label for="startDate">Start Date</label>
-            <input type="date" formControlName="startDate">
-          </fieldset>
+      <mat-vertical-stepper linear #stepper>
+        <mat-step [stepControl]="gorevForm">
 
-          <fieldset class="form-group">
-            <label for="endDate">End Date</label>
-            <input type="date" formControlName="endDate">
-          </fieldset>
+          <form [formGroup]="gorevForm">
+            <ng-template matStepLabel>Görevlendirme detaylarını giriniz</ng-template>
 
-          <fieldset class="form-group">
-            <label for="startTime">Start Time</label>
-            <input type="time" formControlName="startTime">
-          </fieldset>
+            <div class="form-row">
+              <mat-form-field  style="width:50%">
+                <input matInput formControlName="title" placeholder="Görev Adı">
+                <mat-hint align="end">Örn: ELM 000 vize gözetmenliği</mat-hint>
+              </mat-form-field>
 
-          <fieldset class="form-group">
-            <label for="timeEnd">End Time</label>
-            <input type="time" formControlName="endTime">
-          </fieldset>
-        </div>
+              <mat-form-field  style="width:40%">
+                <mat-select formControlName="type" placeholder="Görev Türü">
+                  <mat-option *ngFor="let t of types" [value]="t">{{[t]}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="!gorevForm.hasError('type')">
+                  Bir görev türü seçiniz.
+                </mat-error>
+              </mat-form-field>
+            </div>
 
-        <fieldset class="form-group">
-          <label for="num">Kisi sayisi</label>
-          <input type="string" class="form-control" formControlName="peopleCount">
-        </fieldset>
+            <div formGroupName="time">
+              <div class="form-row">
+                <mat-form-field class="date-align" style="width:50%">
+                  <input matInput formControlName="startDate" [matDatepicker]="startDate" placeholder="Başlangıç Tarihi">
+                  <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                  <mat-datepicker #startDate></mat-datepicker>
+                </mat-form-field>
 
-        <fieldset >
-          <label for="type">Gorevlendirilecek Kişi</label>
-          <select class="form-control" formControlName="choosenPeople">
-            <option *ngFor="let person of available" [value]="person._id">{{person.fullname}} | {{ person.load}}</option>
-          </select>
-        </fieldset>
+                <mat-form-field style="width:40%">
+                  <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
+                </mat-form-field>
+              </div>
 
-        <fieldset class="btn-group">
-          <button type="button" class="btn btn-default" routerLink="/angarya">Geri Dön</button>
-          <button type="button" class="btn btn-default" (click)="resetForm">Sıfırla</button>
-          <button type="button" class="btn btn-success" [disabled]="!gorevForm.valid" (click)="pickKisi">Kişi ata</button>
-          <button type="submit" class="btn btn-primary" [disabled]="!assigned">Kaydet</button>
-        </fieldset>
-      </form>
-    </section>
-    <section class="col-md-8">
-    </section>
+              <div class="form-row">
+                <mat-form-field class="date-align" style="width:50%">
+                  <input matInput formControlName="endDate" [matDatepicker]="endDate" placeholder="Bitiş Tarihi">
+                  <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                  <mat-datepicker #endDate></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field style="width:40%">
+                  <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field  style="width:15%">
+                <input matInput formControlName="peopleCount" type="number" placeholder="Kişi Sayısı">
+              </mat-form-field>
+              <div  style="width:65%">
+                Toplam Süre: Yaklaşık {{ duration }}.
+              </div>
+            </div>
+            <div class="button-row">
+              <button mat-button matStepperNext color="primary">Devam</button>
+            </div>
+          </form>
+        </mat-step>
+
+        <mat-step [stepControl]="peopleForm">
+          <form [formGroup]="peopleForm">
+            <ng-template matStepLabel>Kişi ataması yapınız</ng-template>
+
+            <div class="form-row">
+              <mat-form-field>
+                <mat-select placeholder="Kişi seçiniz">
+                  <mat-option *ngFor="let k of available" [value]="k">{{k.fullname}} ({{k.load}})</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <ul>
+                <li *ngFor="let c of notAvailable" [value]="c">{{c.fullname}}</li>
+              </ul>
+            </div>
+
+            <div class="button-row">
+              <button mat-button matStepperPrevious color="warn">Geri</button>
+              <button mat-button matStepperNext color="primary" (click)="hede()">Devam</button>
+            </div>
+          </form>
+        </mat-step>
+
+        <mat-step>
+          <ng-template matStepLabel>Done</ng-template>
+          You are now done.
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+          </div>
+        </mat-step>
+      </mat-vertical-stepper>
+
+
+
+
+      <div class="button-row">
+        <mat-dialog-actions>
+          <button mat-raised-button color="warn">İptal</button>
+          <button mat-raised-button color="primary" [disabled]="!gorevForm.valid">Kaydet</button>
+        </mat-dialog-actions>
+      </div>
+
+    </mat-card-content>
+  </div>
+</mat-card>
+
     {{ diagnostic }}
     <p>gorevForm value: {{ gorevForm.value | json}}</p>
     <p>gorevForm status: {{ gorevForm.status | json }}</p>
