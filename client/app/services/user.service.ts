@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { OE } from '../oe';
+import { catchError } from 'rxjs/operators';
+import { Faculty } from '../faculty';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -19,51 +19,48 @@ const kadroUrl = '/api/kadro';
 export class UserService {
 
   constructor(private http: HttpClient) {
-    console.log('[userdata.service.ts] User Data service initialized...');
   }
 
-  getKadro(): Observable<OE[]> {
-    return this.http.get<OE[]>(kadroUrl)
+  getKadro(): Observable<Faculty[]> {
+    let url = kadroUrl;
+    return this.http.get<Faculty[]>(url)
       .pipe(
-        //tap(_ => console.log(`[user service] fetched kadro ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  getKisi(username: string): Observable<OE> {
-    return this.http.get<OE>(kadroUrl + '/' + username)
+  // FIXME: Check if username is valid (and all other parameters)
+  getKisi(username: string): Observable<Faculty> {
+    let url = kadroUrl + '/' + username;
+    return this.http.get<Faculty>(url)
       .pipe(
-        tap(_ => console.log(`[user service] fetched kisi ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  updateKisi(kisi: OE): Observable<OE> {
-    return this.http.put<OE>(kadroUrl + '/' + kisi.username,
-      kisi, httpOptions)
+  updateKisi(kisi: Faculty): Observable<Faculty> {
+    let url = kadroUrl + '/' + kisi.username;
+    return this.http.put<Faculty>(url, kisi, httpOptions)
       .pipe(
-        tap(_ => console.log(`[user service] updated kisi ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  addKisi(kisi: OE): Observable<OE> {
-    return this.http.post<OE>(kadroUrl, JSON.stringify(kisi), httpOptions)
+  addKisi(kisi: Faculty): Observable<Faculty> {
+    let url = kadroUrl;
+    return this.http.post<Faculty>(url, JSON.stringify(kisi), httpOptions)
       .pipe(
-        tap(_ => console.log(`[user service] added kisi`)),
         catchError(this.handleError)
       );
   }
 
-  // delete a kisi by passing the kisi
-  deleteKisi(kisi: OE): Observable<{}> {
-    return this.http.delete(kadroUrl + '/' + kisi.username)
+  deleteKisi(kisi: Faculty): Observable<{}> {
+    let url = kadroUrl + '/' + kisi.username;
+    return this.http.delete(url)
       .pipe(
-        tap(_ => console.log(`[user service] deleted kisi`)),
         catchError(this.handleError)
       );
   }
-
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

@@ -57,12 +57,12 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></mat-row>
+      <mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns" (click)="goToPerson(row)"></mat-row>
     </mat-table>
 
     <mat-paginator #paginator
       [pageSize]="50"
-      [pageSizeOptions]="[3, 5, 10, 25, 50]">
+      [pageSizeOptions]="[10, 25, 50]">
     </mat-paginator>
   </div>
 </mat-card>

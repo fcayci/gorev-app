@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Gorev } from '../../gorev';
+import { Task } from '../../task';
 import { TaskService } from '../../services/task.service';
 
 export class msg {
@@ -10,13 +10,13 @@ export class msg {
 }
 
 @Component({
-  selector: 'gorev',
-  templateUrl: './gorev.component.html'
+  selector: 'assignment-detail',
+  templateUrl: './assignment-detail.component.html'
 })
 
-export class GorevComponent implements OnInit {
+export class AssignmentDetailComponent implements OnInit {
 
-  gorev : Gorev;
+  gorev : Task;
 
   constructor(
     private _task: TaskService,
@@ -26,7 +26,7 @@ export class GorevComponent implements OnInit {
   ngOnInit(): void {
     var id = this._route.snapshot.paramMap.get('id');
     this._task.getTaskById(id)
-      .subscribe((gorev: Gorev) => {
+      .subscribe((gorev: Task) => {
         this.gorev = gorev;
       });
   }

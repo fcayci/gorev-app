@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { Gorev } from '../gorev';
+import { catchError } from 'rxjs/operators';
+import { Task } from '../task';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -19,50 +19,44 @@ const angaryaUrl = '/api/angarya';
 export class TaskService {
 
   constructor(private http:HttpClient) {
-    console.log('[taskdata.service.ts] Task Data service initialized...');
   }
 
-  // get all angarya in the db
-  getAllTasks(): Observable<Gorev[]>{
-    return this.http.get<Gorev[]>(angaryaUrl)
+  getAllTasks(): Observable<Task[]>{
+    let url = angaryaUrl;
+    return this.http.get<Task[]>(url)
       .pipe(
-        //tap(_ => console.log(`[task service] fetched all tasks ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  // get a single task by passing username as an argument
-  getTaskById(id: string): Observable<Gorev>{
-    return this.http.get<Gorev>(angaryaUrl + '/' + id)
+  getTaskById(id: string): Observable<Task>{
+    let url = angaryaUrl + '/' + id;
+    return this.http.get<Task>(url)
       .pipe(
-        tap(_ => console.log(`[task service] fetched task by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-
-  // get tasks of a given owner
-  getTasksByOwnerId(id: string): Observable<Gorev[]>{
-    return this.http.get<Gorev[]>(angaryaUrl + '/' + id)
+  getTasksByOwnerId(id: string): Observable<Task[]>{
+    let url = angaryaUrl + '/' + id;
+    return this.http.get<Task[]>(url)
       .pipe(
-        tap(_ => console.log(`[task service] fetched tasks by owner id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  addTask(task: Gorev): Observable<Gorev>{
-    return this.http.post<Gorev>(angaryaUrl, JSON.stringify(task), httpOptions)
+  addTask(task: Task): Observable<Task>{
+    let url = angaryaUrl;
+    return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
       .pipe(
-        tap(_ => console.log(`[task service] added task`)),
         catchError(this.handleError)
       );
   }
 
-  // delete given task
-  delTaskById(task: Gorev): Observable<{}>{
-    return this.http.delete(angaryaUrl + '/' + task._id)
+  delTaskById(task: Task): Observable<{}>{
+    let url = angaryaUrl + '/' + task._id;
+    return this.http.delete(url)
       .pipe(
-        tap(_ => console.log(`[task service] removed task by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }

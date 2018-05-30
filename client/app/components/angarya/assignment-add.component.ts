@@ -1,70 +1,63 @@
 import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { Observable, of} from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
 import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
-import { OE } from '../../oe';
-import { Zaman } from '../../zaman';
+import { Faculty } from '../../faculty';
+import { Busy } from '../../busy';
 
-import { Gorev, TYPES, GSTATES } from '../../gorev';
+import { Task, TYPES, GSTATES } from '../../Task';
 import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
 //import { TaskService } from '../../services/task.service';
 
 @Component({
-  selector: 'gorev-add',
-  templateUrl: './gorev-add.component.html'
+  selector: 'assignment-add',
+  templateUrl: './assignment-add.component.html'
 })
 
-export class GorevAddComponent implements OnInit {
+export class AssignmentAddComponent implements OnInit {
 
-  kadro : OE[];
-  available : OE[];
-  notAvailable : OE[];
-  busytimes : Zaman[];
+  kadro : Faculty[];
+  available : Faculty[];
+  notAvailable : Faculty[];
+  busytimes : Busy[];
   gorevForm : FormGroup;
   peopleForm : FormGroup;
 
   duration : any = 2;
-  gorev : Gorev;
+  gorev : Task;
   gstates = GSTATES;
   types = TYPES;
   assigned = false;
-
+  numbers;
 
   title = 'Yeni Görev Oluştur';
   edit = true;
 
-  // constructor(
-  //   private _fb: FormBuilder,
-  //   private _busy: BusyService,
-  //   private _user: UserService,
-  //   //private _task: TaskService,
-  //   private _router: Router,
-  //   private _location: Location) {}
-
   constructor(
-    private _fb: FormBuilder,
-    private _user: UserService,
-    private _busy: BusyService) {}
+      private _fb: FormBuilder,
+      private _user: UserService,
+      private _busy: BusyService) {
+    this.numbers = Array(7).fill(0).map((x,i)=>i+1);
+  }
 
   ngOnInit() {
     this.createGorevForm();
     this.createPeopleForm();
 
     this._busy.getBusyAll()
-      .subscribe((res : Zaman[]) => {
+      .subscribe((res : Busy[]) => {
         this.busytimes = res;
     });
 
     this._user.getKadro()
-      .subscribe((kadro : OE[]) => {
+      .subscribe((kadro : Faculty[]) => {
         this.kadro = kadro;
     });
 
@@ -85,14 +78,13 @@ export class GorevAddComponent implements OnInit {
         startTime: [ moment().startOf('hour').add(1,'hours').format('HH:mm'), Validators.required],
         endTime: [ moment().startOf('hour').add(3,'hours').format('HH:mm'), Validators.required]
       }),
-      duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]],
-      peopleCount: [1, Validators.required],
+      duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]]
     });
   }
 
-
   createPeopleForm() {
-    this.peopleForm = this._fb.group({
+    this.peopleForm = this._fb.group({,
+      peopleCount: [, [Validators.required, Validators.pattern('[1-7]')]],
       choosenPeople: [[], Validators.required],
       status: [0, Validators.required]
     });
@@ -178,7 +170,7 @@ export class GorevAddComponent implements OnInit {
   onSubmit() {
     var model = this.gorevForm.value;
     for ( let i = model.choosenPeople.length; i < model.peopleCount; i++){
-      let pick : OE = this.pickKisi()
+      let pick : Faculty = this.pickKisi()
       console.log(i, 'picked', pick.fullname)
       model.choosenPeople.push(pick._id)
       this.available.splice(0, 1)
@@ -234,8 +226,8 @@ export class GorevAddComponent implements OnInit {
   }
 
   getAvailableOEs(busies) {
-    var available: OE[] = [];
-    var notAvailable: OE[] = [];
+    var available: Faculty[] = [];
+    var notAvailable: Faculty[] = [];
     for (let kisi of this.kadro){
       if (busies.includes(kisi._id)){
         notAvailable.push(kisi);
@@ -247,7 +239,7 @@ export class GorevAddComponent implements OnInit {
     return [available, notAvailable];
   }
 
-  pickKisi(): OE {
+  pickKisi(): Faculty {
   //   Array.prototype.min = function(attrib) {
   //     return this.reduce(function(prev, curr){
   //         return prev[attrib] < curr[attrib] ? prev : curr;

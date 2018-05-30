@@ -1,41 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { OE } from '../../oe';
+import { Faculty } from '../../faculty';
 import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'kisi-wrapper',
-  templateUrl: './kisi-wrapper.component.html'
+  selector: 'faculty-wrapper',
+  templateUrl: './faculty-wrapper.component.html'
 })
 
-export class KisiWrapperComponent implements OnInit {
+export class FacultyWrapperComponent implements OnInit {
 
-  kisi: OE;     // current values
-  edit = false; // allow/disallow edits
+  kisi: Faculty;
+  edit = false;
 
   constructor(
     private _router: Router,
     private _route: ActivatedRoute,
-    private _user:UserService
+    private _user: UserService
   ) {}
 
   ngOnInit(): void {
     this.getKisi();
   }
 
+  // FIXME: add error handler
   getKisi(): void {
     var username = this._route.snapshot.paramMap.get('username');
     this._user.getKisi(username)
-      .subscribe((kisi : OE) => {
+      .subscribe((kisi : Faculty) => {
         this.kisi = kisi;
     });
   }
 
   updateKisi(): void {
     this._user.updateKisi(this.kisi)
-      .subscribe((kisi : OE) => {
+      .subscribe((kisi : Faculty) => {
         this.kisi = kisi;
     });
     this.toggleEdit();

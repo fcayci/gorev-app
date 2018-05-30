@@ -1,18 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { OE } from '../../oe';
+import { Faculty } from '../../faculty';
 import { UserService } from '../../services/user.service';
 import { TaskService } from '../../services/task.service';
 
 @Component({
-  selector: 'tasks',
-  templateUrl: './tasks.component.html'
+  selector: 'faculty-tasks',
+  templateUrl: './faculty-tasks.component.html'
 })
 
-export class TasksComponent implements OnInit {
+export class FacultyTasksComponent implements OnInit {
 
-  @Input() profile: OE;
+  @Input() profile: Faculty;
   @Input() edit: boolean;
 
   tasks : {};

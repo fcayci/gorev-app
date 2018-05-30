@@ -1,4 +1,4 @@
-export interface GorevDB {
+export interface TaskDB {
   _id?: string;
   title: string;
   type: number;
@@ -10,7 +10,7 @@ export interface GorevDB {
   status: number
 }
 
-export interface Gorev extends GorevDB {
+export interface Task extends TaskDB {
   startTime?: string;
   endTime?: string;
 }

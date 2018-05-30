@@ -12,7 +12,7 @@
         <mat-step [stepControl]="gorevForm">
 
           <form [formGroup]="gorevForm">
-            <ng-template matStepLabel>Görevlendirme detaylarını giriniz</ng-template>
+            <ng-template matStepLabel>Görevlendirme detayları</ng-template>
 
             <div class="form-row">
               <mat-form-field  style="width:50%">
@@ -56,9 +56,7 @@
             </div>
 
             <div class="form-row">
-              <mat-form-field  style="width:15%">
-                <input matInput formControlName="peopleCount" type="number" placeholder="Kişi Sayısı">
-              </mat-form-field>
+
               <div  style="width:65%">
                 Toplam Süre: Yaklaşık {{ duration }}.
               </div>
@@ -71,9 +69,19 @@
 
         <mat-step [stepControl]="peopleForm">
           <form [formGroup]="peopleForm">
-            <ng-template matStepLabel>Kişi ataması yapınız</ng-template>
+            <ng-template matStepLabel>Kişi detayları</ng-template>
 
             <div class="form-row">
+
+              <mat-form-field style="width:25%">
+                <mat-select formControlName="peopleCount" placeholder="Kişi Sayısı">
+                  <mat-option *ngFor="let n of numbers" [value]="n">{{[n]}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="!peopleForm.hasError('peopleCount')">
+                  Görevlendirilecek kişi sayısı seçiniz.
+                </mat-error>
+              </mat-form-field>
+
               <mat-form-field>
                 <mat-select placeholder="Kişi seçiniz">
                   <mat-option *ngFor="let k of available" [value]="k">{{k.fullname}} ({{k.load}})</mat-option>

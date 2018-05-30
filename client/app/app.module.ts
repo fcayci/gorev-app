@@ -15,22 +15,20 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
 import localeTr from '@angular/common/locales/tr';
 
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 
-import { AngaryaComponent } from './components/angarya/angarya.component';
-import { GorevComponent } from './components/gorev/gorev.component';
-import { GorevAddComponent } from './components/gorev-add/gorev-add.component';
+import { AssignmentListComponent } from './components/angarya/assignment-list.component';
+import { AssignmentDetailComponent } from './components/angarya/assignment-detail.component';
+import { AssignmentAddComponent } from './components/angarya/assignment-add.component';
 
-import { KadroComponent } from './components/kadro/kadro.component';
-import { KisiWrapperComponent } from './components/kisi/kisi-wrapper.component';
-import { ProfileComponent } from './components/kisi/profile.component';
-import { TasksComponent } from './components/kisi/tasks.component';
-import { MesgulComponent } from './components/kisi/mesgul.component';
-
-import { KisiAddComponent } from './components/kisi-add/kisi-add.component';
-import { MesgulAddComponent } from './components/mesgul-add/mesgul-add.component';
+import { FacultyListComponent } from './components/kadro/faculty-list.component';
+import { FacultyWrapperComponent } from './components/kadro/faculty-wrapper.component';
+import { FacultyProfileComponent } from './components/kadro/faculty-profile.component';
+import { FacultyTasksComponent } from './components/kadro/faculty-tasks.component';
+import { FacultyBusyComponent } from './components/kadro/faculty-busy.component';
+import { FacultyAddComponent } from './components/kadro/faculty-add.component';
+import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
 
 registerLocaleData(localeTr);
 
@@ -42,31 +40,31 @@ const ROUTES : Routes = [
   },
   {
     path: 'kadro',
-    component: KadroComponent
+    component: FacultyListComponent
   },
   {
     path: 'kisiekle',
-    component: KisiAddComponent
+    component: FacultyAddComponent
   },
   {
     path: 'mesgulekle',
-    component: MesgulAddComponent
+    component: FacultyBusyAddComponent
   },
   {
     path: 'kadro/:username',
-    component: KisiWrapperComponent
+    component: FacultyWrapperComponent
   },
   {
     path: 'angarya',
-    component: AngaryaComponent
+    component: AssignmentListComponent
   },
   {
     path: 'angarya/:id',
-    component: GorevComponent
+    component: AssignmentDetailComponent
   },
   {
     path: 'gorevekle',
-    component: GorevAddComponent
+    component: AssignmentAddComponent
   },
 ];
 
@@ -75,16 +73,16 @@ const ROUTES : Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    AngaryaComponent,
-    GorevComponent,
-    GorevAddComponent,
-    KadroComponent,
-    KisiWrapperComponent,
-    ProfileComponent,
-    TasksComponent,
-    MesgulComponent,
-    KisiAddComponent,
-    MesgulAddComponent
+    AssignmentListComponent,
+    AssignmentDetailComponent,
+    AssignmentAddComponent,
+    FacultyListComponent,
+    FacultyWrapperComponent,
+    FacultyProfileComponent,
+    FacultyBusyComponent,
+    FacultyTasksComponent,
+    FacultyAddComponent,
+    FacultyBusyAddComponent
   ],
   imports: [
     BrowserModule,
@@ -120,7 +118,8 @@ const ROUTES : Routes = [
     RouterModule.forRoot(ROUTES)
   ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'}],
+    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'}
+  ],
   bootstrap: [AppComponent]
 })
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { Zaman } from '../zaman';
+import { catchError } from 'rxjs/operators';
+import { Busy } from '../busy';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -19,41 +19,37 @@ const busyUrl = '/api/busy';
 export class BusyService {
 
   constructor(private http:HttpClient) {
-    console.log('[busydata.service.ts] Busy Data service initialized...');
   }
 
-  // get busy times for everybody
-  getBusyAll(): Observable<Zaman[]>{
-    return this.http.get<Zaman[]>(busyUrl)
+  getBusyAll(): Observable<Busy[]>{
+    let url = busyUrl;
+    return this.http.get<Busy[]>(url)
       .pipe(
-        //tap(_ => console.log(`[busy service] fetched busies ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  // get busy times for the given Owner ID
-  getBusyByOwnerId(owner_id: string): Observable<Zaman[]>{
-    return this.http.get<Zaman[]>(busyUrl + '/' + owner_id)
+  getBusyByOwnerId(owner_id: string): Observable<Busy[]>{
+    let url = busyUrl + '/' + owner_id;
+    return this.http.get<Busy[]>(url)
       .pipe(
-        tap(_ => console.log(`[busy service] fetched busy by owner id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  // delete busy time for given Time
-  delBusyByTime(busy: Zaman): Observable<{}>{
-    return this.http.delete(busyUrl + '/' + busy._id)
+  // FIXME: Change name to delBusy / deleteBusy
+  delBusyByTime(busy: Busy): Observable<{}>{
+    let url = busyUrl + '/' + busy._id;
+    return this.http.delete(url)
       .pipe(
-        tap(_ => console.log(`[busy service] removed busy by id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }
 
-  // set busy times for the given Owner ID
-  setBusyByOwnerId(busy: Zaman): Observable<Zaman>{
-    return this.http.post<Zaman>(busyUrl + '/' + busy.owner_id, JSON.stringify(busy), httpOptions)
+  setBusyByOwnerId(busy: Busy): Observable<Busy>{
+    let url = busyUrl + '/' + busy.owner_id;
+    return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
       .pipe(
-        tap(_ => console.log(`[busy service] created busy by owner id ${JSON.stringify(_)}`)),
         catchError(this.handleError)
       );
   }

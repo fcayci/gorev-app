@@ -1,24 +1,23 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef } from '@angular/material';
 
-import { OE, POSITIONS } from '../../oe';
+import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'kisi-add',
-  templateUrl: './kisi-add.component.html'
+  selector: 'faculty-add',
+  templateUrl: './faculty-add.component.html'
 })
 
-export class KisiAddComponent implements OnInit  {
+export class FacultyAddComponent implements OnInit  {
 
   positions = POSITIONS;
   kisiForm : FormGroup;
   title = 'Yeni Kişi Ekle';
 
   constructor(
-    public dialogRef: MatDialogRef<KisiAddComponent>,
+    public dialogRef: MatDialogRef<FacultyAddComponent>,
     private _fb: FormBuilder,
     private _user: UserService) {}
 
@@ -43,7 +42,7 @@ export class KisiAddComponent implements OnInit  {
   }
 
   onSubmit() {
-    const profile: OE = this.kisiForm.value;
+    const profile: Faculty = this.kisiForm.value;
     this._user.addKisi(profile)
       .subscribe(res => {
     });

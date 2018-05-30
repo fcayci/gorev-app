@@ -2,19 +2,19 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
-import { Gorev } from '../../gorev';
+import { Task } from '../../task';
 import { TaskService } from '../../services/task.service';
 
 @Component({
-  selector: 'angarya',
-  templateUrl: './angarya.component.html'
+  selector: 'assignment-list',
+  templateUrl: './assignment-list.component.html'
 })
 
-export class AngaryaComponent implements OnInit {
+export class AssignmentListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  angarya : Gorev[];
+  angarya : Task[];
   displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status'];
   dataSource : any;
 
@@ -26,7 +26,7 @@ export class AngaryaComponent implements OnInit {
 
   getAngarya() {
     this._task.getAllTasks()
-      .subscribe((angarya: Gorev[]) => {
+      .subscribe((angarya: Task[]) => {
         this.dataSource = new MatTableDataSource(angarya);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

@@ -8,14 +8,14 @@ import 'moment-recur-ts';
 import 'moment-duration-format';
 
 import { BusyService } from '../../services/busy.service';
-import { Zaman, REPEATS } from '../../zaman';
+import { Busy, REPEATS } from '../../busy';
 
 @Component({
-  selector: 'mesgul-add',
-  templateUrl: './mesgul-add.component.html'
+  selector: 'faculty-busy-add',
+  templateUrl: './faculty-busy-add.component.html'
 })
 
-export class MesgulAddComponent implements OnInit  {
+export class FacultyBusyAddComponent implements OnInit  {
 
   busyForm : FormGroup;
   repeats = JSON.parse(JSON.stringify(REPEATS));
@@ -88,7 +88,7 @@ export class MesgulAddComponent implements OnInit  {
       return -1
     }
 
-    var model : Zaman = {
+    var model : Busy = {
       title : f.title,
       startDate : sd.format(),
       endDate : ed.format(),

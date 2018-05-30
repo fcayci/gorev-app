@@ -1,16 +1,16 @@
 import { Component, OnChanges, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { OE, POSITIONS } from '../../oe';
+import { Faculty, POSITIONS } from '../../faculty';
 
 @Component({
-  selector: 'profile',
-  templateUrl: './profile.component.html'
+  selector: 'faculty-profile',
+  templateUrl: './faculty-profile.component.html'
 })
 
-export class ProfileComponent implements OnChanges, OnInit {
+export class FacultyProfileComponent implements OnChanges, OnInit {
 
-  @Input() profile: OE;
+  @Input() profile: Faculty;
   @Output() submitEvent = new EventEmitter<string>();
 
   positions = POSITIONS;

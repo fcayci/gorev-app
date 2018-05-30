@@ -1,24 +1,24 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
-import { OE, POSITIONS } from '../../oe';
+import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
-import { KisiAddComponent } from '../kisi-add/kisi-add.component';
+import { FacultyAddComponent } from './faculty-add.component';
 
 @Component({
-  selector: 'kadro',
-  templateUrl: './kadro.component.html'
+  selector: 'faculty-list',
+  templateUrl: './faculty-list.component.html'
 })
 
-export class KadroComponent implements OnInit {
+export class FacultyListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
-  dataSource: any;
+  dataSource: MatTableDataSource<Faculty>;
   filterValue: string;
   position = POSITIONS;
   title = "Bölüm Kadrosu"
@@ -30,16 +30,17 @@ export class KadroComponent implements OnInit {
     public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.getKadro();
+    this.getAllPeople();
   }
 
-  getKadro() {
+  getAllPeople() {
     this._user.getKadro()
-      .subscribe((kadro : OE[]) => {
+      .subscribe((kadro : Faculty[]) => {
         this.dataSource = new MatTableDataSource(kadro);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
+        // FIXME: Make this filter exclude useless ones (i.e load)
         // Custom filter to exclude _id section
         this.dataSource.filterPredicate = (data, filter) => {
           // Transform the data into a lowercase string of all property values except _id
@@ -60,14 +61,15 @@ export class KadroComponent implements OnInit {
   }
 
   openDialog(): void {
-    let dialogRef = this.dialog.open(KisiAddComponent, {
+    let dialogRef = this.dialog.open(FacultyAddComponent, {
       width: '460px'
     });
 
+    // FIXME: Add error snackbar message.
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.openSnackBar(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
-        this.getKadro();
+        this.getAllPeople();
       }
     });
   }
@@ -83,7 +85,7 @@ export class KadroComponent implements OnInit {
     this.dataSource.filter = this.filterValue;
   }
 
-  onRowClicked(row) {
-    this._router.navigate(['/kadro/'+ row.username])
+  goToPerson(p) {
+    this._router.navigate(['/kadro/' + p.username])
   }
 }

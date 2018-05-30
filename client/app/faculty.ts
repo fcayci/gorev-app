@@ -1,4 +1,4 @@
-export interface OEDB {
+export interface FacultyDB {
   _id?: string;
   fullname: string;
   email: string;
@@ -14,7 +14,7 @@ export interface OEDB {
   vacation: boolean
 }
 
-export interface OE extends OEDB {
+export interface Faculty extends FacultyDB {
   isAvailable?: string
 }
 

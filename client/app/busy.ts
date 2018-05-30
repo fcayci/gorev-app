@@ -1,4 +1,4 @@
-export interface ZamanDB {
+export interface BusyDB {
   _id?: string;
   title: string;
   owner_id: string;
@@ -7,7 +7,7 @@ export interface ZamanDB {
   recur: number
 }
 
-export interface Zaman extends ZamanDB {
+export interface Busy extends BusyDB {
   startTime?: string;
   endTime?: string
 }
