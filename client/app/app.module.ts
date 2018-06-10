@@ -9,7 +9,7 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatInputModule, MatButtonModule, MatChipsModule, MatSidenavModule,
   MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
-  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule } from '@angular/material';
+  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatAutocompleteModule } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
@@ -115,6 +115,7 @@ const ROUTES : Routes = [
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [

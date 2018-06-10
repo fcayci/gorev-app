@@ -5,6 +5,7 @@ export interface TaskDB {
   startDate: string;
   endDate: string;
   duration?: number;
+  weight?: number;
   peopleCount: number;
   choosenPeople: Array<string>;
   status: number
