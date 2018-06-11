@@ -10,7 +10,6 @@
 
       <mat-vertical-stepper linear #stepper>
         <mat-step [stepControl]="gorevForm">
-
           <form [formGroup]="gorevForm">
             <ng-template matStepLabel>Görevlendirme detayları</ng-template>
 
@@ -30,24 +29,22 @@
               </mat-form-field>
             </div>
 
-            <div formGroupName="time">
-              <div class="form-row">
-                <mat-form-field class="date-align" style="width:50%">
-                  <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
-                  <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
-                  <mat-datepicker #gDate></mat-datepicker>
-                </mat-form-field>
-              </div>
+            <div class="form-row">
+              <mat-form-field class="date-align" style="width:50%">
+                <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
+                <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
+                <mat-datepicker #gDate></mat-datepicker>
+              </mat-form-field>
+            </div>
 
-              <div class="form-row">
-                <mat-form-field style="width:40%">
-                  <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
-                </mat-form-field>
+            <div class="form-row">
+              <mat-form-field style="width:40%">
+                <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
+              </mat-form-field>
 
-                <mat-form-field style="width:40%">
-                  <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
-                </mat-form-field>
-              </div>
+              <mat-form-field style="width:40%">
+                <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
+              </mat-form-field>
             </div>
 
             <div class="form-row">
@@ -129,7 +126,7 @@ Atanan kisiler:
           <div class="button-row">
             <button mat-button matStepperPrevious>Geri</button>
             <button mat-button color="warn" (click)="stepper.reset()">Temizle & Baştan</button>
-            <button mat-raised-button color="primary" [disabled]="!gorevForm.valid">Onayla & Bilgilendir</button>
+            <button mat-raised-button color="primary" (click)="onSubmit()">Onayla & Bilgilendir</button>
           </div>
         </mat-step>
       </mat-vertical-stepper>

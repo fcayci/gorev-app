@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 
-const OE = require('../models/ogretimelemani');
-const Zaman = require('../models/zaman');
+const Faculty = require('../models/faculty');
+const Busy = require('../models/busy');
 
 router.get('/', function(req, res, next){
   res.send('BUSY PAGE');
@@ -14,7 +14,7 @@ router.get('/', function(req, res, next){
  * return: busy array
  */
 router.get('/busy', function(req, res, next){
-  Zaman.find(function (err, busy){
+  Busy.find(function (err, busy){
     if (err) return console.error(err);
     res.status(200);
     res.json(busy);
@@ -26,7 +26,7 @@ router.get('/busy', function(req, res, next){
  * return: busy object
  */
 router.get('/busy/:id', function(req, res, next){
-  Zaman.find({ 'owner_id': mongoose.Types.ObjectId(req.params.id) }, function (err, busy) {
+  Busy.find({ 'owner_id': mongoose.Types.ObjectId(req.params.id) }, function (err, busy) {
     if (err) return console.error(err);
     res.send(busy);
   });
@@ -44,7 +44,7 @@ router.post('/busy/:id', function(req, res, next){
   var timeframe = req.body;
 
   // Probably not needed since we use new below.
-  var time = new Zaman(timeframe);
+  var time = new Busy(timeframe);
   time.save(function(err){
     if (err) return console.error(err);
     res.status(200);
@@ -57,7 +57,7 @@ router.post('/busy/:id', function(req, res, next){
  * return: status msg
  */
 router.delete('/busy/:id', function(req, res, next){
-  Zaman.deleteOne({ '_id': req.params.id }, function (err, msg) {
+  Busy.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
   });

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ZamanSchema = new Schema(
+var BusySchema = new Schema(
   {
     title: {
       type: String,
@@ -28,4 +28,4 @@ var ZamanSchema = new Schema(
 );
 
 //Export model
-module.exports = mongoose.model('Zaman', ZamanSchema);
+module.exports = mongoose.model('Busy', BusySchema);

@@ -16,7 +16,7 @@ import { Busy } from '../../busy';
 import { Task, TYPES, GSTATES } from '../../task';
 import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
-//import { TaskService } from '../../services/task.service';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'assignment-add',
@@ -25,11 +25,10 @@ import { UserService } from '../../services/user.service';
 
 export class AssignmentAddComponent implements OnInit {
 
-  kadro : Faculty[];
-  available : Faculty[];
-  notAvailable : Faculty[];
-  choosenPeople : Faculty[];
-  filteredAvailable : Observable<Faculty[]>;
+  kadro : Faculty[] = [];
+  available : Faculty[] = [];
+  notAvailable : Faculty[] = [];
+  choosenPeople : Faculty[] = [];
 
   busytimes : Busy[];
   gorevForm : FormGroup;
@@ -39,27 +38,25 @@ export class AssignmentAddComponent implements OnInit {
   gorev : Task;
   gstates = GSTATES;
   types = TYPES;
-  assigned = false;
-  numbers;
-  weights;
+  numbers : Array<number> = [];
+  weights : Array<number> = [];
   gorevInfo : string = '';
-  formTimeValid = false;
-  showTimeError = false;
+  formTimeValid : boolean = false;
+  showTimeError : boolean = false;
 
   title = 'Yeni Görev Oluştur';
 
   constructor(
     private _fb: FormBuilder,
+    private _router: Router,
     private _user: UserService,
-    private _busy: BusyService) {
+    private _busy: BusyService,
+    private _task: TaskService) {
   }
 
   ngOnInit() {
     this.numbers = Array(7).fill(0).map((x,i)=>i+1);
     this.weights = Array(12).fill(0).map((x,i)=>(i+1)/4);
-    this.choosenPeople = [];
-    this.available = [];
-    this.notAvailable = [];
 
     this.createGorevForm();
     this.createPeopleForm();
@@ -75,35 +72,31 @@ export class AssignmentAddComponent implements OnInit {
     });
 
     this.validateTimeAndFindAvailable();
-
-    // this.filteredAvailable = this.peopleForm.get('selectedPerson').valueChanges
-    //   .pipe(
-    //     startWith(''),
-    //     map(val => this.filter(val))
-    // );
   }
 
-  // filter(val: string): Faculty[] {
-  //   return this.available.filter(kisi =>
-  //     kisi.fullname.toLowerCase().includes(val));
-  // }
+  onSubmit() {
+    let gorev: Task = this.gorevForm.value;
+    console.log(gorev)
+    this._task.addTask(gorev)
+      .subscribe(res => {
+    });
 
-  // displayFn(kisi?: Faculty): string | undefined {
-  //   return kisi ? kisi.fullname : undefined;
-  // }
+    this._router.navigate(['/angarya'])
 
-  // Security problem. Susceptible to XSS
+  }
+
+  // FIXME: Security problem. Susceptible to XSS
   parseForm() {
     moment.locale('tr');
     let g = this.gorevForm.value;
-    let x = moment(g.time.gDate);
+    let x = moment(g.gDate);
 
-    let info = 'Bilginize,<br/><br/>'
-    info += '<b>' + g.title + '</b> icin <i>' + g.type + '</i> kapsaminda '
-    info += x.format("LL, dddd") + ' gunu ' + g.time.startTime + ' ve ' + g.time.endTime + ' saatleri arasinda,'
+    let info = '<b>' + g.title + '</b> icin <i>' + g.type + '</i> kapsaminda '
+    info += x.format("LL, dddd") + ' gunu ' + g.startTime + ' ve ' + g.endTime + ' saatleri arasinda,'
     info += ' asagida eklenen ' + g.peopleCount + ' kisi gorevlendirilmistir.'
     info += '<br/><br/>'
     info += '<b>Gorevlendirilen kisiler:</b><br/>'
+
     for (let i = 0; i<this.choosenPeople.length; i++){
       info += this.choosenPeople[i].position + ' ' + this.choosenPeople[i].fullname + '<br/>'
     }
@@ -112,16 +105,17 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   addToChoosenPeople(x?: Faculty) {
+    let p: Faculty;
+
     if (!x) {
-      let p = this.peopleForm.value.selectedPerson;
-      console.log(p)
+      p = this.peopleForm.value.selectedPerson;
     } else {
-      let p = x;
+      p = x;
     }
 
     if(this.choosenPeople.indexOf(p) === -1) {
-      console.log('hede')
       this.choosenPeople.push(p);
+      this.gorevForm.value.choosenPeople.push(p._id);
     }
 
     // Remove choosen from available
@@ -136,7 +130,7 @@ export class AssignmentAddComponent implements OnInit {
     }
 
     // Reset form
-    this.peopleForm.value.selectedPerson = '';
+    this.peopleForm.controls['selectedPerson'].setValue('');
   }
 
   removeFromChoosenPeople(p) {
@@ -144,16 +138,18 @@ export class AssignmentAddComponent implements OnInit {
     let index = this.choosenPeople.indexOf(p, 0);
     if (index > -1) {
       this.choosenPeople.splice(index, 1);
+      this.gorevForm.value.choosenPeople.splice(index, 1);
     }
 
     this.available.push(p);
-    this.available.sort(this.compare);
+    this.available.sort(this.compareLoad);
+
 
     // Enable form
     this.peopleForm.controls['selectedPerson'].enable();
 
     // Reset form
-    this.peopleForm.value.selectedPerson = '';
+    this.peopleForm.controls['selectedPerson'].setValue('');
   }
 
 
@@ -166,45 +162,30 @@ export class AssignmentAddComponent implements OnInit {
 
   clearAssignedPeople() {
     this.choosenPeople = [];
+    this.gorevForm.controls['choosenPeople'].setValue([]);
     this.gorevForm.patchValue({peopleCount: ''});
   }
-
-  // onSubmit() {
-  //   var model = this.gorevForm.value;
-  //   for ( let i = model.choosenPeople.length; i < model.peopleCount; i++){
-  //     let pick : Faculty = this.pickKisi()
-  //     console.log(i, 'picked', pick.fullname)
-  //     model.choosenPeople.push(pick._id)
-  //     this.available.splice(0, 1)
-  //     this.notAvailable.push(pick)
-  //   }
-  //   console.log(' not picked', model.choosenPeople.length, model.peopleCount)
-
-  //   // var gorev = this.createTask()
-  //   // addTaskToDB(gorev);
-  //   // addBusyToOE();
-  //   // returnBackToInfinity();
-  // }
 
   createGorevForm() {
     this.gorevForm = this._fb.group({
       title: ['asdf', Validators.required],
-      type: ['asdf', Validators.required],
-      time: this._fb.group({
-        gDate: [ moment().startOf('day').format(), Validators.required],
-        startTime: [ moment().startOf('hour').add(1,'hours').format('HH:mm'), Validators.required],
-        endTime: [ moment().startOf('hour').add(3,'hours').format('HH:mm'), Validators.required]
-      }),
+      type: ['Sekreterlik', Validators.required],
+      gDate: [ moment().startOf('day').format(), Validators.required],
+      startTime: [ moment().startOf('hour').add(1,'hours').format('HH:mm'), Validators.required],
+      endTime: [ moment().startOf('hour').add(3,'hours').format('HH:mm'), Validators.required],
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]]
+      duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]],
+      startDate: [],
+      endDate: [],
+      choosenPeople: [[], ],
+      status: ['Open'],
     });
   }
 
   createPeopleForm() {
     this.peopleForm = this._fb.group({
       selectedPerson: [{disabled: false}]
-      //choosenPeople: [Array, Validators.required, Array.length == this.gorevForm.value.peopleCount]
     });
   }
 
@@ -255,7 +236,7 @@ export class AssignmentAddComponent implements OnInit {
 
         this.available = [];
         this.notAvailable = [];
-        var t = this.gorevForm.value.time;
+        var t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
         var sd = moment(t.gDate)
@@ -275,6 +256,9 @@ export class AssignmentAddComponent implements OnInit {
           this.showTimeError = true;
         }
         else {
+          this.gorevForm.value.startDate = sd.format();
+          this.gorevForm.value.endDate = ed.format();
+
           this.formTimeValid = true;
           this.showTimeError = false;
 
@@ -289,15 +273,15 @@ export class AssignmentAddComponent implements OnInit {
             }
           }
 
-          this.available.sort(this.compare);
-          this.notAvailable.sort(this.compare);
+          this.available.sort(this.compareLoad);
+          this.notAvailable.sort(this.compareLoad);
 
         }
       }
     });
   }
 
-  compare(a,b) {
+  compareLoad(a,b) {
     if (a.load > b.load)
       return -1;
     if (a.load < b.load)
@@ -305,5 +289,12 @@ export class AssignmentAddComponent implements OnInit {
     return 0;
   }
 
+  compareName(a,b) {
+    if (a.fullname < b.fullname)
+      return -1;
+    if (a.fullname > b.fullname)
+      return 1;
+    return 0;
+  }
 
 }

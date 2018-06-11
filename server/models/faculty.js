@@ -4,7 +4,7 @@ const mongoose   = require('mongoose'); //,
 const Schema = mongoose.Schema;
 
 // TODO add ObjectID for Zaman
-const OESchema = new Schema(
+const FacultySchema = new Schema(
   {
     fullname: {
       type: String,
@@ -70,11 +70,11 @@ const OESchema = new Schema(
 //OESchema.plugin(timestamps);
 
 // Virtual for person's URL
-OESchema
+FacultySchema
 .virtual('url')
 .get(function () {
   return '/kadro/' + this._id;
 });
 
 //Export model
-module.exports = mongoose.model('OE', OESchema);
+module.exports = mongoose.model('Faculty', FacultySchema);

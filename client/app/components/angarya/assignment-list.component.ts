@@ -2,12 +2,24 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
+import { DataSource } from '@angular/cdk/collections';
+import { Observable, of, } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
 import { Task } from '../../task';
 import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'assignment-list',
-  templateUrl: './assignment-list.component.html'
+  templateUrl: './assignment-list.component.html',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 
 export class AssignmentListComponent implements OnInit {
@@ -18,13 +30,13 @@ export class AssignmentListComponent implements OnInit {
   displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status'];
   dataSource : any;
 
+  displayedRows$: Observable<Task[]>;
+  totalRows$: Observable<number>;
+
+
   constructor(private _task: TaskService) {}
 
   ngOnInit(): void {
-    this.getAngarya();
-  }
-
-  getAngarya() {
     this._task.getAllTasks()
       .subscribe((angarya: Task[]) => {
         this.dataSource = new MatTableDataSource(angarya);
@@ -47,7 +59,7 @@ export class AssignmentListComponent implements OnInit {
           }
           return data[sortHeaderId];
         };
-      });
+    });
   }
 
   applyFilter(filterValue: string) {
@@ -59,3 +71,16 @@ export class AssignmentListComponent implements OnInit {
     console.log('Row clicked: ', row);
   }
 }
+
+// export class ExampleDataSource extends DataSource<any> {
+//   /** Connect function called by the table to retrieve one stream containing the data to render. */
+//   connect(): Observable<Task[]> {
+//     const rows = [];
+//     data.forEach(task => rows.push(task, { detailRow: true, task }));
+//     console.log(rows);
+//     return Observable.of(rows);
+//   }
+
+//   disconnect() { }
+// }
+

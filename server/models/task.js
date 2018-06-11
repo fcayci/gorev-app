@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var GorevSchema = new Schema(
+var TaskSchema = new Schema(
   {
     title: {
       type: String,
@@ -27,12 +27,11 @@ var GorevSchema = new Schema(
     peopleCount: {
       type: Number,
       required: true,
-      min: 1,
-      default: 1
+      min: 1
     },
     choosenPeople: [{
       type: Schema.ObjectId,
-      ref: 'OE',
+      ref: 'Faculty',
       required: false
     }],
     status: {
@@ -45,11 +44,11 @@ var GorevSchema = new Schema(
 );
 
 // Virtual for gorev's URL
-GorevSchema
+TaskSchema
 .virtual('url')
 .get(function () {
   return '/tasks/' + this._id;
 });
 
 //Export model
-module.exports = mongoose.model('Gorev', GorevSchema);
+module.exports = mongoose.model('Task', TaskSchema);

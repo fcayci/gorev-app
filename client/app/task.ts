@@ -1,7 +1,7 @@
 export interface TaskDB {
   _id?: string;
   title: string;
-  type: number;
+  type: string;
   startDate: string;
   endDate: string;
   duration?: number;
@@ -14,6 +14,7 @@ export interface TaskDB {
 export interface Task extends TaskDB {
   startTime?: string;
   endTime?: string;
+  gDate?: string;
 }
 
 export const GSTATES = ['Açık', 'Bitmiş', 'Kapalı'];

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const Gorev = require('../models/gorev');
+const Task = require('../models/task');
 
 router.get('/', function(req, res, next){
   res.send('ANGARYA PAGE');
@@ -12,7 +12,7 @@ router.get('/', function(req, res, next){
  * return: angarya
  */
 router.get('/angarya', function(req, res, next){
-  Gorev.find(function (err, angarya) {
+  Task.find(function (err, angarya) {
     if (err) return console.error(err);
     res.send(angarya);
   });
@@ -23,7 +23,7 @@ router.get('/angarya', function(req, res, next){
  * return: angarya/gorev - depending on owner_id or _id
  */
 router.get('/angarya/:id', function(req, res, next){
-  Gorev.findOne({ '_id': req.params.id }, function (err, gorev) {
+  Task.findOne({ '_id': req.params.id }, function (err, gorev) {
     if (err) return console.error(err);
     res.send(gorev);
   });
@@ -39,7 +39,7 @@ router.post('/angarya', function(req, res, next){
   // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
 
-  var gorev = new Gorev(candidate);
+  var gorev = new Task(candidate);
   gorev.save(function(err){
     if (err) return console.error(err);
     res.status(200);
@@ -54,7 +54,7 @@ router.post('/angarya', function(req, res, next){
  */
 router.delete('/angarya/:id', function(req, res, next){
 
-  Gorev.deleteOne({ '_id': req.params.id }, function (err, msg) {
+  Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
   });

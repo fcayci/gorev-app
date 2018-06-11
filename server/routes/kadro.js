@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const OE = require('../models/ogretimelemani');
-const Zaman = require('../models/zaman');
+const Faculty = require('../models/faculty');
+const Busy = require('../models/busy');
 
 router.get('/', function(req, res, next){
   res.send('KADRO PAGE');
@@ -13,7 +13,7 @@ router.get('/', function(req, res, next){
  * return: kadro
  */
 router.get('/kadro', function(req, res, next){
-  OE.find(function (err, kadro) {
+  Faculty.find(function (err, kadro) {
     if (err) return console.error(err);
     res.send(kadro);
   });
@@ -24,7 +24,7 @@ router.get('/kadro', function(req, res, next){
  * return: single person
  */
 router.get('/kadro/:username', function(req, res, next){
-  OE.findOne({ 'username': req.params.username }, function (err, kisi) {
+  Faculty.findOne({ 'username': req.params.username }, function (err, kisi) {
     if (err) return console.error(err);
     res.send(kisi);
   });
@@ -46,7 +46,7 @@ router.post('/kadro', function(req, res, next){
   else {
     candidate.username = candidate.email;
 
-    var kisi = new OE(candidate);
+    var kisi = new Faculty(candidate);
     kisi.save(function(err){
       if (err) return console.error(err);
       res.status(200);
@@ -61,7 +61,7 @@ router.post('/kadro', function(req, res, next){
  */
 router.delete('/kadro/:username', function(req, res, next){
 
-  OE.deleteOne({ 'username': req.params.username }, function (err, msg) {
+  Faculty.deleteOne({ 'username': req.params.username }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
   });
@@ -78,10 +78,9 @@ router.put('/kadro/:username', function(req, res, next){
   // TODO: Better way?
   var candidate = req.body;
   var id = candidate._id;
-  delete candidate.createdAt;
 
   // new: true makes it return the updated kisi object.
-  OE.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
+  Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
     if (err) return console.error(err);
     return res.send(kisi);
   })
@@ -97,7 +96,7 @@ router.put('/kadro/:username', function(req, res, next){
   // busy should be in ObjectId('id') format
   var busy = req.body;
 
-  OE.update({'username': req.params.username},
+  Faculty.update({'username': req.params.username},
     { $push : {'busy' : busy} },
     function(err, msg){
       if (err) return console.error(err);
@@ -115,7 +114,7 @@ router.put('/kadro/:username', function(req, res, next){
   // busy should be in ObjectId('id') format
   var busy = req.body;
 
-  OE.update({'username': req.params.username},
+  Faculty.update({'username': req.params.username},
     { $pull : {'busy' : busy} },
     function(err, msg){
       if (err) return console.error(err);

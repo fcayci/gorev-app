@@ -37,7 +37,7 @@
 
         <ng-container matColumnDef="date">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}} - <br/>{{row.endDate | date: "dd MMMM EEEE": '': 'tr'}}</mat-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="time">
@@ -48,6 +48,13 @@
         <ng-container matColumnDef="status">
           <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
           <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
+        </ng-container>
+
+        <!-- Expanded Content Column - The detail row is made up of this one column -->
+        <ng-container matColumnDef="expandedDetail">
+          <mat-cell *matCellDef="let detail">
+            The symbol for hede
+          </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
