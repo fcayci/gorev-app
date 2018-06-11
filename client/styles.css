@@ -108,6 +108,10 @@ header {
   margin-top: 5px;
 }
 
+.mat-vertical-stepper-header{
+    pointer-events: none !important;
+}
+
 /*
 .navbar-right-custom {
   margin-right: 10px!important;

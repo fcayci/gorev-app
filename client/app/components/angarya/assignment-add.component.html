@@ -71,7 +71,10 @@
 
             </div>
             <div class="button-row">
-              <button mat-button matStepperNext color="primary">Devam</button>
+              <mat-error *ngIf="showTimeError">
+                Saat aralığı hatalı.
+              </mat-error>
+              <button mat-button matStepperNext color="primary" (click)="autoAssignPeople()" [disabled]="!formTimeValid">Atama yap & Devam</button>
             </div>
           </form>
         </mat-step>
@@ -80,76 +83,57 @@
           <form [formGroup]="peopleForm">
             <ng-template matStepLabel>Kişi ataması</ng-template>
 
-            <div class="form-row">
-              <button mat-raised-button color="warn" (click)="autoAssignPeople()">Müsait kişilerden otomatik atama yap</button>
-            </div>
-            <br >
+              <div class="form-row" style="width: 75%">
 
-            <div class="form-row">
+                <mat-form-field  style="width:65%">
+                  <mat-select formControlName="selectedPerson" placeholder="Kendim seçeceğim">
+                    <mat-option *ngFor="let c of available" [value]="c"><span style="margin-right: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span><span> {{c.fullname}}</span></mat-option>
+                  </mat-select>
+                </mat-form-field>
 
-              <mat-form-field style="width:75%">
-                <mat-select formControlName="selectedPerson" placeholder="(Keyfi) Kendim seçecegim.">
-                  <mat-option *ngFor="let c of available" [value]="c">[{{c.load}}] | {{c.fullname}}</mat-option>
-                </mat-select>
-              </mat-form-field>
+                <!-- <mat-form-field style="width: 65%">
+                  <input matInput formControlName="selectedPerson" placeholder="(Keyfi) Kendim seçeceğim." [matAutocomplete]="auto" >
+                  <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
+                    <mat-option *ngFor="let c of filteredAvailable | async" [value]="c">
+                      <span style="margin-right: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span><span>{{c.fullname}}</span>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field> -->
 
-              <button mat-button color="primary" (click)="addToChoosenPeople()" [disabled]="!peopleForm.value.selectedPerson">Ekle</button>
+                <button mat-button color="primary" (click)="addToChoosenPeople()" [disabled]="available.indexOf(peopleForm.value.selectedPerson) === -1">Ekle</button>
 
-              <!-- <mat-form-field style="width:65%">
-                <input matInput placeholder="(Keyfi) Kendim seçecegim." [matAutocomplete]="auto" >
-                <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option *ngFor="let c of available" [value]="c">
-                    <span>[{{c.load}}] | {{c.fullname}}</span>
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field> -->
+              </div>
+Atanan kisiler:
+              <div class="form-row">
+                <mat-chip-list class="mat-chip-list-stacked">
+                  <mat-chip *ngFor="let c of choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c"><mat-icon style="margin-left:0; margin-right:7px" matChipRemove>cancel</mat-icon> {{c.fullname}} <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span></mat-chip>
+                </mat-chip-list>
 
-            </div>
-
-            <div class="form-row">
-
-              <mat-card style="width:45%">
-                <mat-card-subtitle>Seçilmişler</mat-card-subtitle>
-              <ul>
-                <li *ngFor="let c of choosenPeople" (click)="removeFromChoosenPeople(c)" [value]="c">{{c.fullname}}</li>
-              </ul>
-              </mat-card>
-              <mat-card style="width:45%">
-                <mat-card-subtitle>Meşguller</mat-card-subtitle>
-              <ul>
-                <li *ngFor="let c of notAvailable" [value]="c">{{c.fullname}}</li>
-              </ul>
-              </mat-card>
-            </div>
+              </div>
 
             <div class="button-row">
-              <button mat-button matStepperPrevious color="warn">Geri</button>
-              <button mat-button matStepperNext color="primary" (click)="parseForm()">Devam</button>
+              <button mat-button matStepperPrevious (click)="clearAssignedPeople()" color="warn">Temizle & Geri</button>
+              <button mat-button matStepperNext color="primary" [disabled]="choosenPeople.length != gorevForm.value.peopleCount" (click)="parseForm()">Devam</button>
             </div>
           </form>
         </mat-step>
 
         <mat-step>
-          <ng-template matStepLabel>Onay</ng-template>
-          Görevlendirmeyi onaylayin.
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button (click)="stepper.reset()">Reset</button>
+          <ng-template matStepLabel>Görevlendirmeyi onaylayin</ng-template>
+
+          <mat-card><div [innerHTML]="gorevInfo"></div></mat-card>
+
+          <!-- <div>Konu: {{gorevForm.value.title}} </div>
+          <div>Tur: {{gorevForm.value.type}}</div> -->
+
+          <div class="button-row">
+            <button mat-button matStepperPrevious>Geri</button>
+            <button mat-button color="warn" (click)="stepper.reset()">Temizle & Baştan</button>
+            <button mat-raised-button color="primary" [disabled]="!gorevForm.valid">Onayla & Bilgilendir</button>
           </div>
         </mat-step>
       </mat-vertical-stepper>
 
-      <div class="button-row">
-        <mat-dialog-actions>
-          <button mat-raised-button color="warn">İptal</button>
-          <button mat-raised-button color="primary" [disabled]="!gorevForm.valid">Kaydet</button>
-        </mat-dialog-actions>
-      </div>
-
     </mat-card-content>
   </div>
 </mat-card>
-
-    {{ diagnostic }}
-    <p>gorevForm value: {{ gorevForm.value | json}}</p>
-    <p>gorevForm status: {{ gorevForm.status | json }}</p>

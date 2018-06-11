@@ -9,7 +9,7 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatInputModule, MatButtonModule, MatChipsModule, MatSidenavModule,
   MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
-  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatAutocompleteModule } from '@angular/material';
+  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule, MatAutocompleteModule } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
@@ -107,6 +107,7 @@ const ROUTES : Routes = [
     MatDialogModule,
     MatSnackBarModule,
     MatIconModule,
+    MatBadgeModule,
     MatSlideToggleModule,
     MatStepperModule,
     MatDatepickerModule,

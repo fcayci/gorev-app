@@ -29,6 +29,7 @@ export class AssignmentAddComponent implements OnInit {
   available : Faculty[];
   notAvailable : Faculty[];
   choosenPeople : Faculty[];
+  filteredAvailable : Observable<Faculty[]>;
 
   busytimes : Busy[];
   gorevForm : FormGroup;
@@ -41,6 +42,9 @@ export class AssignmentAddComponent implements OnInit {
   assigned = false;
   numbers;
   weights;
+  gorevInfo : string = '';
+  formTimeValid = false;
+  showTimeError = false;
 
   title = 'Yeni Görev Oluştur';
 
@@ -54,6 +58,8 @@ export class AssignmentAddComponent implements OnInit {
     this.numbers = Array(7).fill(0).map((x,i)=>i+1);
     this.weights = Array(12).fill(0).map((x,i)=>(i+1)/4);
     this.choosenPeople = [];
+    this.available = [];
+    this.notAvailable = [];
 
     this.createGorevForm();
     this.createPeopleForm();
@@ -68,21 +74,62 @@ export class AssignmentAddComponent implements OnInit {
         this.kadro = kadro;
     });
 
-    this.onTimeChanges();
-    this.onPeopleChanges();
+    this.validateTimeAndFindAvailable();
+
+    // this.filteredAvailable = this.peopleForm.get('selectedPerson').valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map(val => this.filter(val))
+    // );
   }
 
-  addToChoosenPeople() {
-    let p = this.peopleForm.value.selectedPerson;
+  // filter(val: string): Faculty[] {
+  //   return this.available.filter(kisi =>
+  //     kisi.fullname.toLowerCase().includes(val));
+  // }
+
+  // displayFn(kisi?: Faculty): string | undefined {
+  //   return kisi ? kisi.fullname : undefined;
+  // }
+
+  // Security problem. Susceptible to XSS
+  parseForm() {
+    moment.locale('tr');
+    let g = this.gorevForm.value;
+    let x = moment(g.time.gDate);
+
+    let info = 'Bilginize,<br/><br/>'
+    info += '<b>' + g.title + '</b> icin <i>' + g.type + '</i> kapsaminda '
+    info += x.format("LL, dddd") + ' gunu ' + g.time.startTime + ' ve ' + g.time.endTime + ' saatleri arasinda,'
+    info += ' asagida eklenen ' + g.peopleCount + ' kisi gorevlendirilmistir.'
+    info += '<br/><br/>'
+    info += '<b>Gorevlendirilen kisiler:</b><br/>'
+    for (let i = 0; i<this.choosenPeople.length; i++){
+      info += this.choosenPeople[i].position + ' ' + this.choosenPeople[i].fullname + '<br/>'
+    }
+
+    this.gorevInfo = info;
+  }
+
+  addToChoosenPeople(x?: Faculty) {
+    if (!x) {
+      let p = this.peopleForm.value.selectedPerson;
+      console.log(p)
+    } else {
+      let p = x;
+    }
+
     if(this.choosenPeople.indexOf(p) === -1) {
+      console.log('hede')
       this.choosenPeople.push(p);
     }
 
     // Remove choosen from available
-    var index = this.available.indexOf(p, 0);
+    let index = this.available.indexOf(p, 0);
     if (index > -1) {
       this.available.splice(index, 1);
     }
+
     // Disable form if good to go.
     if (this.gorevForm.value.peopleCount == this.choosenPeople.length) {
       this.peopleForm.controls['selectedPerson'].disable();
@@ -94,12 +141,13 @@ export class AssignmentAddComponent implements OnInit {
 
   removeFromChoosenPeople(p) {
     // Remove choosen from available
-    var index = this.choosenPeople.indexOf(p, 0);
+    let index = this.choosenPeople.indexOf(p, 0);
     if (index > -1) {
       this.choosenPeople.splice(index, 1);
     }
 
     this.available.push(p);
+    this.available.sort(this.compare);
 
     // Enable form
     this.peopleForm.controls['selectedPerson'].enable();
@@ -110,19 +158,16 @@ export class AssignmentAddComponent implements OnInit {
 
 
   autoAssignPeople() {
-
+    // Since available is sorted, just push the top x people
+    for (let i = 0; i < this.gorevForm.value.peopleCount; i++){
+      this.addToChoosenPeople(this.available[0])
+    }
   }
 
-  pickKisi(): Faculty {
-  //   Array.prototype.min = function(attrib) {
-  //     return this.reduce(function(prev, curr){
-  //         return prev[attrib] < curr[attrib] ? prev : curr;
-  //     });
-  //   }
-  //   return this.available.min('load')
-    return this.available[0]
+  clearAssignedPeople() {
+    this.choosenPeople = [];
+    this.gorevForm.patchValue({peopleCount: ''});
   }
-
 
   // onSubmit() {
   //   var model = this.gorevForm.value;
@@ -141,7 +186,6 @@ export class AssignmentAddComponent implements OnInit {
   //   // returnBackToInfinity();
   // }
 
-  // INITIALIZERS
   createGorevForm() {
     this.gorevForm = this._fb.group({
       title: ['asdf', Validators.required],
@@ -159,79 +203,9 @@ export class AssignmentAddComponent implements OnInit {
 
   createPeopleForm() {
     this.peopleForm = this._fb.group({
-      selectedPerson: [{disabled: false}],
+      selectedPerson: [{disabled: false}]
+      //choosenPeople: [Array, Validators.required, Array.length == this.gorevForm.value.peopleCount]
     });
-  }
-
-  onTimeChanges() {
-    this.gorevForm.get('time').valueChanges.subscribe(t => {
-      if(t.gDate && t.startTime && t.endTime){
-        this.parseTimeandFindAvailable(t);
-      }
-      else {
-        // reset arrays
-        this.available = [];
-        this.notAvailable = [];
-      }
-    },
-    err => {
-      console.log('ERROR');
-    });
-  }
-
-  onPeopleChanges() {
-    this.gorevForm.get('peopleCount').valueChanges.subscribe(pc => {
-      var t = this.gorevForm.value.time;
-      if(t.gDate && t.startTime && t.endTime){
-        this.parseTimeandFindAvailable(t);
-      }
-      else {
-        // reset arrays
-        this.available = [];
-        this.notAvailable = [];
-      }
-    },
-    err => {
-      console.log('ERROR');
-    });
-  }
-
-  parseTimeandFindAvailable(t){
-    // Get the dates as is. if .dateOnly() method is used, we lose timezone.
-    var sd = moment(t.gDate)
-    var ed = moment(t.gDate)
-
-    // Combine the date & times
-    sd = sd.add(t.startTime.slice(0,2), 'h');
-    sd = sd.add(t.startTime.slice(-2), 'm');
-    ed = ed.add(t.endTime.slice(0,2), 'h');
-    ed = ed.add(t.endTime.slice(-2), 'm');
-
-    // Make sure start date is after end.
-    if (sd.isSameOrAfter(ed)){
-      console.log('ERROR');
-      return -1
-    }
-
-    // Get duration
-    var d = moment.duration(ed.diff(sd)).humanize();
-
-    // Update duration
-    this.duration = d;
-
-    let NAids = this.findBusies(sd, ed);
-
-    this.notAvailable = [];
-    this.available = [];
-
-    for (let k of this.kadro ){
-      // If kisi id is not in NAids, add to available
-      if (NAids.indexOf(k._id) === -1){
-        this.available.push(k)
-      } else {
-        this.notAvailable.push(k)
-      }
-    }
   }
 
   findBusies(gs, ge) {
@@ -274,4 +248,62 @@ export class AssignmentAddComponent implements OnInit {
     }
     return NAs;
   }
+
+  validateTimeAndFindAvailable() {
+    this.gorevForm.statusChanges.subscribe(status => {
+      if (status == 'VALID') {
+
+        this.available = [];
+        this.notAvailable = [];
+        var t = this.gorevForm.value.time;
+
+        // Get the dates as is. if .dateOnly() method is used, we lose timezone.
+        var sd = moment(t.gDate)
+        var ed = moment(t.gDate)
+
+        // Combine the date & times
+        sd = sd.add(t.startTime.slice(0,2), 'h');
+        sd = sd.add(t.startTime.slice(-2), 'm');
+        ed = ed.add(t.endTime.slice(0,2), 'h');
+        ed = ed.add(t.endTime.slice(-2), 'm');
+
+        this.duration = moment.duration(ed.diff(sd));
+
+        // Make sure start date is after end.
+        if (sd.isSameOrAfter(ed)){
+          this.formTimeValid = false;
+          this.showTimeError = true;
+        }
+        else {
+          this.formTimeValid = true;
+          this.showTimeError = false;
+
+          let NAids = this.findBusies(sd, ed);
+
+          for (let k of this.kadro ){
+            // If kisi id is not in NAids, add to available
+            if (NAids.indexOf(k._id) === -1){
+              this.available.push(k)
+            } else {
+              this.notAvailable.push(k)
+            }
+          }
+
+          this.available.sort(this.compare);
+          this.notAvailable.sort(this.compare);
+
+        }
+      }
+    });
+  }
+
+  compare(a,b) {
+    if (a.load > b.load)
+      return -1;
+    if (a.load < b.load)
+      return 1;
+    return 0;
+  }
+
+
 }
