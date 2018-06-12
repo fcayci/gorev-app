@@ -32,7 +32,6 @@ import { FacultyTasksComponent } from './components/kadro/faculty-tasks.componen
 import { FacultyBusyComponent } from './components/kadro/faculty-busy.component';
 import { FacultyAddComponent } from './components/kadro/faculty-add.component';
 import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
-import { CdkDetailRowDirective } from './components/angarya/cdk-detail-row.directive';
 
 
 registerLocaleData(localeTr);
@@ -87,8 +86,7 @@ const ROUTES : Routes = [
     FacultyBusyComponent,
     FacultyTasksComponent,
     FacultyAddComponent,
-    FacultyBusyAddComponent,
-    CdkDetailRowDirective
+    FacultyBusyAddComponent
   ],
   imports: [
     BrowserModule,

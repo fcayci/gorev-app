@@ -8,7 +8,9 @@ import { map } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { Task } from '../../task';
+import { Faculty } from '../../faculty';
 import { TaskService } from '../../services/task.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'assignment-list',
@@ -27,15 +29,23 @@ export class AssignmentListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   angarya : Task[];
-  displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status'];
+  kadro : Faculty[];
+  displayedColumns = ['no', 'title', 'type', 'date', 'time', 'people', 'status'];
   dataSource : any;
 
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
   expandedElement: any;
 
-  constructor(private _task: TaskService) {}
+  constructor(
+    private _task: TaskService,
+    private _user: UserService) {}
 
   ngOnInit(): void {
+    this._user.getKadro()
+      .subscribe((kadro: Faculty[]) => {
+        this.kadro = kadro;
+      });
+
     this._task.getAllTasks()
       .subscribe((angarya: Task[]) => {
 
@@ -64,6 +74,11 @@ export class AssignmentListComponent implements OnInit {
         };
     });
   }
+
+  getPerson(id: string) {
+    return this.kadro.filter(x => x._id == id)[0].fullname
+  }
+  //hede =  this.kadro.filter(x => x._id == person);
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim().toLowerCase();

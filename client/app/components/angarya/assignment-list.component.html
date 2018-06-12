@@ -41,14 +41,27 @@
         <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="people">
+        <mat-header-cell *matHeaderCellDef>Kişi Sayısı</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.peopleCount}}</mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="status">
         <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="expandedDetail">
-        <mat-cell *matCellDef="let detail">
-          The symbol for hede
+        <mat-cell style="display:flex" *matCellDef="let detail">
+          <mat-chip-list>
+            <mat-chip *ngFor="let pid of detail.gorev.choosenPeople">
+              {{getPerson(pid)}}
+            </mat-chip>
+          </mat-chip-list>
+                <span class="fill-remaining-space"></span>
+          <mat-chip-list style="float:right">
+            <mat-chip color="warn" selected="true" (click)="onDetail()">Detaylar</mat-chip>
+          </mat-chip-list>
         </mat-cell>
       </ng-container>
 
