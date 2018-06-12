@@ -112,6 +112,22 @@ header {
     pointer-events: none !important;
 }
 
+.element-row {
+  position: relative;
+}
+
+.element-row:not(.expanded) {
+  cursor: pointer;
+}
+
+.element-row:not(.expanded):hover {
+  background: #f5f5f5;
+}
+
+.element-row.expanded {
+  border-bottom-color: transparent;
+}
+
 /*
 .navbar-right-custom {
   margin-right: 10px!important;
