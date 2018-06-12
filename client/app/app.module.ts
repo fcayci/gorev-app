@@ -10,6 +10,9 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
   MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule, MatAutocompleteModule } from '@angular/material';
+
+import {MatExpansionModule} from '@angular/material/expansion';
+
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { registerLocaleData } from '@angular/common';
@@ -29,6 +32,8 @@ import { FacultyTasksComponent } from './components/kadro/faculty-tasks.componen
 import { FacultyBusyComponent } from './components/kadro/faculty-busy.component';
 import { FacultyAddComponent } from './components/kadro/faculty-add.component';
 import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
+import { CdkDetailRowDirective } from './components/angarya/cdk-detail-row.directive';
+
 
 registerLocaleData(localeTr);
 
@@ -82,7 +87,8 @@ const ROUTES : Routes = [
     FacultyBusyComponent,
     FacultyTasksComponent,
     FacultyAddComponent,
-    FacultyBusyAddComponent
+    FacultyBusyAddComponent,
+    CdkDetailRowDirective
   ],
   imports: [
     BrowserModule,
@@ -114,6 +120,7 @@ const ROUTES : Routes = [
     MatCheckboxModule,
     MatMomentDateModule,
     HttpClientModule,
+    MatExpansionModule,
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,

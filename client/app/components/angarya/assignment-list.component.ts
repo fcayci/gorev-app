@@ -29,16 +29,14 @@ export class AssignmentListComponent implements OnInit {
   angarya : Task[];
   displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status'];
   dataSource : any;
-
-  displayedRows$: Observable<Task[]>;
-  totalRows$: Observable<number>;
-
+  expandedItem : any;
 
   constructor(private _task: TaskService) {}
 
   ngOnInit(): void {
     this._task.getAllTasks()
       .subscribe((angarya: Task[]) => {
+
         this.dataSource = new MatTableDataSource(angarya);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -62,6 +60,8 @@ export class AssignmentListComponent implements OnInit {
     });
   }
 
+  isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
+
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = filterValue;
@@ -72,15 +72,15 @@ export class AssignmentListComponent implements OnInit {
   }
 }
 
-// export class ExampleDataSource extends DataSource<any> {
-//   /** Connect function called by the table to retrieve one stream containing the data to render. */
-//   connect(): Observable<Task[]> {
-//     const rows = [];
-//     data.forEach(task => rows.push(task, { detailRow: true, task }));
-//     console.log(rows);
-//     return Observable.of(rows);
-//   }
+export class ExampleDataSource extends DataSource<any> {
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<Task[]> {
+    const rows = [];
+    data.forEach(task => rows.push(task, { detailRow: true, task }));
+    console.log(rows);
+    return of(rows);
+  }
 
-//   disconnect() { }
-// }
+  disconnect() { }
+}
 
