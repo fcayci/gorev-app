@@ -29,16 +29,26 @@ export class BusyService {
       );
   }
 
-  getBusyByOwnerId(owner_id: string): Observable<Busy[]>{
-    let url = busyUrl + '/' + owner_id;
+  getBusyById(type: string, id: string): Observable<Busy[]>{
+    let url = busyUrl + '/' + type + '/' + id;
     return this.http.get<Busy[]>(url)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  // FIXME: Change name to delBusy / deleteBusy
-  delBusyByTime(busy: Busy): Observable<{}>{
+  // FIXME: Owner / Task ID search should be done by the service
+  // getBusyByOwnerId(oid: string): Observable<Busy>{
+  //   let busies : Busy[];
+  //   this.getBusyAll()
+  //     .subscribe((res) => {
+  //        busies = res;
+  //   });
+
+  //   return busies.filter(i=>i.owner_id === oid)
+  // }
+
+  deleteBusy(busy: Busy): Observable<{}>{
     let url = busyUrl + '/' + busy._id;
     return this.http.delete(url)
       .pipe(
@@ -46,8 +56,8 @@ export class BusyService {
       );
   }
 
-  setBusyByOwnerId(busy: Busy): Observable<Busy>{
-    let url = busyUrl + '/' + busy.owner_id;
+  setBusy(busy: Busy): Observable<Busy>{
+    let url = busyUrl
     return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
       .pipe(
         catchError(this.handleError)

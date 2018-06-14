@@ -56,9 +56,9 @@ export class FacultyBusyAddComponent implements OnInit  {
   }
 
   addBusyToOwner(b): void {
-    this._busy.setBusyByOwnerId(b)
+    this._busy.setBusy(b)
       .subscribe(res => {
-        // this.openSnackBar(res.title + ' başarıyla eklendi.')
+        //this.openSnackBar(res.title + ' başarıyla eklendi.')
       });
   }
 

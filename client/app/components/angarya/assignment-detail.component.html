@@ -5,6 +5,7 @@
         <mat-icon>description</mat-icon>  <h2 style="padding-left:5px;">{{title}}</h2>
         <button *ngIf="gorevForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Görevi Düzenle"><mat-icon>edit</mat-icon></span></button>
         <span class="fill-remaining-space"></span>
+        <button *ngIf="!gorevForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Görevi Sil"><mat-icon>delete_forever</mat-icon></span></button>
       </mat-toolbar-row>
     </mat-toolbar>
 

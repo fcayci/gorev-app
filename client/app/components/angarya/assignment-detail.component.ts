@@ -84,8 +84,36 @@ export class AssignmentDetailComponent implements OnInit {
     this.validateTimeAndFindAvailable();
   }
 
-  removeTask(): void {
-    // TODO: Remove from user's busy list as well
+  onDelete(): void {
+
+    // var model : Busy = {
+    //   title : gorev.title,
+    //   startDate : gorev.startDate,
+    //   endDate : gorev.endDate,
+    //   recur : 0,
+    //   owner_id : ''
+    // };
+
+    // for(let i=0; i < gorev.peopleCount; i++) {
+    //   model.owner_id = gorev.choosenPeople[i];
+    //   this._busy.setBusyByOwnerId(model)
+    //     .subscribe(res => {
+    //       // this.openSnackBar(res.title + ' başarıyla eklendi.')
+    //     });
+    // }
+
+    var gids;
+
+    this._busy.getBusyById('task', this.gorev._id)
+      .subscribe((res) => {
+        gids = res;
+    })
+
+
+    // this._busy.deleteBusy()
+    //   .subscribe(() => {
+    //   })
+
     this._task.delTaskById(this.gorev)
       .subscribe((res: msg) => {
          if (res.ok == 1){

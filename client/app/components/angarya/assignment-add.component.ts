@@ -77,9 +77,11 @@ export class AssignmentAddComponent implements OnInit {
 
   onSubmit() {
     let gorev: Task = this.gorevForm.value;
+    var tid;
 
     this._task.addTask(gorev)
       .subscribe(res => {
+        tid = res._id;
     });
 
     var model : Busy = {
@@ -87,15 +89,13 @@ export class AssignmentAddComponent implements OnInit {
       startDate : gorev.startDate,
       endDate : gorev.endDate,
       recur : 0,
+      task_id : tid,
       owner_id : ''
     };
 
     for(let i=0; i < gorev.peopleCount; i++) {
       model.owner_id = gorev.choosenPeople[i];
-      this._busy.setBusyByOwnerId(model)
-        .subscribe(res => {
-          // this.openSnackBar(res.title + ' başarıyla eklendi.')
-        });
+      this.addBusyToOwner(model);
     }
 
     this._router.navigate(['/angarya'])
@@ -218,7 +218,7 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   addBusyToOwner(b): void {
-    this._busy.setBusyByOwnerId(b)
+    this._busy.setBusy(b)
       .subscribe(res => {
         // this.openSnackBar(res.title + ' başarıyla eklendi.')
     });
@@ -298,10 +298,8 @@ export class AssignmentAddComponent implements OnInit {
           this.showTimeError = false;
 
           let NAids = this.findBusies(sd, ed);
-          console.log('NAids', NAids);
 
           for (let k of this.kadro ){
-            // If kisi id is not in NAids, add to available
             if (NAids.indexOf(k._id) === -1){
               this.available.push(k)
             } else {

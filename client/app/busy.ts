@@ -2,6 +2,7 @@ export interface BusyDB {
   _id?: string;
   title: string;
   owner_id: string;
+  task_id?: string;
   startDate: string;
   endDate: string;
   recur: number

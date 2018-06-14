@@ -20,6 +20,10 @@ var BusySchema = new Schema(
       required: true,
       enum: [0, 1, 7]
     },
+    task_id: {
+      type: Schema.Types.ObjectId,
+      required: false
+    },
     owner_id: {
       type: Schema.Types.ObjectId,
       required: false

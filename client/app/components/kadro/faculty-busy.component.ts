@@ -48,7 +48,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
   }
 
   getBusies(): void {
-    this._busy.getBusyByOwnerId(this.profile._id)
+    this._busy.getBusyById('owner', this.profile._id)
       .subscribe((busies : Busy[]) => {
         this.dataSource = new MatTableDataSource(busies);
     });
@@ -57,7 +57,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
   // FIXME: Ask for confirmation before removing
   removeBusy(busy, i): void {
     // TODO: Remove from user's busy list as well
-    this._busy.delBusyByTime(busy)
+    this._busy.deleteBusy(busy)
       .subscribe((res: msg) => {
         if (res.ok == 1){
           let oldData = this.dataSource.data;

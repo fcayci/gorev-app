@@ -21,29 +21,45 @@ router.get('/busy', function(req, res, next) {
   });
 });
 
-/* title: Get busy times for a given owner _id
+/* title: Get busy for a given type/id pair
  *
  * return: Busy object
  */
-router.get('/busy/:id', function(req, res, next) {
-  Busy.find({ 'owner_id': mongoose.Types.ObjectId(req.params.id) }, function (err, busy) {
-    if (err) return console.error(err);
-    res.send(busy);
-  });
+router.get('/busy/:type/:id', function(req, res, next) {
+  var type = req.params.type
+  var id = req.params.id
+
+  if (type == 'owner') {
+    Busy.find({ 'owner_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
+      if (err) return console.error(err);
+      res.json(busy);
+      res.status(200);
+    });
+  } else if (type == 'task') {
+    Busy.find({ 'task_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
+      if (err) return console.error(err);
+      res.json(busy);
+      res.status(200);
+    });
+  } else {
+    res.status(400);
+    res.json('{ msg: error }')
+    console.log(type, '[busy.js] error, wrong type')
+  }
 });
 
-/* title: Set a busy time for a given owner _id
+/* title: Create a busy time
  *
  * return: Busy object
  */
-router.post('/busy/:id', function(req, res, next) {
-  // TOOD: Make approperiate checks for the timeframe
-  // if (!timeframe.owner_id){
+router.post('/busy', function(req, res, next) {
+  var busy = req.body;
+  // TOOD: Make approperiate checks for the busy
+  // if (!busy.owner_id){
   // }
-  var timeframe = req.body;
 
-  // Probably not needed since we use new below.
-  var time = new Busy(timeframe);
+  var time = new Busy(busy);
+
   time.save(function(err){
     if (err) return console.error(err);
     res.status(200);
@@ -59,6 +75,7 @@ router.delete('/busy/:id', function(req, res, next) {
   Busy.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
+      res.status(200);
   });
 });
 
