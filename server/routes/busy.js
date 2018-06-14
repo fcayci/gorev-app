@@ -11,9 +11,9 @@ router.get('/', function(req, res, next){
 
 /* title: Get all the busy times in the universe.
  *
- * return: busy array
+ * return: Array of Busy
  */
-router.get('/busy', function(req, res, next){
+router.get('/busy', function(req, res, next) {
   Busy.find(function (err, busy){
     if (err) return console.error(err);
     res.status(200);
@@ -23,9 +23,9 @@ router.get('/busy', function(req, res, next){
 
 /* title: Get busy times for a given owner _id
  *
- * return: busy object
+ * return: Busy object
  */
-router.get('/busy/:id', function(req, res, next){
+router.get('/busy/:id', function(req, res, next) {
   Busy.find({ 'owner_id': mongoose.Types.ObjectId(req.params.id) }, function (err, busy) {
     if (err) return console.error(err);
     res.send(busy);
@@ -34,10 +34,9 @@ router.get('/busy/:id', function(req, res, next){
 
 /* title: Set a busy time for a given owner _id
  *
- * return: unknown
+ * return: Busy object
  */
-router.post('/busy/:id', function(req, res, next){
-
+router.post('/busy/:id', function(req, res, next) {
   // TOOD: Make approperiate checks for the timeframe
   // if (!timeframe.owner_id){
   // }
@@ -56,12 +55,11 @@ router.post('/busy/:id', function(req, res, next){
  *
  * return: status msg
  */
-router.delete('/busy/:id', function(req, res, next){
+router.delete('/busy/:id', function(req, res, next) {
   Busy.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
   });
 });
-
 
 module.exports = router;

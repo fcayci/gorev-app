@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Faculty } from '../../faculty';
+import { Faculty } from '../faculty';
 
 @Pipe({name: 'fsort'})
 export class FSortPipe implements PipeTransform {

@@ -114,7 +114,8 @@ export class AssignmentDetailComponent implements OnInit {
   }
 
   getPerson(id: string) : string {
-    return this.kadro.filter(x => x._id == id)[0].fullname
+    let p = this.kadro.find(x => x._id == id)
+    return p.position + ' ' + p.fullname
   }
 
   parseTime(g) : void {

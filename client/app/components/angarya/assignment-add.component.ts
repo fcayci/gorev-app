@@ -77,13 +77,28 @@ export class AssignmentAddComponent implements OnInit {
 
   onSubmit() {
     let gorev: Task = this.gorevForm.value;
-    console.log(gorev)
+
     this._task.addTask(gorev)
       .subscribe(res => {
     });
 
-    this._router.navigate(['/angarya'])
+    var model : Busy = {
+      title : gorev.title,
+      startDate : gorev.startDate,
+      endDate : gorev.endDate,
+      recur : 0,
+      owner_id : ''
+    };
 
+    for(let i=0; i < gorev.peopleCount; i++) {
+      model.owner_id = gorev.choosenPeople[i];
+      this._busy.setBusyByOwnerId(model)
+        .subscribe(res => {
+          // this.openSnackBar(res.title + ' başarıyla eklendi.')
+        });
+    }
+
+    this._router.navigate(['/angarya'])
   }
 
   // FIXME: Security problem. Susceptible to XSS
@@ -199,6 +214,13 @@ export class AssignmentAddComponent implements OnInit {
   createPeopleForm() : void {
     this.peopleForm = this._fb.group({
       selectedPerson: [{disabled: false}]
+    });
+  }
+
+  addBusyToOwner(b): void {
+    this._busy.setBusyByOwnerId(b)
+      .subscribe(res => {
+        // this.openSnackBar(res.title + ' başarıyla eklendi.')
     });
   }
 

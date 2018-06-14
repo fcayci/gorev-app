@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Faculty } from '../../faculty';
+import { Faculty } from '../faculty';
 
 @Pipe({name: 'selector'})
 export class PositionSelectorPipe implements PipeTransform {
