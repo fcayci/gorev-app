@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
 import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
+import { FSortPipe } from '../../pipes/fsort.pipe';
+
 import { Faculty } from '../../faculty';
 import { Busy } from '../../busy';
-
 import { Task, TYPES, GSTATES } from '../../task';
 import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
@@ -47,6 +47,7 @@ export class AssignmentAddComponent implements OnInit {
   title = 'Yeni Görev Oluştur';
 
   constructor(
+    private _fsort: FSortPipe,
     private _fb: FormBuilder,
     private _router: Router,
     private _user: UserService,
@@ -142,8 +143,7 @@ export class AssignmentAddComponent implements OnInit {
     }
 
     this.available.push(p);
-    this.available.sort(this.compareLoad);
-
+    this.available = this._fsort.transform(this.available, 'load');
 
     // Enable form
     this.peopleForm.controls['selectedPerson'].enable();
@@ -152,21 +152,33 @@ export class AssignmentAddComponent implements OnInit {
     this.peopleForm.controls['selectedPerson'].setValue('');
   }
 
+  autoAssignPeople() : void {
+    let g = this.gorevForm.value;
 
-  autoAssignPeople() {
-    // Since available is sorted, just push the top x people
-    for (let i = 0; i < this.gorevForm.value.peopleCount; i++){
-      this.addToChoosenPeople(this.available[0])
+    for (let i = 0; i < g.peopleCount; i++) {
+      if (g.selector == 0) {
+        this.addToChoosenPeople( this.available.filter(
+          people => people.position == 'Araştırma Görevlisi')[0]
+        );
+      }
+      else if (g.selector == 1) {
+        this.addToChoosenPeople( this.available.filter(
+          people => people.position == 'Dr.')[0]
+        );
+      }
+      else {
+        this.addToChoosenPeople( this.available[0] );
+      }
     }
   }
 
-  clearAssignedPeople() {
+  clearAssignedPeople() : void {
     this.choosenPeople = [];
     this.gorevForm.controls['choosenPeople'].setValue([]);
     this.gorevForm.patchValue({peopleCount: ''});
   }
 
-  createGorevForm() {
+  createGorevForm() : void {
     this.gorevForm = this._fb.group({
       title: ['asdf', Validators.required],
       type: ['Sekreterlik', Validators.required],
@@ -177,19 +189,20 @@ export class AssignmentAddComponent implements OnInit {
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
       duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]],
       startDate: [],
+      selector: [0, Validators.required],
       endDate: [],
       choosenPeople: [[], ],
       status: ['Open'],
     });
   }
 
-  createPeopleForm() {
+  createPeopleForm() : void {
     this.peopleForm = this._fb.group({
       selectedPerson: [{disabled: false}]
     });
   }
 
-  findBusies(gs, ge) {
+  findBusies(gs, ge) : Array<string> {
     const { range } = extendMoment(moment);
 
     // Not availables
@@ -230,7 +243,7 @@ export class AssignmentAddComponent implements OnInit {
     return NAs;
   }
 
-  validateTimeAndFindAvailable() {
+  validateTimeAndFindAvailable() : void {
     this.gorevForm.statusChanges.subscribe(status => {
       if (status == 'VALID') {
 
@@ -263,6 +276,7 @@ export class AssignmentAddComponent implements OnInit {
           this.showTimeError = false;
 
           let NAids = this.findBusies(sd, ed);
+          console.log('NAids', NAids);
 
           for (let k of this.kadro ){
             // If kisi id is not in NAids, add to available
@@ -272,29 +286,11 @@ export class AssignmentAddComponent implements OnInit {
               this.notAvailable.push(k)
             }
           }
-
-          this.available.sort(this.compareLoad);
-          this.notAvailable.sort(this.compareLoad);
-
+          this.available = this._fsort.transform(this.available, 'load');
+          this.notAvailable = this._fsort.transform(this.notAvailable, 'load');
         }
       }
     });
-  }
-
-  compareLoad(a,b) {
-    if (a.load > b.load)
-      return -1;
-    if (a.load < b.load)
-      return 1;
-    return 0;
-  }
-
-  compareName(a,b) {
-    if (a.fullname < b.fullname)
-      return -1;
-    if (a.fullname > b.fullname)
-      return 1;
-    return 0;
   }
 
 }

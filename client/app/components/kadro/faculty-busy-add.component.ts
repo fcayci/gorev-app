@@ -22,7 +22,7 @@ export class FacultyBusyAddComponent implements OnInit  {
 
   constructor(
     private _busy: BusyService,
-    public dialogRef: MatDialogRef<MesgulAddComponent>,
+    public dialogRef: MatDialogRef<FacultyBusyAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _fb: FormBuilder) {}
 

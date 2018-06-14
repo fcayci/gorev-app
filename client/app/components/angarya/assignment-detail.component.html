@@ -1,33 +1,99 @@
-<section *ngIf="gorev">
-  <header>
-    <h2>Görev<span class="badge">{{gorev?.status}}</span></h2>
-  </header>
+<mat-card class="no-padding">
+  <div class="mat-elevation-z8">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row >
+        <mat-icon>description</mat-icon>  <h2 style="padding-left:5px;">{{title}}</h2>
+        <button *ngIf="gorevForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Görevi Düzenle"><mat-icon>edit</mat-icon></span></button>
+        <span class="fill-remaining-space"></span>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Baslik</th>
-        <th>Gorev Tür</th>
-        <th>Gun Baslangic</th>
-        <th>Gun Bitis</th>
-        <th>Saat Baslangic</th>
-        <th>Saat Bitis</th>
-        <th>Kisi Sayisi</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr >
-        <td>{{gorev.title}}</td>
-        <td>{{gorev.type}}</td>
-        <td>{{gorev.startDate | date: "EE, dd MMMM"}}</td>
-        <td>{{gorev.endDate | date: "EE, dd MMMM"}}</td>
-        <td>{{gorev.startDate | date: "HH:mm"}}</td>
-        <td>{{gorev.endDate | date: "HH:mm"}}</td>
-        <td>{{gorev.peopleCount}}</td>
-        <td><button type="button" class="btn btn-danger" (click)="removeTask()">Sil</button></td>
-      </tr>
-    </tbody>
-  </table>
-  {{ diagnostic }}
-</section>
+    <mat-card-content style="padding:24px;" [formGroup]="gorevForm">
+      <div style="display:flex">
+        <div style="width:55%">
+          <div class="form-row">
+            <mat-form-field  style="width:50%">
+              <input matInput formControlName="title" placeholder="Görev Adı">
+            </mat-form-field>
+
+            <mat-form-field  style="width:40%">
+              <mat-select formControlName="type" placeholder="Görev Türü">
+                <mat-option *ngFor="let t of types" [value]="t">{{[t]}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!gorevForm.hasError('type')">
+                Bir görev türü seçiniz.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="date-align" style="width:35%">
+              <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
+              <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
+              <mat-datepicker #gDate></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field style="width:25%">
+              <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
+            </mat-form-field>
+
+             <mat-form-field style="width:25%">
+              <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field style="width:20%">
+              <mat-select formControlName="peopleCount" placeholder="Kişi Sayısı">
+                <mat-option *ngFor="let n of numbers" [value]="n">{{[n]}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!gorevForm.hasError('peopleCount')">
+                Görevlendirilecek kişi sayısı seçiniz.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%">
+              <span matTooltip="Varsayılanı 1'dir. Görev süresiyle çarpılır.">
+                <mat-select formControlName="weight" placeholder="Ağırlık">
+                  <mat-option *ngFor="let n of weights" [value]="n">{{[n]}}</mat-option>
+                </mat-select>
+              </span>
+            </mat-form-field>
+            <mat-button-toggle-group formControlName="selector" style="max-height:36px" value="0">
+              <mat-button-toggle value="0">Ar. Gör.</mat-button-toggle>
+              <mat-button-toggle value="1">Dr.</mat-button-toggle>
+              <mat-button-toggle value="2">Tümü</mat-button-toggle>
+            </mat-button-toggle-group>
+
+          </div>
+        </div>
+        <div style="width:45%; margin-left:40px">
+          <div class="form-row">
+            <mat-form-field  style="width:65%">
+              <mat-select formControlName="selectedPerson" placeholder="Kişi seç">
+                <mat-option *ngFor="let c of (available | selector:gorevForm.value.selector)" [value]="c"><span style="margin-right: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span><span> {{c.fullname}}</span></mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button mat-button color="primary" (click)="addToChoosenPeople()" [disabled]="available.indexOf(gorevForm.value.selectedPerson) === -1">Ekle</button>
+          </div>
+
+          <div class="form-row">
+            <b>Görevlendirilen kisiler:</b>
+          </div>
+          <div class="form-row">
+            <mat-chip-list class="mat-chip-list-stacked">
+              <mat-chip *ngFor="let c of gorevForm.value.choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c"><mat-icon style="margin-left:0; margin-right:7px" matChipRemove *ngIf="!gorevForm.disabled">cancel</mat-icon> {{getPerson(c)}} <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span></mat-chip>
+            </mat-chip-list>
+          </div>
+
+          <div class="button-row">
+            <button mat-raised-button *ngIf="!gorevForm.disabled" color="warn" (click)="disableGroup()">İptal</button>
+            <button mat-raised-button *ngIf="!gorevForm.disabled" color="primary" (click)="onSave()" [disabled]="!gorevForm.valid">Kaydet</button>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </div>
+</mat-card>
+

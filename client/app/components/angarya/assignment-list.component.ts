@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
+import { Router } from '@angular/router';
 
-import { DataSource } from '@angular/cdk/collections';
-import { Observable, of, } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { Task } from '../../task';
@@ -29,7 +27,7 @@ export class AssignmentListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   angarya : Task[];
-  kadro : Faculty[];
+  kadro : Faculty[] = [];
   displayedColumns = ['no', 'title', 'type', 'date', 'time', 'people', 'status'];
   dataSource : any;
 
@@ -38,7 +36,8 @@ export class AssignmentListComponent implements OnInit {
 
   constructor(
     private _task: TaskService,
-    private _user: UserService) {}
+    private _user: UserService,
+    private _router: Router) {}
 
   ngOnInit(): void {
     this._user.getKadro()
@@ -76,16 +75,18 @@ export class AssignmentListComponent implements OnInit {
   }
 
   getPerson(id: string) {
-    return this.kadro.filter(x => x._id == id)[0].fullname
+    if (this.kadro)
+      return this.kadro.filter(x => x._id == id)[0].fullname
+    else return ''
   }
-  //hede =  this.kadro.filter(x => x._id == person);
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = filterValue;
   }
 
-  onRowClicked(row) {
-    console.log('Row clicked: ', row);
+  onDetail(a) {
+    this._router.navigate(['/angarya/' + a._id])
   }
+
 }

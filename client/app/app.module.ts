@@ -9,7 +9,7 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatInputModule, MatButtonModule, MatChipsModule, MatSidenavModule,
   MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
-  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule, MatAutocompleteModule } from '@angular/material';
+  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule, MatButtonToggleModule, MatRadioModule, MatAutocompleteModule } from '@angular/material';
 
 import {MatExpansionModule} from '@angular/material/expansion';
 
@@ -32,7 +32,8 @@ import { FacultyTasksComponent } from './components/kadro/faculty-tasks.componen
 import { FacultyBusyComponent } from './components/kadro/faculty-busy.component';
 import { FacultyAddComponent } from './components/kadro/faculty-add.component';
 import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
-
+import { PositionSelectorPipe } from './pipes/position-selector.pipe';
+import { FSortPipe } from './pipes/fsort.pipe';
 
 registerLocaleData(localeTr);
 
@@ -86,7 +87,9 @@ const ROUTES : Routes = [
     FacultyBusyComponent,
     FacultyTasksComponent,
     FacultyAddComponent,
-    FacultyBusyAddComponent
+    FacultyBusyAddComponent,
+    PositionSelectorPipe,
+    FSortPipe
   ],
   imports: [
     BrowserModule,
@@ -119,13 +122,16 @@ const ROUTES : Routes = [
     MatMomentDateModule,
     HttpClientModule,
     MatExpansionModule,
+    MatButtonToggleModule,
+    MatRadioModule,
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'}
+    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
+    FSortPipe
   ],
   bootstrap: [AppComponent]
 })
