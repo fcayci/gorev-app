@@ -1,5 +1,5 @@
 
-<mat-card class="no-padding">
+<mat-card class="no-padding" style="margin-bottom:16px">
   <div class="mat-elevation-z8">
     <mat-toolbar class="toolbar-child" color="primary">
         <h2 class="toolbar-header">{{title}}</h2>
@@ -37,7 +37,7 @@
           <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
           <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Süresi Geçmiş' : 'Aktif' }}
             <span class="fill-remaining-space"></span>
-            <button *ngIf="showdelete" (click)="removeBusy(row, i)" mat-icon-button color="warn">
+            <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
               <mat-icon aria-label="delete">cancel</mat-icon>
             </button>
           </mat-cell>

@@ -55,16 +55,11 @@ export class FacultyBusyAddComponent implements OnInit  {
     this.repeats[2] = REPEATS[2] + ' ' +  day
   }
 
+  // FIXME: Snackbar
   addBusyToOwner(b): void {
     this._busy.setBusy(b)
       .subscribe(res => {
-        //this.openSnackBar(res.title + ' başarıyla eklendi.')
       });
-  }
-
-  // FIXME: Add the busy object ot users busy field
-  pushBusyToUser(busy): void {
-    // TODO implement this
   }
 
   parseForm(f){
@@ -99,25 +94,6 @@ export class FacultyBusyAddComponent implements OnInit  {
   }
 
   onNoClick(): void {
-    // var x = this.busyForm.value;
-    // console.log( moment(x.startDate).recur().every(1).days())
-    // console.log( moment(x.startDate).recur(x.endDate).every(7).days())
-
-    // var sd = moment(x.startDate).dateOnly()
-    // var ed = moment(x.endDate).dateOnly()
-
-    // console.log('sd', sd)
-    // console.log('ed', ed)
-
-    // sd = sd.add(x.startTime.slice(0,2), 'h');
-    // sd = sd.add(x.startTime.slice(-2), 'm');
-    // ed = ed.add(x.endTime.slice(0,2), 'h');
-    // ed = ed.add(x.endTime.slice(-2), 'm');
-
-
-    // var duration = moment.duration(ed.diff(sd));
-    // console.log(Math.ceil(duration.asDays()), 'day repeats')
-    // console.log(Math.ceil(duration.asWeeks()), 'week repeats')
     this.dialogRef.close();
   }
 

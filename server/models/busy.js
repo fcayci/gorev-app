@@ -22,11 +22,13 @@ var BusySchema = new Schema(
     },
     task_id: {
       type: Schema.Types.ObjectId,
-      required: false
+      required: false,
+      ref: 'Task'
     },
     owner_id: {
       type: Schema.Types.ObjectId,
-      required: false
+      required: false,
+      ref: 'Faculty'
     }
   }, {collection: 'times'}
 );

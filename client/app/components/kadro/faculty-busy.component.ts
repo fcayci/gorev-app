@@ -1,5 +1,5 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { MatSnackBar, MatDialog, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 
 import * as moment from 'moment';
 
@@ -24,7 +24,6 @@ export class msg {
 export class FacultyBusyComponent implements OnInit, OnChanges{
 
   @Input() profile: Faculty;
-  @Output() submitEvent = new EventEmitter<string>();
 
   displayedColumns = ['title', 'date', 'time', 'recur', 'expired'];
   dataSource: MatTableDataSource<Busy>;
@@ -34,7 +33,6 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
   constructor(
     private _busy: BusyService,
-    public snackBar: MatSnackBar,
     public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -43,20 +41,18 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
   ngOnChanges() {
     if(this.profile){
-      this.getBusies();
+      this._busy.getBusyById('owner', this.profile._id)
+        .subscribe((busies : Busy[]) => {
+          let b = busies.filter(i => !i.task_id)
+          this.dataSource = new MatTableDataSource(b);
+      });
     }
   }
 
-  getBusies(): void {
-    this._busy.getBusyById('owner', this.profile._id)
-      .subscribe((busies : Busy[]) => {
-        this.dataSource = new MatTableDataSource(busies);
-    });
-  }
-
   // FIXME: Ask for confirmation before removing
-  removeBusy(busy, i): void {
-    // TODO: Remove from user's busy list as well
+  // FIXME: Add snackbar
+  // FIXME: Add error handler
+  onDelete(busy: Busy, i: number): void {
     this._busy.deleteBusy(busy)
       .subscribe((res: msg) => {
         if (res.ok == 1){
@@ -79,7 +75,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
     dialogRef.afterClosed().subscribe(mesg => {
       if (mesg == -1) {
-        this.openSnackBar('Hatalı tarih girişi')
+        // Send to Snackbar service
       }
       else if (mesg){
         const oldData = this.dataSource.data;
@@ -91,12 +87,6 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
   toggleEdit(){
     this.showdelete = !this.showdelete;
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, null, {
-      duration: 2000,
-    });
   }
 
 }

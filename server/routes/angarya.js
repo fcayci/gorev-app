@@ -15,17 +15,19 @@ router.get('/angarya', function(req, res, next){
   Task.find(function (err, angarya) {
     if (err) return console.error(err);
     res.send(angarya);
+    res.status(200);
   });
 });
 
 /* title: Get gorev
  *
- * return: angarya/gorev - depending on owner_id or _id
+ * return: angarya/gorev given id
  */
 router.get('/angarya/:id', function(req, res, next){
   Task.findOne({ '_id': req.params.id }, function (err, gorev) {
     if (err) return console.error(err);
     res.send(gorev);
+    res.status(200);
   });
 });
 
@@ -57,6 +59,7 @@ router.delete('/angarya/:id', function(req, res, next){
   Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
     if (err) return console.error(err);
       res.send(msg);
+      res.status(200);
   });
 });
 

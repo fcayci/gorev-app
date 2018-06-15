@@ -1,34 +1,52 @@
-      <section *ngIf="tasks?.length == 0">
-        <strong><em>Aktif Görevlerndirmesi bulunmamaktadır.</em></strong>
-      </section>
 
-      <section *ngIf="tasks?.length > 0">
-        <table class="table table-hover">
-          <caption class="btn-toolbar" role="toolbar">
-            <h4 class="title-custom">Aktif Görevlerndirmeler <span class="badge">{{tasks?.length}}</span></h4>
-          </caption>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Baslik</th>
-              <th>Gun Baslangic</th>
-              <th>Gun Bitis</th>
-              <th>Saat Baslangic</th>
-              <th>Saat Bitis</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let task of tasks; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{task.title}}</td>
-              <td>{{task.dateStart}}</td>
-              <td>{{task.dateEnd}}</td>
-              <td>{{task.timeStart}}</td>
-              <td>{{task.timeEnd}}</td>
-              <td>{{task.duration}}</td>
-              <td>{{task.doesRepeat}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+<mat-card class="no-padding" style="margin-bottom:16px">
+  <div class="mat-elevation-z8">
+    <mat-toolbar class="toolbar-child" color="primary">
+        <h2 class="toolbar-header">{{title}}</h2>
+    </mat-toolbar>
+<!--
+    <div class="table-header">
+      <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="primary" (click)="openDialog()"><mat-icon>library_add</mat-icon></button></span>
+      <span class="fill-remaining-space"></span>
+      <span matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
+    </div>
+ -->
+      <mat-table #table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef>Başlık</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd MMMM EEEE':'':'tr' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="duration">
+          <mat-header-cell *matHeaderCellDef>Süre</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.duration}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="weight">
+          <mat-header-cell *matHeaderCellDef>Ağırlık</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.weight}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="expired">
+          <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
+          <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+
+  </div>
+</mat-card>

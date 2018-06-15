@@ -43,8 +43,7 @@ router.get('/busy/:type/:id', function(req, res, next) {
     });
   } else {
     res.status(400);
-    res.json('{ msg: error }')
-    console.log(type, '[busy.js] error, wrong type')
+    res.json('{"error" : "Bad Data"}')
   }
 });
 
@@ -53,18 +52,21 @@ router.get('/busy/:type/:id', function(req, res, next) {
  * return: Busy object
  */
 router.post('/busy', function(req, res, next) {
-  var busy = req.body;
-  // TOOD: Make approperiate checks for the busy
-  // if (!busy.owner_id){
-  // }
+  var candidate = req.body;
 
-  var time = new Busy(busy);
+  if (!candidate.owner_id) {
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  }
+  else {
+    var time = new Busy(candidate);
 
-  time.save(function(err){
-    if (err) return console.error(err);
-    res.status(200);
-    res.json(time);
-  });
+    time.save(function(err){
+      if (err) return console.error(err);
+      res.status(200);
+      res.json(time);
+    });
+  }
 });
 
 /* title: Remove busy

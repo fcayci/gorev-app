@@ -12,10 +12,6 @@ var TaskSchema = new Schema(
       type: String,
       required: true
     },
-    customType: {
-      type: String,
-      required: false
-    },
     startDate: {
       type: Date,
       required: true

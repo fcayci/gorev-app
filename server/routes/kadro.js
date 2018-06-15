@@ -15,7 +15,8 @@ router.get('/', function(req, res, next){
 router.get('/kadro', function(req, res, next){
   Faculty.find(function (err, kadro) {
     if (err) return console.error(err);
-    res.send(kadro);
+    res.json(kadro);
+    res.status(200);
   });
 });
 
@@ -26,7 +27,8 @@ router.get('/kadro', function(req, res, next){
 router.get('/kadro/:username', function(req, res, next){
   Faculty.findOne({ 'username': req.params.username }, function (err, kisi) {
     if (err) return console.error(err);
-    res.send(kisi);
+    res.json(kisi);
+    res.status(200);
   });
 });
 
@@ -36,7 +38,6 @@ router.get('/kadro/:username', function(req, res, next){
  */
 router.post('/kadro', function(req, res, next){
 
-// TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
 
   if (!candidate.fullname || !candidate.email) {
@@ -63,7 +64,8 @@ router.delete('/kadro/:username', function(req, res, next){
 
   Faculty.deleteOne({ 'username': req.params.username }, function (err, msg) {
     if (err) return console.error(err);
-      res.send(msg);
+      res.json(msg);
+      res.status(200);
   });
 });
 
@@ -79,10 +81,13 @@ router.put('/kadro/:username', function(req, res, next){
   var candidate = req.body;
   var id = candidate._id;
 
+  console.log('req.body', req.body)
   // new: true makes it return the updated kisi object.
   Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
     if (err) return console.error(err);
-    return res.send(kisi);
+    console.log('kisi res', kisi)
+    res.json(kisi);
+    res.status(200);
   })
 });
 
@@ -91,35 +96,34 @@ router.put('/kadro/:username', function(req, res, next){
  *
  * return: unknown
  */
-router.put('/kadro/:username', function(req, res, next){
-  // TOOD: Make approperiate checks for the busy
-  // busy should be in ObjectId('id') format
-  var busy = req.body;
+// router.put('/kadro/:username', function(req, res, next){
+//   var busy = req.body;
 
-  Faculty.update({'username': req.params.username},
-    { $push : {'busy' : busy} },
-    function(err, msg){
-      if (err) return console.error(err);
-      res.send(msg);
-  });
-});
+//   Faculty.update({'username': req.params.username},
+//     { $push : {'busy' : busy} },
+//     function(err, msg){
+//       if (err) return console.error(err);
+//       res.send(msg);
+//       res.status(200);
+//   });
+// });
 
 /* title: Remove from busy array of the passed username.
  * Expects busy JSON data
  *
  * return: unknown
  */
-router.put('/kadro/:username', function(req, res, next){
-  // TOOD: Make approperiate checks for the busy
-  // busy should be in ObjectId('id') format
-  var busy = req.body;
+// router.put('/kadro/:username', function(req, res, next){
+//   // TOOD: Make approperiate checks for the busy
+//   // busy should be in ObjectId('id') format
+//   var busy = req.body;
 
-  Faculty.update({'username': req.params.username},
-    { $pull : {'busy' : busy} },
-    function(err, msg){
-      if (err) return console.error(err);
-      res.send(msg);
-  });
-});
+//   Faculty.update({'username': req.params.username},
+//     { $pull : {'busy' : busy} },
+//     function(err, msg){
+//       if (err) return console.error(err);
+//       res.send(msg);
+//   });
+// });
 
 module.exports = router;

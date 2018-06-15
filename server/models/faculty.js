@@ -57,7 +57,8 @@ const FacultySchema = new Schema(
     },
     busy: [{
       type: Schema.ObjectId,
-      ref: 'Zaman'
+      required: false,
+      ref: 'Busy'
     }],
     vacation: {
       type: Boolean,

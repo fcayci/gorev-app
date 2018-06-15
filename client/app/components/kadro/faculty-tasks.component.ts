@@ -1,34 +1,46 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { MatTableDataSource } from '@angular/material';
+
+import * as moment from 'moment';
 
 import { Faculty } from '../../faculty';
-import { UserService } from '../../services/user.service';
-import { TaskService } from '../../services/task.service';
+import { Busy } from '../../busy';
+import { BusyService } from '../../services/busy.service';
 
 @Component({
   selector: 'faculty-tasks',
   templateUrl: './faculty-tasks.component.html'
 })
 
-export class FacultyTasksComponent implements OnInit {
+export class FacultyTasksComponent implements OnInit, OnChanges{
 
   @Input() profile: Faculty;
-  @Input() edit: boolean;
 
-  tasks : {};
+  displayedColumns = ['title', 'date', 'time', 'duration', 'weight', 'expired'];
+  dataSource: MatTableDataSource<Busy>;
+  today;
+  title = 'Görevlendirmeler';
 
   constructor(
-    private _user:UserService,
-    private _task:TaskService
-  ) {}
+    private _busy: BusyService) {}
 
   ngOnInit(): void {
-    // this._task.getTasksByOwnerId(this.profile._id)
-    //   .subscribe(res => {
-    //     console.log('[kisi-tasks] wanted', res)
-    //     this.tasks = res;
-    // });
+    this.today = moment();
   }
 
-  //get diagnostic() { return JSON.stringify(this.profile); }
+  ngOnChanges() {
+    if(this.profile){
+      this._busy.getBusyById('owner', this.profile._id)
+        .subscribe((busies : Busy[]) => {
+          let b = busies.filter(i => i.task_id)
+          this.dataSource = new MatTableDataSource(b);
+      });
+    }
+  }
+
+  isExpired(d) {
+    return this.today.isAfter(d)
+  }
+
+
 }

@@ -29,7 +29,6 @@ export class UserService {
       );
   }
 
-  // FIXME: Check if username is valid (and all other parameters)
   getKisi(username: string): Observable<Faculty> {
     let url = kadroUrl + '/' + username;
     return this.http.get<Faculty>(url)
