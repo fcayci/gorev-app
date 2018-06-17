@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
@@ -22,7 +23,8 @@ export class FacultyTasksComponent implements OnInit, OnChanges{
   title = 'Görevlendirmeler';
 
   constructor(
-    private _busy: BusyService) {}
+    private _busy: BusyService,
+    private _router: Router) {}
 
   ngOnInit(): void {
     this.today = moment();
@@ -36,6 +38,10 @@ export class FacultyTasksComponent implements OnInit, OnChanges{
           this.dataSource = new MatTableDataSource(b);
       });
     }
+  }
+
+  onClick(r) {
+    this._router.navigate(['/angarya/' + r.task_id]);
   }
 
   isExpired(d) {

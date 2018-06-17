@@ -75,13 +75,19 @@ export class AssignmentDetailComponent implements OnInit {
     var id = this._route.snapshot.paramMap.get('id');
     this._task.getTaskById(id)
       .subscribe((gorev: Task) => {
-        this.gorev = gorev;
-        this.title = this.gorev.title;
-        this.gorevForm.patchValue(this.gorev);
-        this.parseTime(this.gorev)
-      });
+        if (!gorev) {
+          this.title = "Görevlendirme detayları bulunamadı"
+          this._router.navigate(['/angarya']);
+        }
+        else {
+          this.gorev = gorev;
+          this.title = this.gorev.title;
+          this.gorevForm.patchValue(this.gorev);
+          this.parseTime(this.gorev)
 
-    this.validateTimeAndFindAvailable();
+          this.validateTimeAndFindAvailable();
+        }
+      });
   }
 
   onDelete(): void {

@@ -4,6 +4,8 @@ var router = express.Router();
 const Faculty = require('../models/faculty');
 const Busy = require('../models/busy');
 
+var kisi = '';
+
 router.get('/', function(req, res, next){
   res.send('KADRO PAGE');
 });
@@ -29,6 +31,7 @@ router.get('/kadro/:username', function(req, res, next){
     if (err) return console.error(err);
     res.json(kisi);
     res.status(200);
+    kisi = kisi;
   });
 });
 
@@ -75,17 +78,11 @@ router.delete('/kadro/:username', function(req, res, next){
  * return: unknown
  */
 router.put('/kadro/:username', function(req, res, next){
-
-  // TOOD: Make approperiate checks for the candidate
-  // TODO: Better way?
   var candidate = req.body;
   var id = candidate._id;
-
-  console.log('req.body', req.body)
   // new: true makes it return the updated kisi object.
   Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
     if (err) return console.error(err);
-    console.log('kisi res', kisi)
     res.json(kisi);
     res.status(200);
   })

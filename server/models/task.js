@@ -25,6 +25,10 @@ var TaskSchema = new Schema(
       required: true,
       min: 1
     },
+    duration: {
+      type: Number,
+      required: true
+    },
     weight: {
       type: Number,
       required: true,

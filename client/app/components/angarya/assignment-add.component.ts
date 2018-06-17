@@ -34,7 +34,6 @@ export class AssignmentAddComponent implements OnInit {
   gorevForm : FormGroup;
   peopleForm : FormGroup;
 
-  duration : any = 2;
   gorev : Task;
   gstates = GSTATES;
   types = TYPES;
@@ -91,9 +90,10 @@ export class AssignmentAddComponent implements OnInit {
 
       for(let i=0; i < gorev.peopleCount; i++) {
         model.owner_id = gorev.choosenPeople[i];
-        this.addBusyToOwner(model);
+          this._busy.setBusy(model)
+            .subscribe(res => {
+        });
       }
-
       this._router.navigate(['/angarya']);
 
     });
@@ -215,15 +215,6 @@ export class AssignmentAddComponent implements OnInit {
     });
   }
 
-  addBusyToOwner(b): void {
-    console.log('b',b);
-    this._busy.setBusy(b)
-      .subscribe(res => {
-        console.log('added2',res)
-        // this.openSnackBar(res.title + ' başarıyla eklendi.')
-    });
-  }
-
   findBusies(gs, ge) : Array<string> {
     const { range } = extendMoment(moment);
 
@@ -283,7 +274,7 @@ export class AssignmentAddComponent implements OnInit {
         ed = ed.add(t.endTime.slice(0,2), 'h');
         ed = ed.add(t.endTime.slice(-2), 'm');
 
-        this.duration = moment.duration(ed.diff(sd));
+        t.duration = moment.duration(ed.diff(sd));
 
         // Make sure start date is after end.
         if (sd.isSameOrAfter(ed)){

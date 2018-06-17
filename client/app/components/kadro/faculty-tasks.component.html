@@ -41,6 +41,10 @@
         <ng-container matColumnDef="expired">
           <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
           <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
+          <span class="fill-remaining-space"></span>
+          <button (click)="onClick(row)" mat-icon-button>
+            <span matTooltip="Detaylar"><mat-icon>zoom_in</mat-icon></span>
+          </button>
           </mat-cell>
         </ng-container>
 

@@ -76,8 +76,8 @@ export class AssignmentListComponent implements OnInit {
 
   getPerson(id: string) {
     if (this.kadro)
-      return this.kadro.filter(x => x._id == id)[0].fullname
-    else return ''
+      return this.kadro.find(x => x._id == id).fullname
+    else return 'Kaçak'
   }
 
   applyFilter(filterValue: string) {

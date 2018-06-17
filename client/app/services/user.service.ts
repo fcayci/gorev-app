@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Faculty } from '../faculty';
 
 const httpOptions = {
@@ -18,6 +18,8 @@ const kadroUrl = '/api/kadro';
 })
 export class UserService {
 
+  kisicache : Faculty;
+
   constructor(private http: HttpClient) {
   }
 
@@ -33,13 +35,23 @@ export class UserService {
     let url = kadroUrl + '/' + username;
     return this.http.get<Faculty>(url)
       .pipe(
-        catchError(this.handleError)
+        catchError(this.handleError),
+        tap(kisi => this.kisicache = kisi)
       );
   }
 
   updateKisi(kisi: Faculty): Observable<Faculty> {
     let url = kadroUrl + '/' + kisi.username;
-    return this.http.put<Faculty>(url, kisi, httpOptions)
+
+    if (this.kisicache.username == kisi.username) {
+      var diff = this.compareJSON(this.kisicache, kisi)
+    }
+
+    // Append _id so that we can find who to update in the backend
+    diff['_id'] = this.kisicache._id;
+
+    console.log(diff)
+    return this.http.put<Faculty>(url, diff, httpOptions)
       .pipe(
         catchError(this.handleError)
       );
@@ -60,6 +72,19 @@ export class UserService {
         catchError(this.handleError)
       );
   }
+
+  private compareJSON = function(obj1, obj2) {
+    var ret = {};
+    for(var i in obj2) {
+      if (!i.startsWith('__')) {
+        if(!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
+          ret[i] = obj2[i];
+        }
+      }
+    }
+    return ret;
+  };
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

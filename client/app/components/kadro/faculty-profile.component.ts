@@ -48,10 +48,11 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   // FIXME: Add snackbar
   onSave(): void {
     let candidate : Faculty = this.kisiForm.value;
+    candidate.username = candidate.email;
 
     this._user.updateKisi(candidate)
       .subscribe((kisi : Faculty) => {
-        this.profile = candidate;
+        this.profile = kisi;
     });
 
     this.disableGroup();
