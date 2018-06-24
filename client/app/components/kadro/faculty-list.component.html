@@ -1,5 +1,6 @@
+<mat-spinner *ngIf="!dataSource"></mat-spinner>
 
-<mat-card class="no-padding">
+<mat-card *ngIf="dataSource" class="no-padding">
   <div class="mat-elevation-z8">
     <mat-toolbar color="primary">
       <mat-toolbar-row>

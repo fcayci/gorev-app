@@ -1,5 +1,6 @@
+<mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
 
-<mat-card class="no-padding" style="margin-bottom:16px">
+<mat-card *ngIf="dataSource" class="no-padding" style="margin-bottom:16px">
   <div class="mat-elevation-z8">
     <mat-toolbar class="toolbar-child" color="primary">
         <h2 class="toolbar-header">{{title}}</h2>

@@ -73,13 +73,13 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
       data: this.profile
     });
 
-    dialogRef.afterClosed().subscribe(mesg => {
-      if (mesg == -1) {
+    dialogRef.afterClosed().subscribe(msg => {
+      if (msg == -1) {
         // Send to Snackbar service
       }
-      else if (mesg){
+      else if (msg){
         const oldData = this.dataSource.data;
-        oldData.push(mesg);
+        oldData.push(msg);
         this.dataSource.data = oldData;
       }
     });

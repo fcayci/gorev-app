@@ -135,6 +135,30 @@ header {
   height: 60px;
 }
 
+.mat-spinner {
+  margin: auto;
+}
+
+.mat-column-position {
+  max-width: 15%;
+}
+
+.mat-column-office {
+  max-width: 8%;
+}
+
+.mat-column-phone {
+  max-width: 10%;
+}
+
+.mat-column-load {
+  max-width: 10%;
+}
+
+.mat-column-email {
+  min-width: 25%;
+}
+
 /*
 .navbar-right-custom {
   margin-right: 10px!important;

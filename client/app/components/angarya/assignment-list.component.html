@@ -1,4 +1,6 @@
-<section>
+<mat-spinner *ngIf="!dataSource"></mat-spinner>
+
+<section *ngIf="dataSource">
   <div class="mat-elevation-z8">
     <mat-toolbar color="primary">
       <mat-toolbar-row>

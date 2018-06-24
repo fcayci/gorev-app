@@ -1,5 +1,6 @@
+<mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
 
-<mat-card class="no-padding" style="margin-bottom:16px">
+<mat-card *ngIf="dataSource" class="no-padding" style="margin-bottom:16px">
   <div class="mat-elevation-z8">
     <mat-toolbar class="toolbar-child" color="primary">
         <h2 class="toolbar-header">{{title}}</h2>
@@ -8,7 +9,7 @@
     <div class="table-header">
       <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="primary" (click)="openDialog()"><mat-icon>library_add</mat-icon></button></span>
       <span class="fill-remaining-space"></span>
-      <span matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
+      <span *ngIf="this.dataSource.data.length" matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
     </div>
 
       <mat-table #table [dataSource]="dataSource" matSort>

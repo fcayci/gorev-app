@@ -101,7 +101,7 @@ export class FacultyBusyAddComponent implements OnInit  {
     const busy = this.parseForm(this.busyForm.value);
     if (busy != -1){
       this.addBusyToOwner(busy);
-      this.dialogRef.close(this.busyForm.value);
+      this.dialogRef.close(busy);
     }
     else {
       this.dialogRef.close(-1);
