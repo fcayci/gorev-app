@@ -1,7 +1,4 @@
-<mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
-
-<mat-card *ngIf="dataSource" class="no-padding" style="margin-bottom:16px">
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="margin-bottom:16px">
     <mat-toolbar class="toolbar-child" color="primary">
         <h2 class="toolbar-header">{{title}}</h2>
     </mat-toolbar>
@@ -12,46 +9,47 @@
       <span matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
     </div>
  -->
-      <mat-table #table [dataSource]="dataSource" matSort>
+      <table mat-table [dataSource]="dataSource" matSort>
 
         <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef>Başlık</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Başlık</th>
+          <td mat-cell *matCellDef="let row">{{row.title}}</td>
         </ng-container>
 
         <ng-container matColumnDef="date">
-          <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd MMMM EEEE':'':'tr' }}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Tarih</th>
+          <td mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd MMMM EEEE':'':'tr' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="time">
-          <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Saat</th>
+          <td mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</td>
         </ng-container>
 
         <ng-container matColumnDef="duration">
-          <mat-header-cell *matHeaderCellDef>Süre</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.duration}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Süre</th>
+          <td mat-cell *matCellDef="let row">{{row.duration}}</td>
         </ng-container>
 
         <ng-container matColumnDef="weight">
-          <mat-header-cell *matHeaderCellDef>Ağırlık</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.weight}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Ağırlık</th>
+          <td mat-cell *matCellDef="let row">{{row.weight}}</td>
         </ng-container>
 
         <ng-container matColumnDef="expired">
-          <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
-          <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
+          <th mat-header-cell *matHeaderCellDef>Durumu</th>
+          <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
           <span class="fill-remaining-space"></span>
           <button (click)="onClick(row)" mat-icon-button>
             <span matTooltip="Detaylar"><mat-icon>zoom_in</mat-icon></span>
           </button>
-          </mat-cell>
+        </td>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-      </mat-table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
 
   </div>
-</mat-card>

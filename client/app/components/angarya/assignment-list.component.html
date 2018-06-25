@@ -1,6 +1,3 @@
-<mat-spinner *ngIf="!dataSource"></mat-spinner>
-
-<section *ngIf="dataSource">
   <div class="mat-elevation-z8">
     <mat-toolbar color="primary">
       <mat-toolbar-row>
@@ -24,17 +21,17 @@
       </ng-container>
 
       <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Başlık</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Başlık</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Tür</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Tür</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="date">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}}</mat-cell>
       </ng-container>
 
@@ -55,7 +52,7 @@
 
       <ng-container matColumnDef="expandedDetail">
         <mat-cell style="display:flex" *matCellDef="let detail">
-          <mat-chip-list>
+          <mat-chip-list *ngIf="dataSource">
             <mat-chip *ngFor="let pid of detail.gorev.choosenPeople">
               {{getPerson(pid)}}
             </mat-chip>
@@ -81,10 +78,11 @@
       </mat-row>
     </mat-table>
 
+    <mat-spinner *ngIf="!dataSource"></mat-spinner>
+
     <mat-paginator #paginator
       [pageSize]="50"
       [pageSizeOptions]="[10, 25, 50]">
     </mat-paginator>
 
   </div>
-</section>

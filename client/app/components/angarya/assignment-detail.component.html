@@ -1,5 +1,7 @@
+<mat-spinner *ngIf="!gorev"></mat-spinner>
+
 <mat-card class="no-padding">
-  <div class="mat-elevation-z8">
+  <div *ngIf="gorev" class="mat-elevation-z8">
     <mat-toolbar color="primary">
       <mat-toolbar-row >
         <mat-icon>description</mat-icon>  <h2 style="padding-left:5px;">{{title}}</h2>

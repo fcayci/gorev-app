@@ -1,7 +1,4 @@
-<mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
-
-<mat-card *ngIf="dataSource" class="no-padding" style="margin-bottom:16px">
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="margin-bottom:16px">
     <mat-toolbar class="toolbar-child" color="primary">
         <h2 class="toolbar-header">{{title}}</h2>
     </mat-toolbar>
@@ -9,44 +6,45 @@
     <div class="table-header">
       <span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab color="primary" (click)="openDialog()"><mat-icon>library_add</mat-icon></button></span>
       <span class="fill-remaining-space"></span>
-      <span *ngIf="this.dataSource.data.length" matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
+      <span *ngIf="this.dataSource?.data.length" matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
     </div>
 
-      <mat-table #table [dataSource]="dataSource" matSort>
+      <table mat-table [dataSource]="dataSource" matSort>
 
         <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef>Başlık</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Başlık</th>
+          <td mat-cell *matCellDef="let row">{{row.title}}</td>
         </ng-container>
 
         <ng-container matColumnDef="date">
-          <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd.MM.yyyy' }} - {{ row.endDate | date: 'dd.MM.yyyy' }}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Tarih</th>
+          <td mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd.MM.yyyy' }} - {{ row.endDate | date: 'dd.MM.yyyy' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="time">
-          <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Saat</th>
+          <td mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</td>
         </ng-container>
 
         <ng-container matColumnDef="recur">
-          <mat-header-cell *matHeaderCellDef>Tekrar</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.recur ? (row.recur == 1 ? 'Günlük' : 'Her ' + (row.startDate | date: 'EEEE': '': 'tr')) : '-'}}</mat-cell>
+          <th mat-header-cell *matHeaderCellDef>Tekrar</th>
+          <td mat-cell *matCellDef="let row">{{row.recur ? (row.recur == 1 ? 'Günlük' : 'Her ' + (row.startDate | date: 'EEEE': '': 'tr')) : '-'}}</td>
         </ng-container>
 
         <ng-container matColumnDef="expired">
-          <mat-header-cell *matHeaderCellDef>Durumu</mat-header-cell>
-          <mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Süresi Geçmiş' : 'Aktif' }}
+          <th mat-header-cell *matHeaderCellDef>Durumu</th>
+          <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Süresi Geçmiş' : 'Aktif' }}
             <span class="fill-remaining-space"></span>
             <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
               <mat-icon aria-label="delete">cancel</mat-icon>
             </button>
-          </mat-cell>
+          </td>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-      </mat-table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
 
   </div>
-</mat-card>

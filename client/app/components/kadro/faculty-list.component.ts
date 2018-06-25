@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { MatTableDataSource } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
 import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
@@ -17,7 +16,7 @@ import { FacultyAddComponent } from './faculty-add.component';
 export class FacultyListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  
   displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
   dataSource: MatTableDataSource<Faculty>;
   filterValue: string;
@@ -40,24 +39,6 @@ export class FacultyListComponent implements OnInit {
         this.dataSource = new MatTableDataSource(kadro);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-
-        // FIXME: Make this filter exclude useless ones (i.e load)
-        // Custom filter to exclude _id section
-        this.dataSource.filterPredicate = (data, filter) => {
-          // Transform the data into a lowercase string of all property values except _id
-          const accumulator = (currentTerm, key) =>  key != "_id" ? currentTerm + data[key] : currentTerm;
-          const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
-          // Transform the filter by converting it to lowercase and removing whitespace.
-          const transformedFilter = filter.trim().toLowerCase();
-          return dataStr.indexOf(transformedFilter) != -1;
-        };
-
-        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
-          if (typeof data[sortHeaderId] === 'string') {
-            return data[sortHeaderId].toLocaleLowerCase();
-          }
-          return data[sortHeaderId];
-        };
       });
   }
 
@@ -78,6 +59,9 @@ export class FacultyListComponent implements OnInit {
   applyFilter(term: string) {
     this.filterValue = term.trim().toLowerCase();
     this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   goToPerson(p) {
