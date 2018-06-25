@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 
 import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
+import { ToasterService } from '../../services/toaster.service';
 import { FacultyAddComponent } from './faculty-add.component';
 
 @Component({
@@ -26,7 +27,7 @@ export class FacultyListComponent implements OnInit {
   constructor(
     private _user: UserService,
     private _router: Router,
-    public snackBar: MatSnackBar,
+    private _toaster: ToasterService,
     public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -68,15 +69,9 @@ export class FacultyListComponent implements OnInit {
     // FIXME: Add error snackbar message.
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.openSnackBar(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
+        this._toaster.info(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
         this.getAllPeople();
       }
-    });
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, null, {
-      duration: 2000,
     });
   }
 

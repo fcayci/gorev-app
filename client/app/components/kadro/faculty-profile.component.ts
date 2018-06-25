@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
+import { ToasterService } from '../../services/toaster.service';
 
 @Component({
   selector: 'faculty-profile',
@@ -20,7 +21,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 
   constructor(
     private _fb: FormBuilder,
-    private _router: Router,
+    private _toaster: ToasterService,
     private _user: UserService) {}
 
   ngOnInit() : void {
@@ -46,14 +47,15 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
       this.kisiForm.patchValue( this.profile );
   }
 
-  // FIXME: Add snackbar
   onSave(): void {
     let candidate : Faculty = this.kisiForm.value;
     candidate.username = candidate.email;
 
+    // FIXME: Add snackbar error message
     this._user.updateKisi(candidate)
       .subscribe((kisi : Faculty) => {
         this.profile = kisi;
+        this._toaster.info(kisi.fullname + ' duzenlendi.')
     });
 
     this.disableGroup();

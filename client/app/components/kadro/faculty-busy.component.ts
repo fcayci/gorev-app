@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { Faculty } from '../../faculty';
 import { Busy } from '../../busy';
 import { BusyService } from '../../services/busy.service';
+import { ToasterService } from '../../services/toaster.service';
 import { FacultyBusyAddComponent } from './faculty-busy-add.component';
 import 'moment-recur-ts';
 import 'moment-duration-format';
@@ -33,6 +34,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
   constructor(
     private _busy: BusyService,
+    private _toaster: ToasterService,
     public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -50,7 +52,6 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
   }
 
   // FIXME: Ask for confirmation before removing
-  // FIXME: Add snackbar
   // FIXME: Add error handler
   onDelete(busy: Busy, i: number): void {
     this._busy.deleteBusy(busy)
@@ -59,6 +60,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
           let oldData = this.dataSource.data;
           oldData.splice(i,1);
           this.dataSource.data = oldData;
+          this._toaster.info(busy.title + ' silindi.')
         }
       });
   }
@@ -75,12 +77,13 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
     dialogRef.afterClosed().subscribe(msg => {
       if (msg == -1) {
-        // Send to Snackbar service
+        this._toaster.info('Hatali giris')
       }
       else if (msg){
         const oldData = this.dataSource.data;
         oldData.push(msg);
         this.dataSource.data = oldData;
+        this._toaster.info(msg.title + ' eklendi.')
       }
     });
   }

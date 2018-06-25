@@ -55,13 +55,6 @@ export class FacultyBusyAddComponent implements OnInit  {
     this.repeats[2] = REPEATS[2] + ' ' +  day
   }
 
-  // FIXME: Snackbar
-  addBusyToOwner(b): void {
-    this._busy.setBusy(b)
-      .subscribe(res => {
-      });
-  }
-
   parseForm(f){
     // Get the dates as is. if .dateOnly() method is used, we lose timezone.
     var sd = moment(f.startDate)
@@ -100,8 +93,10 @@ export class FacultyBusyAddComponent implements OnInit  {
   onSubmit() {
     const busy = this.parseForm(this.busyForm.value);
     if (busy != -1){
-      this.addBusyToOwner(busy);
-      this.dialogRef.close(busy);
+        this._busy.setBusy(busy)
+          .subscribe(res => {
+            this.dialogRef.close(res);
+        });
     }
     else {
       this.dialogRef.close(-1);
