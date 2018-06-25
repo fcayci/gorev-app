@@ -27,12 +27,17 @@ router.get('/kadro', function(req, res, next){
  * return: single person
  */
 router.get('/kadro/:username', function(req, res, next){
-  Faculty.findOne({ 'username': req.params.username }, function (err, kisi) {
-    if (err) return console.error(err);
-    res.json(kisi);
-    res.status(200);
-    kisi = kisi;
-  });
+  if (!req.params.username || req.params.username == 'undefined') {
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  } else {
+    Faculty.findOne({ 'username': req.params.username }, function (err, kisi) {
+      if (err) return console.error(err);
+      res.json(kisi);
+      res.status(200);
+      kisi = kisi;
+    });
+  }
 });
 
 /* title: Add a person to kadro
@@ -65,11 +70,16 @@ router.post('/kadro', function(req, res, next){
  */
 router.delete('/kadro/:username', function(req, res, next){
 
-  Faculty.deleteOne({ 'username': req.params.username }, function (err, msg) {
-    if (err) return console.error(err);
-      res.json(msg);
-      res.status(200);
-  });
+  if (!req.params.username || req.params.username == 'undefined') {
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  } else {
+    Faculty.deleteOne({ 'username': req.params.username }, function (err, msg) {
+      if (err) return console.error(err);
+        res.json(msg);
+        res.status(200);
+    });
+  }
 });
 
 /* title: Update kisi with username matcing the _id
@@ -79,13 +89,18 @@ router.delete('/kadro/:username', function(req, res, next){
  */
 router.put('/kadro/:username', function(req, res, next){
   var candidate = req.body;
-  var id = candidate._id;
-  // new: true makes it return the updated kisi object.
-  Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
-    if (err) return console.error(err);
-    res.json(kisi);
-    res.status(200);
-  })
+  if (!candidate || candidate == 'undefined'){
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  } else {
+    var id = candidate._id;
+    // new: true makes it return the updated kisi object.
+    Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
+      if (err) return console.error(err);
+      res.json(kisi);
+      res.status(200);
+    })
+  }
 });
 
 /* title: Add to busy array of the passed username.

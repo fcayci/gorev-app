@@ -36,6 +36,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
     });
 
     this.kisiForm.disable();
+    this.kisiForm.patchValue( this.profile );
   }
 
   // OnChanges is needed since profile is not ready when OnInit is executed

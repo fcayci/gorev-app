@@ -24,11 +24,16 @@ router.get('/angarya', function(req, res, next){
  * return: angarya/gorev given id
  */
 router.get('/angarya/:id', function(req, res, next){
-  Task.findOne({ '_id': req.params.id }, function (err, gorev) {
-    if (err) return console.error(err);
-    res.send(gorev);
-    res.status(200);
-  });
+  if (!req.params.id || req.params.id == 'undefined'){
+    res.status(400);
+    res.json({"error" : "No Data"});
+  } else {
+    Task.findOne({ '_id': req.params.id }, function (err, gorev) {
+      if (err) return console.error(err);
+      res.send(gorev);
+      res.status(200);
+    });
+  }
 });
 
 
@@ -40,13 +45,18 @@ router.post('/angarya', function(req, res, next){
 
   // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
-
-  var gorev = new Task(candidate);
-  gorev.save(function(err){
-    if (err) return console.error(err);
-    res.status(200);
-    res.json(gorev);
-  });
+  if (!candidate || candidate == 'undefined'){
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  }
+  else {
+    var gorev = new Task(candidate);
+    gorev.save(function(err){
+      if (err) return console.error(err);
+      res.status(200);
+      res.json(gorev);
+    });
+  }
 });
 
 
@@ -55,12 +65,17 @@ router.post('/angarya', function(req, res, next){
  * return: status msg
  */
 router.delete('/angarya/:id', function(req, res, next){
-
-  Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
-    if (err) return console.error(err);
-      res.send(msg);
-      res.status(200);
-  });
+  if(!req.params.id || req.params.id == 'undefined') {
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  }
+  else {
+    Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
+      if (err) return console.error(err);
+        res.send(msg);
+        res.status(200);
+    });
+  }
 });
 
 module.exports = router;

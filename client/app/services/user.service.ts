@@ -50,7 +50,6 @@ export class UserService {
     // Append _id so that we can find who to update in the backend
     diff['_id'] = this.kisicache._id;
 
-    console.log(diff)
     return this.http.put<Faculty>(url, diff, httpOptions)
       .pipe(
         catchError(this.handleError)

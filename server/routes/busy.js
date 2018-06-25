@@ -28,7 +28,15 @@ router.get('/busy', function(req, res, next) {
 router.get('/busy/:type/:id', function(req, res, next) {
   var type = req.params.type
   var id = req.params.id
-
+  if (!type || type == 'undefined'){
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  }
+  else if (!id || id == 'undefined') {
+    res.status(400);
+    res.json({"error" : "Bad Data"});
+  }
+  
   if (type == 'owner') {
     Busy.find({ 'owner_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
       if (err) return console.error(err);
@@ -53,6 +61,10 @@ router.get('/busy/:type/:id', function(req, res, next) {
  */
 router.post('/busy', function(req, res, next) {
   var candidate = req.body;
+  if (!candidate) {
+    res.status(400);
+    res.json({"error" : "No Data"});
+  }
 
   if (!candidate.owner_id) {
     res.status(400);
@@ -74,11 +86,16 @@ router.post('/busy', function(req, res, next) {
  * return: status msg
  */
 router.delete('/busy/:id', function(req, res, next) {
-  Busy.deleteOne({ '_id': req.params.id }, function (err, msg) {
-    if (err) return console.error(err);
-      res.send(msg);
-      res.status(200);
-  });
+  if (!req.params.id || req.params.id == 'undefined') {
+    res.status(400);
+    res.json({"error" : "No Data"});
+  } else {
+    Busy.deleteOne({ '_id': req.params.id }, function (err, msg) {
+      if (err) return console.error(err);
+        res.send(msg);
+        res.status(200);
+    });
+  }
 });
 
 module.exports = router;

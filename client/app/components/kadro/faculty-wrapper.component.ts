@@ -32,7 +32,8 @@ export class FacultyWrapperComponent implements OnInit {
   onDelete(): void {
     this._user.deleteKisi(this.kisi)
       .subscribe(res => {
-        console.log('deleted with msg', res);
+        // if res.ok == 1 ...
+        //console.log('deleted with msg', res);
     });
     setTimeout(() => this._router.navigate(['/kadro']), 800);
   }
