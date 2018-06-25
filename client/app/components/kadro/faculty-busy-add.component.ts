@@ -44,8 +44,8 @@ export class FacultyBusyAddComponent implements OnInit  {
       title: ['', Validators.required],
       startDate: [ moment().startOf('day').format(), Validators.required],
       endDate: [ moment().startOf('day').format(), Validators.required],
-      startTime: [ moment().startOf('hour').add(1,'hours').format('HH:mm'), Validators.required],
-      endTime: [ moment().startOf('hour').add(3,'hours').format('HH:mm'), Validators.required],
+      startTime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
+      endTime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
       recur: [ 0, Validators.required],
     });
   }
