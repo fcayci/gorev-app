@@ -13,13 +13,13 @@ import { UserService } from '../../services/user.service';
 @Component({
   selector: 'assignment-list',
   templateUrl: './assignment-list.component.html',
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  // animations: [
+  //   trigger('detailExpand', [
+  //     state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+  //     state('expanded', style({ height: '*', visibility: 'visible' })),
+  //     transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+  //   ]),
+  // ],
 })
 
 export class AssignmentListComponent implements OnInit {
@@ -28,11 +28,12 @@ export class AssignmentListComponent implements OnInit {
 
   angarya : Task[];
   kadro : Faculty[] = [];
-  displayedColumns = ['no', 'title', 'type', 'date', 'time', 'people', 'status'];
+  displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status', 'people', 'choosenPeople'];
   dataSource : any;
+  COLORS = ['primary', 'warn', 'accent', 'none'];
 
-  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
-  expandedElement: any;
+  //isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
+  //expandedElement: Faculty;
 
   constructor(
     private _task: TaskService,
@@ -48,10 +49,10 @@ export class AssignmentListComponent implements OnInit {
     this._task.getAllTasks()
       .subscribe((angarya: Task[]) => {
 
-        const rows = []
-        angarya.forEach(gorev => rows.push(gorev, { detailRow: true, gorev }));
+        //const rows = []
+        //angarya.forEach(gorev => rows.push(gorev, { detailRow: true, gorev }));
 
-        this.dataSource = new MatTableDataSource(rows);
+        this.dataSource = new MatTableDataSource(angarya);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
@@ -75,18 +76,29 @@ export class AssignmentListComponent implements OnInit {
   }
 
   getPerson(id: string) {
-    if (this.kadro)
-      return this.kadro.find(x => x._id == id).fullname
-    else return 'Kaçak'
+    if (this.kadro.length > 0) {
+      return this.kadro.find(x => x._id == id).fullname;
+    } else return 'Kaçak'
   }
 
+  getPersonInitials(id: string) {
+    if (this.kadro.length > 0) {
+      let name = this.kadro.find(x => x._id == id).fullname;
+      return name.match(/\b(\w)/g).join('').toLowerCase();
+    } else return 'N/A'
+  }
+
+  goToPerson(id: string) {
+    let p = this.kadro.find(x => x._id == id).username;
+    this._router.navigate(['/kadro/' + p])
+  }
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = filterValue;
   }
 
   onDetail(a) {
-    this._router.navigate(['/angarya/' + a._id])
+    this._router.navigate(['/angarya/' + a._id]);
   }
 
 }

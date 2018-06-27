@@ -115,7 +115,7 @@ header {
 .mat-vertical-stepper-header{
     pointer-events: none !important;
 }
-
+/* 
 .element-row {
   position: relative;
 }
@@ -130,7 +130,7 @@ header {
 
 .element-row.expanded {
   border-bottom-color: transparent;
-}
+} */
 
 .checkbox-section {
   display: flex;
@@ -161,6 +161,10 @@ header {
 
 .mat-column-email {
   min-width: 25%;
+}
+
+tr.mat-row:hover {
+  background: #f5f5f5;
 }
 
 /*

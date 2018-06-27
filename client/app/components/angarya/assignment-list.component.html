@@ -13,70 +13,58 @@
       <span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="warn" routerLink="/gorevekle"><mat-icon>note_add</mat-icon></button></span>
     </div>
 
-    <mat-table #table [dataSource]="dataSource" matSort>
+    <table mat-table [dataSource]="dataSource" matSort>
 
       <ng-container matColumnDef="no">
-        <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
-        <mat-cell *matCellDef="let row; let i = index">{{i+1}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let row; let i = index">{{i+1}}</td>
       </ng-container>
 
       <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef>Başlık</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Başlık</th>
+        <td mat-cell *matCellDef="let row">{{row.title}}</td>
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <mat-header-cell *matHeaderCellDef>Tür</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Tür</th>
+        <td mat-cell *matCellDef="let row">{{row.type}}</td>
       </ng-container>
 
       <ng-container matColumnDef="date">
-        <mat-header-cell *matHeaderCellDef>Tarih</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Tarih</th>
+        <td mat-cell *matCellDef="let row">{{row.startDate | date: "dd MMMM EEEE": '': 'tr'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="time">
-        <mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Saat</th>
+        <td mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</td>
       </ng-container>
 
       <ng-container matColumnDef="people">
-        <mat-header-cell *matHeaderCellDef>Kişi Sayısı</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.peopleCount}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Kişi Sayısı</th>
+        <td mat-cell *matCellDef="let row">{{row.peopleCount}}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef>Durum</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.status}}</mat-cell>
+        <th mat-header-cell *matHeaderCellDef>Durum</th>
+        <td mat-cell *matCellDef="let row">{{row.status}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="expandedDetail">
-        <mat-cell style="display:flex" *matCellDef="let detail">
-          <mat-chip-list *ngIf="dataSource">
-            <mat-chip *ngFor="let pid of detail.gorev.choosenPeople">
-              {{getPerson(pid)}}
-            </mat-chip>
+      <ng-container matColumnDef="choosenPeople">
+        <th mat-header-cell *matHeaderCellDef>Atanan Kişiler</th>
+        <td mat-cell *matCellDef="let row">
+          <mat-chip-list >
+          <mat-chip *ngFor="let pid of row.choosenPeople"  matTooltip={{getPerson(pid)}} color="accent" (click)="goToPerson(pid)"> {{getPersonInitials(pid)}} </mat-chip>
           </mat-chip-list>
-                <span class="fill-remaining-space"></span>
-          <mat-chip-list style="float:right">
-            <mat-chip color="warn" selected="true" (click)="onDetail(detail.gorev)">Detaylar</mat-chip>
-          </mat-chip-list>
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <!-- <mat-chip color="warn" selected="true" (click)="onDetail(detail.gorev)">Detaylar</mat-chip> -->
 
-      <mat-row *matRowDef="let row; columns: displayedColumns;"
-        matRipple
-        class="element-row"
-        [class.expanded]="expandedElement == row"
-        (click)="expandedElement = row">
-      </mat-row>
-      <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
-        [@detailExpand]="row.gorev == expandedElement ? 'expanded' : 'collapsed'"
-        style="overflow: hidden">
-      </mat-row>
-    </mat-table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row style="cursor:pointer;height:55px;" *matRowDef="let row; columns: displayedColumns;" (click)="onDetail(row)">
+      </tr>
+    </table>
 
     <mat-spinner *ngIf="!dataSource"></mat-spinner>
 
