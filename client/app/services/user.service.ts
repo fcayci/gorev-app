@@ -18,13 +18,13 @@ const kadroUrl = '/api/kadro';
 })
 export class UserService {
 
-  kisicache : Faculty;
+  kisicache: Faculty;
 
   constructor(private http: HttpClient) {
   }
 
   getKadro(): Observable<Faculty[]> {
-    let url = kadroUrl;
+    const url = kadroUrl;
     return this.http.get<Faculty[]>(url)
       .pipe(
         catchError(this.handleError)
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   getKisi(username: string): Observable<Faculty> {
-    let url = kadroUrl + '/' + username;
+    const url = kadroUrl + '/' + username;
     return this.http.get<Faculty>(url)
       .pipe(
         catchError(this.handleError),
@@ -41,10 +41,10 @@ export class UserService {
   }
 
   updateKisi(kisi: Faculty): Observable<Faculty> {
-    let url = kadroUrl + '/' + kisi.username;
+    const url = kadroUrl + '/' + kisi.username;
 
-    if (this.kisicache.username == kisi.username) {
-      var diff = this.compareJSON(this.kisicache, kisi)
+    if (this.kisicache.username === kisi.username) {
+      var diff = this.compareJSON(this.kisicache, kisi);
     }
 
     // Append _id so that we can find who to update in the backend
@@ -57,7 +57,7 @@ export class UserService {
   }
 
   addKisi(kisi: Faculty): Observable<Faculty> {
-    let url = kadroUrl;
+    const url = kadroUrl;
     return this.http.post<Faculty>(url, JSON.stringify(kisi), httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -65,7 +65,7 @@ export class UserService {
   }
 
   deleteKisi(kisi: Faculty): Observable<{}> {
-    let url = kadroUrl + '/' + kisi.username;
+    const url = kadroUrl + '/' + kisi.username;
     return this.http.delete(url)
       .pipe(
         catchError(this.handleError)
@@ -73,10 +73,10 @@ export class UserService {
   }
 
   private compareJSON = function(obj1, obj2) {
-    var ret = {};
-    for(var i in obj2) {
+    const ret = {};
+    for (const i in obj2) {
       if (!i.startsWith('__')) {
-        if(!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
+        if (!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
           ret[i] = obj2[i];
         }
       }
@@ -99,5 +99,5 @@ export class UserService {
     // return an observable with a user-facing error message
     return throwError(
       'Something bad happened; please try again later.');
-  };
+  }
 }

@@ -31,23 +31,21 @@
           <td mat-cell *matCellDef="let row">{{row.duration}}</td>
         </ng-container>
 
-        <ng-container matColumnDef="weight">
-          <th mat-header-cell *matHeaderCellDef>Ağırlık</th>
-          <td mat-cell *matCellDef="let row">{{row.weight}}</td>
+        <ng-container matColumnDef="load">
+          <th mat-header-cell *matHeaderCellDef>Yük</th>
+          <td mat-cell *matCellDef="let row">{{row.load}}</td>
+          <td mat-footer-cell *matFooterCellDef> {{ totalLoad }} </td>
         </ng-container>
 
         <ng-container matColumnDef="expired">
           <th mat-header-cell *matHeaderCellDef>Durumu</th>
           <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
-          <span class="fill-remaining-space"></span>
-          <button (click)="onClick(row)" mat-icon-button>
-            <span matTooltip="Detaylar"><mat-icon>zoom_in</mat-icon></span>
-          </button>
+          
         </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr mat-row (click)="onClick(row)" *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
 
       <mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>

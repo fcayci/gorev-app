@@ -18,43 +18,52 @@ const angaryaUrl = '/api/angarya';
 })
 export class TaskService {
 
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
-  getAllTasks(): Observable<Task[]>{
-    let url = angaryaUrl;
+  getAllTasks(): Observable<Task[]> {
+    const url = angaryaUrl;
     return this.http.get<Task[]>(url)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getTaskById(id: string): Observable<Task>{
-    let url = angaryaUrl + '/' + id;
+  getTaskById(id: string): Observable<Task> {
+    const url = angaryaUrl + '/' + id;
     return this.http.get<Task>(url)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getTasksByOwnerId(id: string): Observable<Task[]>{
-    let url = angaryaUrl + '/' + id;
+  getTasksByIds(ids: Array<string>): Observable<Task[]> {
+    const url = angaryaUrl + '/' + ids;
     return this.http.get<Task[]>(url)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  addTask(task: Task): Observable<Task>{
-    let url = angaryaUrl;
+  // FIXME: Seems wrong
+  getTasksByOwnerId(id: string): Observable<Task[]> {
+    const url = angaryaUrl + '/' + id;
+    return this.http.get<Task[]>(url)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  addTask(task: Task): Observable<Task> {
+    const url = angaryaUrl;
     return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  delTaskById(task: Task): Observable<{}>{
-    let url = angaryaUrl + '/' + task._id;
+  delTaskById(task: Task): Observable<{}> {
+    const url = angaryaUrl + '/' + task._id;
     return this.http.delete(url)
       .pipe(
         catchError(this.handleError)

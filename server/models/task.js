@@ -34,6 +34,10 @@ var TaskSchema = new Schema(
       required: true,
       min: 1
     },
+    load: {
+      type: Number,
+      required: true
+    },
     choosenPeople: [{
       type: Schema.ObjectId,
       ref: 'Faculty',

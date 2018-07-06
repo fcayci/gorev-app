@@ -12,9 +12,9 @@ import 'moment-recur-ts';
 import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
-export class msg {
+export class Msg {
   'ok': number;
-  'n' : number
+  'n': number;
 }
 
 @Component({
@@ -42,10 +42,11 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
   }
 
   ngOnChanges() {
-    if(this.profile){
+    if (this.profile) {
       this._busy.getBusyById('owner', this.profile._id)
-        .subscribe((busies : Busy[]) => {
-          let b = busies.filter(i => !i.task_id)
+        .subscribe((busies: Busy[]) => {
+          // FIXME: Remove filter when you remove task_id field from busy.
+          const b = busies.filter(i => !i.task_id);
           this.dataSource = new MatTableDataSource(b);
       });
     }
@@ -55,40 +56,39 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
   // FIXME: Add error handler
   onDelete(busy: Busy, i: number): void {
     this._busy.deleteBusy(busy)
-      .subscribe((res: msg) => {
-        if (res.ok == 1){
-          let oldData = this.dataSource.data;
-          oldData.splice(i,1);
+      .subscribe((res: Msg) => {
+        if (res.ok === 1) {
+          const oldData = this.dataSource.data;
+          oldData.splice(i, 1);
           this.dataSource.data = oldData;
-          this._toaster.info(busy.title + ' silindi.')
+          this._toaster.info(busy.title + ' silindi.');
         }
       });
   }
 
   isExpired(d) {
-    return this.today.isAfter(d)
+    return this.today.isAfter(d);
   }
 
   openDialog(): void {
-    let dialogRef = this.dialog.open(FacultyBusyAddComponent, {
+    const dialogRef = this.dialog.open(FacultyBusyAddComponent, {
       width: '400px',
       data: this.profile
     });
 
     dialogRef.afterClosed().subscribe(msg => {
-      if (msg == -1) {
-        this._toaster.info('Hatali giris')
-      }
-      else if (msg){
+      if (msg === -1) {
+        this._toaster.info('Hatali giris');
+      } else if (msg) {
         const oldData = this.dataSource.data;
         oldData.push(msg);
         this.dataSource.data = oldData;
-        this._toaster.info(msg.title + ' eklendi.')
+        this._toaster.info(msg.title + ' eklendi.');
       }
     });
   }
 
-  toggleEdit(){
+  toggleEdit() {
     this.showdelete = !this.showdelete;
   }
 

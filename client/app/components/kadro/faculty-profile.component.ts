@@ -17,14 +17,14 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   @Output() submitEvent = new EventEmitter<string>();
 
   positions = POSITIONS;
-  kisiForm : FormGroup;
+  kisiForm: FormGroup;
 
   constructor(
     private _fb: FormBuilder,
     private _toaster: ToasterService,
     private _user: UserService) {}
 
-  ngOnInit() : void {
+  ngOnInit(): void {
     this.kisiForm = this._fb.group({
       fullname: '',
       email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
@@ -42,27 +42,28 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 
   // OnChanges is needed since profile is not ready when OnInit is executed
   // if (this.kisiForm) is needed since OnChanges is executed before OnInit for the first time.
-  ngOnChanges() : void {
-    if (this.kisiForm)
+  ngOnChanges(): void {
+    if (this.kisiForm) {
       this.kisiForm.patchValue( this.profile );
+    }
   }
 
   onSave(): void {
-    let candidate : Faculty = this.kisiForm.value;
+    const candidate: Faculty = this.kisiForm.value;
     candidate.username = candidate.email;
 
     // FIXME: Add snackbar error message
     this._user.updateKisi(candidate)
-      .subscribe((kisi : Faculty) => {
+      .subscribe((kisi: Faculty) => {
         this.profile = kisi;
-        this._toaster.info(kisi.fullname + ' duzenlendi.')
+        this._toaster.info(kisi.fullname + ' duzenlendi.');
     });
 
     this.disableGroup();
   }
 
   onCancel(): void {
-    this.kisiForm.reset;
+    this.kisiForm.reset();
     this.kisiForm.disable();
     this.kisiForm.patchValue( this.profile );
   }

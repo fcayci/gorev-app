@@ -16,7 +16,7 @@ import { Busy, REPEATS } from '../../busy';
 
 export class FacultyBusyAddComponent implements OnInit  {
 
-  busyForm : FormGroup;
+  busyForm: FormGroup;
   repeats = JSON.parse(JSON.stringify(REPEATS));
   tor = [0, 1, 7];
 
@@ -35,7 +35,7 @@ export class FacultyBusyAddComponent implements OnInit  {
 
   // Prevent Saturday and Sunday from being selected.
   weekendFilter = (d: Date): boolean => {
-    const day = moment(d).format('E')
+    const day = moment(d).format('E');
     return day !== '6' && day !== '7';
   }
 
@@ -50,32 +50,32 @@ export class FacultyBusyAddComponent implements OnInit  {
     });
   }
 
-  updateDay(e){
+  updateDay(e) {
     const day = e.value.format('dddd');
-    this.repeats[2] = REPEATS[2] + ' ' +  day
+    this.repeats[2] = REPEATS[2] + ' ' +  day;
   }
 
-  parseForm(f){
+  parseForm(f) {
     // Get the dates as is. if .dateOnly() method is used, we lose timezone.
-    var sd = moment(f.startDate)
-    var ed = moment(f.endDate)
+    let sd = moment(f.startDate);
+    let ed = moment(f.endDate);
 
     // Make sure dates are the same or end is bigger
-    if (sd.isAfter(ed)){
-      return -1
+    if (sd.isAfter(ed)) {
+      return -1;
     }
 
-    sd = sd.add(f.startTime.slice(0,2), 'h');
+    sd = sd.add(f.startTime.slice(0, 2), 'h');
     sd = sd.add(f.startTime.slice(-2), 'm');
-    ed = ed.add(f.endTime.slice(0,2), 'h');
+    ed = ed.add(f.endTime.slice(0, 2), 'h');
     ed = ed.add(f.endTime.slice(-2), 'm');
 
     // Make sure start date is after end.
-    if (sd.isSameOrAfter(ed)){
-      return -1
+    if (sd.isSameOrAfter(ed)) {
+      return -1;
     }
 
-    var model : Busy = {
+    const model: Busy = {
       title : f.title,
       startDate : sd.format(),
       endDate : ed.format(),
@@ -92,13 +92,12 @@ export class FacultyBusyAddComponent implements OnInit  {
 
   onSubmit() {
     const busy = this.parseForm(this.busyForm.value);
-    if (busy != -1){
+    if (busy !== -1) {
         this._busy.setBusy(busy)
           .subscribe(res => {
             this.dialogRef.close(res);
         });
-    }
-    else {
+    } else {
       this.dialogRef.close(-1);
     }
   }

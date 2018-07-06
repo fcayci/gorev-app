@@ -25,10 +25,12 @@ router.get('/angarya', function(req, res, next){
  */
 router.get('/angarya/:id', function(req, res, next){
   if (!req.params.id || req.params.id == 'undefined'){
-    res.status(400);
+    res.status(200);
     res.json({"error" : "No Data"});
   } else {
-    Task.findOne({ '_id': req.params.id }, function (err, gorev) {
+    const ids = req.params.id.split(',');
+
+    Task.find({ '_id': {$in: ids} }, function (err, gorev) {
       if (err) return console.error(err);
       res.send(gorev);
       res.status(200);

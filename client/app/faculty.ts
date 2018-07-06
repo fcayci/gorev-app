@@ -11,11 +11,12 @@ export interface FacultyDB {
   load: number;
   tempLoad?: number;
   busy?: Array<string>;
-  vacation: boolean
+  tasks?: Array<string>;
+  vacation: boolean;
 }
 
 export interface Faculty extends FacultyDB {
-  isAvailable?: string
+  isAvailable?: string;
 }
 
 export const POSITIONS = ['Dr.', 'Öğretim Görevlisi', 'Araştırma Görevlisi', 'Uzman', 'Memur', 'Diğer'];
