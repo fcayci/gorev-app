@@ -46,7 +46,7 @@ router.get('/kadro/:username', function(req, res, next){
  */
 router.post('/kadro', function(req, res, next){
 
-  var candidate = req.body;
+  const candidate = req.body;
 
   if (!candidate.fullname || !candidate.email) {
     res.status(400);
@@ -55,7 +55,7 @@ router.post('/kadro', function(req, res, next){
   else {
     candidate.username = candidate.email;
 
-    var kisi = new Faculty(candidate);
+    const kisi = new Faculty(candidate);
     kisi.save(function(err){
       if (err) return console.error(err);
       res.status(200);
@@ -88,12 +88,12 @@ router.delete('/kadro/:username', function(req, res, next){
  * return: unknown
  */
 router.put('/kadro/:username', function(req, res, next){
-  var candidate = req.body;
+  const candidate = req.body;
   if (!candidate || candidate == 'undefined'){
     res.status(400);
     res.json({"error" : "Bad Data"});
   } else {
-    var id = candidate._id;
+    const id = candidate._id;
     // new: true makes it return the updated kisi object.
     Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
       if (err) return console.error(err);
@@ -103,22 +103,22 @@ router.put('/kadro/:username', function(req, res, next){
   }
 });
 
-/* title: Add to busy array of the passed username.
- * Expects busy JSON data
+/* title: Add to tasks array of the passed username.
+ * Expects task JSON data
  *
  * return: unknown
  */
-// router.put('/kadro/:username', function(req, res, next){
-//   var busy = req.body;
+router.put('/kadro/:username/tasks', function(req, res, next){
+  const taskid = req.body;
 
-//   Faculty.update({'username': req.params.username},
-//     { $push : {'busy' : busy} },
-//     function(err, msg){
-//       if (err) return console.error(err);
-//       res.send(msg);
-//       res.status(200);
-//   });
-// });
+  Faculty.update({'username': req.params.username},
+    { $push : {'tasks' : taskid} },
+    function(err, msg){
+      if (err) return console.error(err);
+      res.send(msg);
+      res.status(200);
+  });
+});
 
 /* title: Remove from busy array of the passed username.
  * Expects busy JSON data

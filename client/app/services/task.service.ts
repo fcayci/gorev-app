@@ -29,6 +29,15 @@ export class TaskService {
       );
   }
 
+  getOpenTasks(): Observable<Task[]> {
+    const url = angaryaUrl + '/open';
+    return this.http.get<Task[]>(url)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+
   getTaskById(id: string): Observable<Task> {
     const url = angaryaUrl + '/' + id;
     return this.http.get<Task>(url)

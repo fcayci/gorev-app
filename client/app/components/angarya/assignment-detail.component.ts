@@ -168,6 +168,32 @@ export class AssignmentDetailComponent implements OnInit {
 
   disableGroup(): void {
     this.gorevForm.disable();
+    this.gorevForm.controls['selectedPerson'].setValue('');
+  }
+
+
+  addToChoosenPeople() {
+    let g = this.gorevForm.value;
+    let p: Faculty = g.selectedPerson;
+
+    // if(g.choosenPeople.indexOf(p) === -1) {
+    //   g.choosenPeople.push(p);
+    //   this.gorevForm.value.choosenPeople.push(p._id);
+    // }
+
+    // // Remove choosen from available
+    // let index = this.available.indexOf(p, 0);
+    // if (index > -1) {
+    //   this.available.splice(index, 1);
+    // }
+
+    // // Disable form if good to go.
+    // if (this.gorevForm.value.peopleCount == this.choosenPeople.length) {
+    //   this.peopleForm.controls['selectedPerson'].disable();
+    // }
+
+    // // Reset form
+    // this.peopleForm.controls['selectedPerson'].setValue('');
   }
 
   findBusies(gs, ge) : Array<string> {
@@ -246,8 +272,8 @@ export class AssignmentDetailComponent implements OnInit {
           let NAids = this.findBusies(sd, ed);
 
           for (let k of this.kadro ){
-            // If kisi id is not in NAids, add to available
-            if (NAids.indexOf(k._id) === -1){
+            // If kisi id is not in NAids, AND not already assigned to task add to available
+            if (NAids.indexOf(k._id) === -1 && this.gorevForm.value.choosenPeople.indexOf(k._id) === -1){
               this.available.push(k)
             } else {
               this.notAvailable.push(k)

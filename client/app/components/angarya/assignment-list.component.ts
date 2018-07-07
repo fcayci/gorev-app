@@ -13,13 +13,6 @@ import { UserService } from '../../services/user.service';
 @Component({
   selector: 'assignment-list',
   templateUrl: './assignment-list.component.html',
-  // animations: [
-  //   trigger('detailExpand', [
-  //     state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-  //     state('expanded', style({ height: '*', visibility: 'visible' })),
-  //     transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-  //   ]),
-  // ],
 })
 
 export class AssignmentListComponent implements OnInit {
@@ -29,11 +22,7 @@ export class AssignmentListComponent implements OnInit {
   angarya : Task[];
   kadro : Faculty[] = [];
   displayedColumns = ['no', 'title', 'type', 'date', 'time', 'status', 'people', 'choosenPeople'];
-  dataSource : any;
-  COLORS = ['primary', 'warn', 'accent', 'none'];
-
-  //isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
-  //expandedElement: Faculty;
+  dataSource : MatTableDataSource<Task>;
 
   constructor(
     private _task: TaskService,
@@ -48,10 +37,6 @@ export class AssignmentListComponent implements OnInit {
 
     this._task.getAllTasks()
       .subscribe((angarya: Task[]) => {
-
-        //const rows = []
-        //angarya.forEach(gorev => rows.push(gorev, { detailRow: true, gorev }));
-
         this.dataSource = new MatTableDataSource(angarya);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -92,6 +77,7 @@ export class AssignmentListComponent implements OnInit {
     let p = this.kadro.find(x => x._id == id).username;
     this._router.navigate(['/kadro/' + p])
   }
+
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim().toLowerCase();
     this.dataSource.filter = filterValue;

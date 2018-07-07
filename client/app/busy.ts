@@ -7,12 +7,12 @@ export interface BusyDB {
   weight?: number;
   startDate: string;
   endDate: string;
-  recur: number
+  recur: number;
 }
 
 export interface Busy extends BusyDB {
   startTime?: string;
-  endTime?: string
+  endTime?: string;
 }
 
-export const REPEATS = ["Tekrar Etmez", "Günlük", "Her Hafta"];
+export const REPEATS = ['Tekrar Etmez', 'Günlük', 'Her Hafta'];

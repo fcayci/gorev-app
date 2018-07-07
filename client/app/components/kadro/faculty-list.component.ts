@@ -16,12 +16,11 @@ import { FacultyAddComponent } from './faculty-add.component';
 export class FacultyListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  
   displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
   dataSource: MatTableDataSource<Faculty>;
   filterValue: string;
   position = POSITIONS;
-  title = "Bölüm Kadrosu"
+  title = 'Bölüm Kadrosu';
 
   constructor(
     private _user: UserService,
@@ -35,7 +34,7 @@ export class FacultyListComponent implements OnInit {
 
   getAllPeople() {
     this._user.getKadro()
-      .subscribe((kadro : Faculty[]) => {
+      .subscribe((kadro: Faculty[]) => {
         this.dataSource = new MatTableDataSource(kadro);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -43,14 +42,14 @@ export class FacultyListComponent implements OnInit {
   }
 
   openDialog(): void {
-    let dialogRef = this.dialog.open(FacultyAddComponent, {
+    const dialogRef = this.dialog.open(FacultyAddComponent, {
       width: '460px'
     });
 
     // FIXME: Add error snackbar message.
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this._toaster.info(result.position + ' ' + result.fullname + ' başarıyla eklendi.')
+        this._toaster.info(result.position + ' ' + result.fullname + ' başarıyla eklendi.');
         this.getAllPeople();
       }
     });
@@ -65,6 +64,6 @@ export class FacultyListComponent implements OnInit {
   }
 
   goToPerson(p) {
-    this._router.navigate(['/kadro/' + p.username])
+    this._router.navigate(['/kadro/' + p.username]);
   }
 }

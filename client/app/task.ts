@@ -9,7 +9,7 @@ export interface TaskDB {
   load?: number;
   peopleCount: number;
   choosenPeople: Array<string>;
-  status: number
+  status: number;
 }
 
 export interface Task extends TaskDB {
@@ -20,4 +20,4 @@ export interface Task extends TaskDB {
 
 export const GSTATES = ['Açık', 'Bitmiş', 'Kapalı'];
 
-export const TYPES = ['Gözetmenlik','Sekreterlik','Kalite/Müdek/Tanıtım','Lab Asistanlığı','Diğer'];
+export const TYPES = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Lab Asistanlığı', 'Diğer'];

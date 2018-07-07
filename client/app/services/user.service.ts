@@ -40,6 +40,17 @@ export class UserService {
       );
   }
 
+
+  addTaskToKisi(kisi: Faculty, taskid: string): Observable<Faculty> {
+    const url = kadroUrl + '/' + kisi.username + '/tasks';
+
+    return this.http.put<Faculty>(url, taskid, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+
   updateKisi(kisi: Faculty): Observable<Faculty> {
     const url = kadroUrl + '/' + kisi.username;
 

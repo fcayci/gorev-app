@@ -19,6 +19,20 @@ router.get('/angarya', function(req, res, next){
   });
 });
 
+
+/* title: Get open gorev in angarya
+ *
+ * return: angarya
+ */
+router.get('/angarya/open', function(req, res, next){
+  Task.find({ 'status': 'open' }, function (err, angarya) {
+    if (err) return console.error(err);
+    res.send(angarya);
+    res.status(200);
+  });
+});
+
+
 /* title: Get gorev
  *
  * return: angarya/gorev given id
@@ -51,14 +65,14 @@ router.post('/angarya', function(req, res, next){
     res.status(400);
     res.json({"error" : "Bad Data"});
   }
-  else {
-    var gorev = new Task(candidate);
-    gorev.save(function(err){
-      if (err) return console.error(err);
-      res.status(200);
-      res.json(gorev);
-    });
-  }
+  // else {
+  //   var gorev = new Task(candidate);
+  //   gorev.save(function(err){
+  //     if (err) return console.error(err);
+  //     res.status(200);
+  //     res.json(gorev);
+  //   });
+  // }
 });
 
 

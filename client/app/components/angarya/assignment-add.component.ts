@@ -31,6 +31,7 @@ export class AssignmentAddComponent implements OnInit {
   choosenPeople: Faculty[] = [];
 
   busytimes: Busy[];
+  alltasks: Task[];
   gorevForm: FormGroup;
   peopleForm: FormGroup;
 
@@ -66,6 +67,11 @@ export class AssignmentAddComponent implements OnInit {
         this.busytimes = res;
     });
 
+    this._task.getOpenTasks()
+      .subscribe((res: Task[]) => {
+        this.alltasks = res;
+    });
+
     this._user.getKadro()
       .subscribe((kadro: Faculty[]) => {
         this.kadro = kadro;
@@ -79,23 +85,28 @@ export class AssignmentAddComponent implements OnInit {
 
     this._task.addTask(gorev)
       .subscribe(res => {
-        const model: Busy = {
-          title : gorev.title,
-          startDate : gorev.startDate,
-          endDate : gorev.endDate,
-          recur : 0,
-          task_id : res._id,
-          load : gorev.load,
-          owner_id : ''
-        };
+        for (let i = 0; i < gorev.peopleCount; i++) {
+          const p = this.kadro.filter(id => gorev.choosenPeople[i])[0];
+          console.log(p);
+          // this._user.addTaskToKisi(p, gorev);
+        }
+        // const model: Busy = {
+        //   title : gorev.title,
+        //   startDate : gorev.startDate,
+        //   endDate : gorev.endDate,
+        //   recur : 0,
+        //   task_id : res._id,
+        //   load : gorev.load,
+        //   owner_id : ''
+        // };
 
-      for (let i = 0; i < gorev.peopleCount; i++) {
-        model.owner_id = gorev.choosenPeople[i];
-          this._busy.setBusy(model)
-            .subscribe(res => {
-        });
-      }
-      this._router.navigate(['/angarya']);
+        // for (let i = 0; i < gorev.peopleCount; i++) {
+        //   model.owner_id = gorev.choosenPeople[i];
+        //     this._busy.setBusy(model)
+        //       .subscribe(res => {
+        //   });
+        // }
+        this._router.navigate(['/angarya']);
 
     });
   }
@@ -167,7 +178,7 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   autoAssignPeople(): void {
-    let g = this.gorevForm.value;
+    const g = this.gorevForm.value;
 
     for (let i = 0; i < g.peopleCount; i++) {
       if (g.selector === 0) {
@@ -199,12 +210,12 @@ export class AssignmentAddComponent implements OnInit {
       endTime: [ moment().startOf('hour').add(3, 'hours').format('HH:mm'), Validators.required],
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      duration: [2, [Validators.required, Validators.pattern('[0-9]{1,2}')]],
+      duration: [2, [Validators.required]],
       startDate: [],
       selector: [0, Validators.required],
       endDate: [],
       choosenPeople: [[], ],
-      status: ['Open'],
+      status: ['open'],
     });
   }
 
@@ -221,12 +232,16 @@ export class AssignmentAddComponent implements OnInit {
     const NAs = [];
     const gorevrange = range(gs, ge);
 
-    for (const busy of this.busytimes) {
+    // Merge two arrays to have a unified busy object for testing.
+    const busies = Object.assign(this.busytimes, this.alltasks);
 
+    for (const busy of busies) {
+
+      // This is only availabe in busytimes, so no worries here
       if (busy.recur) {
         const interval = moment(busy.startDate).recur().every(busy.recur).days();
 
-        if (interval.matches(gs)){
+        if (interval.matches(gs)) {
 
           // Since this is an interval, we need to create the exact date for checking.
           const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(busy.startDate).format('HH:mm'));
@@ -244,9 +259,18 @@ export class AssignmentAddComponent implements OnInit {
         const be = moment(busy.endDate);
         const busyrange = range(bs, be);
 
+        // This can be both busytimes and tasks
         if (busyrange.overlaps(gorevrange)) {
-          if (NAs.indexOf(busy.owner_id) === -1) {
-            NAs.push(busy.owner_id);
+          if (busy.owner_id) {
+            if (NAs.indexOf(busy.owner_id) === -1) {
+              NAs.push(busy.owner_id);
+            }
+          } else {
+            for (let i = 0; i < busy.peopleCount; i++) {
+              if (NAs.indexOf(busy.choosenPeople[i])) {
+                NAs.push(busy.choosenPeople[i]);
+              }
+            }
           }
         }
       }
