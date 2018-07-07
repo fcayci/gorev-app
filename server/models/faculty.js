@@ -55,11 +55,16 @@ const FacultySchema = new Schema(
       required: true,
       default: 0
     },
-    // busy: [{
-    //   type: Schema.ObjectId,
-    //   required: false,
-    //   ref: 'Busy'
-    // }],
+    tasks: [{
+      type: Schema.ObjectId,
+      required: false,
+      ref: 'Task'
+    }],
+    busy: [{
+      type: Schema.ObjectId,
+      required: false,
+      ref: 'Busy'
+    }],
     vacation: {
       type: Boolean,
       required: true,

@@ -85,7 +85,7 @@ router.delete('/kadro/:username', function(req, res, next){
 /* title: Update kisi with username matcing the _id
  * Expects full JSON of the candidate.
  *
- * return: unknown
+ * return: status msg
  */
 router.put('/kadro/:username', function(req, res, next){
   const candidate = req.body;
@@ -106,13 +106,30 @@ router.put('/kadro/:username', function(req, res, next){
 /* title: Add to tasks array of the passed username.
  * Expects task JSON data
  *
+ * return: status msg
+ */
+router.put('/kadro/:username/addtask', function(req, res, next){
+  const taskid = req.body;
+  
+  Faculty.update({'username': req.params.username},
+    { $push : taskid },
+    function(err, msg){
+      if (err) return console.error(err);
+      res.send(msg);
+      res.status(200);
+  });
+});
+
+/* title: Add to tasks array of the passed username.
+ * Expects task JSON data
+ *
  * return: unknown
  */
-router.put('/kadro/:username/tasks', function(req, res, next){
+router.put('/kadro/:username/deltask', function(req, res, next){
   const taskid = req.body;
 
   Faculty.update({'username': req.params.username},
-    { $push : {'tasks' : taskid} },
+    { $pull : taskid },
     function(err, msg){
       if (err) return console.error(err);
       res.send(msg);

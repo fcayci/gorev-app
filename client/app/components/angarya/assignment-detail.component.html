@@ -4,7 +4,7 @@
   <div *ngIf="gorev" class="mat-elevation-z8">
     <mat-toolbar color="primary">
       <mat-toolbar-row >
-        <mat-icon>description</mat-icon>  <h2 style="padding-left:5px;">{{title}}</h2>
+        <mat-icon>description</mat-icon>  <h2 style="padding-left:5px;">{{ title }}</h2>
         <button *ngIf="gorevForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Görevi Düzenle"><mat-icon>edit</mat-icon></span></button>
         <span class="fill-remaining-space"></span>
         <button *ngIf="!gorevForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Görevi Sil"><mat-icon>delete_forever</mat-icon></span></button>
@@ -86,7 +86,17 @@
           </div>
           <div class="form-row">
             <mat-chip-list class="mat-chip-list-stacked">
-              <mat-chip *ngFor="let c of gorevForm.value.choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c"><mat-icon style="margin-left:0; margin-right:7px" matChipRemove *ngIf="!gorevForm.disabled">cancel</mat-icon> {{getPerson(c)}} <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span></mat-chip>
+              <mat-chip *ngFor="let c of gorevForm.value.choosenPeople" 
+                (removed)="removeFromChoosenPeople(c)" [value]="c">
+                <mat-icon style="margin-left:0; margin-right:7px" 
+                  matChipRemove *ngIf="!gorevForm.disabled">
+                  cancel
+                </mat-icon> 
+                {{getPerson(c)}} 
+                <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">
+                  {{c.load}}
+                </span>
+              </mat-chip>
             </mat-chip-list>
           </div>
 

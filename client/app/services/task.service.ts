@@ -18,8 +18,7 @@ const angaryaUrl = '/api/angarya';
 })
 export class TaskService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getAllTasks(): Observable<Task[]> {
     const url = angaryaUrl;
@@ -37,10 +36,25 @@ export class TaskService {
       );
   }
 
+  getPastTasks(): Observable<Task[]> {
+    const url = angaryaUrl + '/past';
+    return this.http.get<Task[]>(url)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
 
-  getTaskById(id: string): Observable<Task> {
+  getClosedTasks(): Observable<Task[]> {
+    const url = angaryaUrl + '/closed';
+    return this.http.get<Task[]>(url)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getTasksById(id: string): Observable<Task[]> {
     const url = angaryaUrl + '/' + id;
-    return this.http.get<Task>(url)
+    return this.http.get<Task[]>(url)
       .pipe(
         catchError(this.handleError)
       );

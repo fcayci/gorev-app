@@ -16,9 +16,9 @@ import { TaskService } from '../../services/task.service';
 import { UserService } from '../../services/user.service';
 import { BusyService } from '../../services/busy.service';
 
-export class msg {
+export class Msg {
   'ok': number;
-  'n' : number
+  'n': number;
 }
 
 @Component({
@@ -28,23 +28,25 @@ export class msg {
 
 export class AssignmentDetailComponent implements OnInit {
 
-  title : string = '';
-  kadro : Faculty[] = [];
-  available : Faculty[] = [];
-  notAvailable : Faculty[] = [];
-  busytimes : Busy[] = [];
-  gorev : Task;
-  gorevForm : FormGroup;
-  argor: boolean = true;
-  dr : boolean = false;
+  title: string;
+  kadro: Faculty[] = [];
+  available: Faculty[] = [];
+  notAvailable: Faculty[] = [];
+
+  busytimes: Busy[];
+  alltasks: Task[];
+  gorev: Task;
+  gorevForm: FormGroup;
+  argor = true;
+  dr = false;
   duration;
   formTimeValid = false;
   showTimeError = true;
 
   gstates = GSTATES;
   types = TYPES;
-  numbers : Array<number> = [];
-  weights : Array<number> = [];
+  numbers: Array<number> = [];
+  weights: Array<number> = [];
 
   constructor(
     private _fsort: FSortPipe,
@@ -62,28 +64,32 @@ export class AssignmentDetailComponent implements OnInit {
     });
 
     this._busy.getBusyAll()
-      .subscribe((res : Busy[]) => {
+      .subscribe((res: Busy[]) => {
         this.busytimes = res;
+    });
+
+    this._task.getOpenTasks()
+      .subscribe((res: Task[]) => {
+        this.alltasks = res;
     });
 
     this.createForm();
     this.gorevForm.disable();
 
-    this.numbers = Array(7).fill(0).map((x,i)=>i+1);
-    this.weights = Array(12).fill(0).map((x,i)=>(i+1)/4);
+    this.numbers = Array(7).fill(0).map((x, i) => i + 1);
+    this.weights = Array(12).fill(0).map((x, i) => (i + 1) / 4);
 
-    var id = this._route.snapshot.paramMap.get('id');
-    this._task.getTaskById(id)
-      .subscribe((gorev: Task) => {
-        if (!gorev) {
-          this.title = "Görevlendirme detayları bulunamadı"
+    const id = this._route.snapshot.paramMap.get('id');
+    this._task.getTasksById(id)
+      .subscribe((gorev: Task[]) => {
+        if (gorev.length === 0) {
           this._router.navigate(['/angarya']);
-        }
-        else {
-          this.gorev = gorev;
+        } else {
+          // The return will be a single item array. Just pass the first item.
+          this.gorev = gorev[0];
           this.title = this.gorev.title;
           this.gorevForm.patchValue(this.gorev);
-          this.parseTime(this.gorev)
+          this.parseTime(this.gorev);
 
           this.validateTimeAndFindAvailable();
         }
@@ -113,22 +119,21 @@ export class AssignmentDetailComponent implements OnInit {
     this._busy.getBusyById('task', this.gorev._id)
       .subscribe((res) => {
         gids = res;
-    })
-
+    });
 
     // this._busy.deleteBusy()
     //   .subscribe(() => {
     //   })
 
     this._task.delTaskById(this.gorev)
-      .subscribe((res: msg) => {
-         if (res.ok == 1){
+      .subscribe((res: Msg) => {
+         if (res.ok === 1) {
             setTimeout(() => this._router.navigate(['/angarya']), 800);
          }
       });
   }
 
-  createForm() : void {
+  createForm(): void {
     this.gorevForm = this._fb.group({
       title: ['', Validators.required],
       type: ['', Validators.required],
@@ -147,19 +152,26 @@ export class AssignmentDetailComponent implements OnInit {
     });
   }
 
-  getPerson(id: string) : string {
-    let p = this.kadro.find(x => x._id == id)
-    return p.position + ' ' + p.fullname
+  getPerson(id: string): string {
+    if (this.kadro.length === 0) {
+      return '';
+    } else {
+      const p = this.kadro.find(x => x._id === id);
+      return p.position + ' ' + p.fullname;
+    }
   }
 
-  parseTime(g) : void {
-    var m = {
+  onPersonClick(id: string) {
+    // Route to Person
+  }
+
+  parseTime(g): void {
+    const m = {
       gDate : moment(g.startDate).format('YYYY-MM-DD'),
-      endDate : moment(g.endDate).format('YYYY.MM.DD'),
       startTime : moment(g.startDate).format('HH:mm'),
       endTime : moment(g.endDate).format('HH:mm')
-    }
-    this.gorevForm.patchValue(m)
+    };
+    this.gorevForm.patchValue(m);
   }
 
   enableGroup(): void {
@@ -171,10 +183,14 @@ export class AssignmentDetailComponent implements OnInit {
     this.gorevForm.controls['selectedPerson'].setValue('');
   }
 
+  removeFromChoosenPeople(pid) {
+    // FIXME: Remove person from the task
+    // FIXME: Remove task from persons list
+  }
 
   addToChoosenPeople() {
-    let g = this.gorevForm.value;
-    let p: Faculty = g.selectedPerson;
+    const g = this.gorevForm.value;
+    const p: Faculty = g.selectedPerson;
 
     // if(g.choosenPeople.indexOf(p) === -1) {
     //   g.choosenPeople.push(p);
@@ -196,40 +212,52 @@ export class AssignmentDetailComponent implements OnInit {
     // this.peopleForm.controls['selectedPerson'].setValue('');
   }
 
-  findBusies(gs, ge) : Array<string> {
+  findBusies(gs, ge): Array<string> {
     const { range } = extendMoment(moment);
 
     // Not availables
-    var NAs = [];
-    var gorevrange = range(gs, ge);
+    const NAs = [];
+    const gorevrange = range(gs, ge);
 
-    for (let busy of this.busytimes){
+    // Merge two arrays to have a unified busy object for testing.
+    const busies = Object.assign(this.busytimes, this.alltasks);
 
-      if (busy.recur){
-        let interval = moment(busy.startDate).recur().every(busy.recur).days();
+    for (const busy of busies) {
 
-        if (interval.matches(gs)){
+      // This is only availabe in busytimes, so no worries here
+      if (busy.recur) {
+        const interval = moment(busy.startDate).recur().every(busy.recur).days();
+
+        if (interval.matches(gs)) {
 
           // Since this is an interval, we need to create the exact date for checking.
-          let bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(busy.startDate).format('HH:mm'));
-          let be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(busy.endDate).format('HH:mm'));
-          let busyrange = range(bs, be);
+          const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(busy.startDate).format('HH:mm'));
+          const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(busy.endDate).format('HH:mm'));
+          const busyrange = range(bs, be);
 
           if (busyrange.overlaps(gorevrange)) {
-            if(NAs.indexOf(busy.owner_id) === -1) {
+            if (NAs.indexOf(busy.owner_id) === -1) {
               NAs.push(busy.owner_id);
             }
           }
         }
-      }
-      else {
-        let bs = moment(busy.startDate);
-        let be = moment(busy.endDate);
-        let busyrange = range(bs, be);
+      } else {
+        const bs = moment(busy.startDate);
+        const be = moment(busy.endDate);
+        const busyrange = range(bs, be);
 
+        // This can be both busytimes and tasks
         if (busyrange.overlaps(gorevrange)) {
-          if(NAs.indexOf(busy.owner_id) === -1) {
-            NAs.push(busy.owner_id);
+          if (busy.owner_id) {
+            if (NAs.indexOf(busy.owner_id) === -1) {
+              NAs.push(busy.owner_id);
+            }
+          } else {
+            for (let i = 0; i < busy.peopleCount; i++) {
+              if (NAs.indexOf(busy.choosenPeople[i])) {
+                NAs.push(busy.choosenPeople[i]);
+              }
+            }
           }
         }
       }
@@ -237,46 +265,46 @@ export class AssignmentDetailComponent implements OnInit {
     return NAs;
   }
 
-  validateTimeAndFindAvailable() : void {
+  validateTimeAndFindAvailable(): void {
     this.gorevForm.statusChanges.subscribe(status => {
-      if (status == 'VALID') {
+      if (status === 'VALID') {
 
         this.available = [];
         this.notAvailable = [];
-        var t = this.gorevForm.value;
+        const t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
-        var sd = moment(t.gDate)
-        var ed = moment(t.gDate)
+        let sd = moment(t.gDate);
+        let ed = moment(t.gDate);
 
         // Combine the date & times
-        sd = sd.add(t.startTime.slice(0,2), 'h');
+        sd = sd.add(t.startTime.slice(0, 2), 'h');
         sd = sd.add(t.startTime.slice(-2), 'm');
-        ed = ed.add(t.endTime.slice(0,2), 'h');
+        ed = ed.add(t.endTime.slice(0, 2), 'h');
         ed = ed.add(t.endTime.slice(-2), 'm');
 
-        this.duration = moment.duration(ed.diff(sd));
+        t.duration = moment.duration(ed.diff(sd)).as('hours');
+        t.load = t.duration * t.weight;
 
         // Make sure start date is after end.
-        if (sd.isSameOrAfter(ed)){
+        if (sd.isSameOrAfter(ed)) {
           this.formTimeValid = false;
           this.showTimeError = true;
-        }
-        else {
+        } else {
           this.gorevForm.value.startDate = sd.format();
           this.gorevForm.value.endDate = ed.format();
 
           this.formTimeValid = true;
           this.showTimeError = false;
 
-          let NAids = this.findBusies(sd, ed);
+          const NAids = this.findBusies(sd, ed);
 
-          for (let k of this.kadro ){
+          for (const k of this.kadro ) {
             // If kisi id is not in NAids, AND not already assigned to task add to available
             if (NAids.indexOf(k._id) === -1 && this.gorevForm.value.choosenPeople.indexOf(k._id) === -1){
-              this.available.push(k)
+              this.available.push(k);
             } else {
-              this.notAvailable.push(k)
+              this.notAvailable.push(k);
             }
           }
           this.available = this._fsort.transform(this.available, 'load');

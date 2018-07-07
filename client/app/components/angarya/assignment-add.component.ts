@@ -18,6 +18,11 @@ import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
 import { TaskService } from '../../services/task.service';
 
+export class Msg {
+  'ok': number;
+  'n': number;
+}
+
 @Component({
   selector: 'assignment-add',
   templateUrl: './assignment-add.component.html'
@@ -56,6 +61,7 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Create arrays for weights and number of choosen people
     this.numbers = Array(7).fill(0).map((x, i) => i + 1);
     this.weights = Array(12).fill(0).map((x, i) => (i + 1) / 4);
 
@@ -86,28 +92,14 @@ export class AssignmentAddComponent implements OnInit {
     this._task.addTask(gorev)
       .subscribe(res => {
         for (let i = 0; i < gorev.peopleCount; i++) {
-          const p = this.kadro.filter(id => gorev.choosenPeople[i])[0];
-          console.log(p);
-          // this._user.addTaskToKisi(p, gorev);
+          const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
+          this._user.addTaskToKisi(p, res._id)
+            .subscribe((kisi: Faculty) => {
+              console.log(kisi);
+            });
         }
-        // const model: Busy = {
-        //   title : gorev.title,
-        //   startDate : gorev.startDate,
-        //   endDate : gorev.endDate,
-        //   recur : 0,
-        //   task_id : res._id,
-        //   load : gorev.load,
-        //   owner_id : ''
-        // };
 
-        // for (let i = 0; i < gorev.peopleCount; i++) {
-        //   model.owner_id = gorev.choosenPeople[i];
-        //     this._busy.setBusy(model)
-        //       .subscribe(res => {
-        //   });
-        // }
         this._router.navigate(['/angarya']);
-
     });
   }
 
@@ -206,8 +198,8 @@ export class AssignmentAddComponent implements OnInit {
       title: ['asdf', Validators.required],
       type: ['Sekreterlik', Validators.required],
       gDate: [ moment().startOf('day').format(), Validators.required],
-      startTime: [ moment().startOf('hour').add(1, 'hours').format('HH:mm'), Validators.required],
-      endTime: [ moment().startOf('hour').add(3, 'hours').format('HH:mm'), Validators.required],
+      startTime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
+      endTime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
       duration: [2, [Validators.required]],
