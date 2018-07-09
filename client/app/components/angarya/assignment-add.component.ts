@@ -68,31 +68,38 @@ export class AssignmentAddComponent implements OnInit {
     this.createGorevForm();
     this.createPeopleForm();
 
+    // Get the busy times of all the people
     this._busy.getBusyAll()
       .subscribe((res: Busy[]) => {
         this.busytimes = res;
     });
 
+    // Get currently open tasks for additional busy times
     this._task.getOpenTasks()
       .subscribe((res: Task[]) => {
         this.alltasks = res;
     });
 
+    // Get the people
     this._user.getKadro()
       .subscribe((kadro: Faculty[]) => {
         this.kadro = kadro;
     });
 
+    // Find the available people based on the busy times.
     this.validateTimeAndFindAvailable();
   }
 
   onSubmit() {
     const gorev: Task = this.gorevForm.value;
 
+    // Add the task to the db
     this._task.addTask(gorev)
       .subscribe(res => {
         for (let i = 0; i < gorev.peopleCount; i++) {
           const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
+
+          // Add task to the each of the assigned people
           this._user.addTaskToKisi(p, res._id)
             .subscribe((kisi: Faculty) => {
               console.log(kisi);
@@ -202,7 +209,7 @@ export class AssignmentAddComponent implements OnInit {
       endTime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      duration: [2, [Validators.required]],
+      duration: [2],
       startDate: [],
       selector: [0, Validators.required],
       endDate: [],
