@@ -17,7 +17,7 @@ export class FacultyTasksComponent implements OnInit, OnChanges {
 
   @Input() profile: Faculty;
 
-  displayedColumns = ['title', 'date', 'time', 'duration', 'expired', 'load'];
+  displayedColumns = ['title', 'date', 'time', 'expired', 'load'];
   dataSource: MatTableDataSource<Task>;
   today;
   totalLoad: number;
@@ -35,15 +35,14 @@ export class FacultyTasksComponent implements OnInit, OnChanges {
     if (this.profile) {
       this._task.getTasksByIds(this.profile.tasks)
         .subscribe((tasks: Task[]) => {
-          console.log(tasks);
-          //this.totalLoad = tasks.map(i => i.load).reduce((acc, value) => acc + value, 0);
+          this.totalLoad = tasks.map(i => i.load).reduce((acc, value) => acc + value, 0);
           this.dataSource = new MatTableDataSource(tasks);
       });
     }
   }
 
   onClick(r) {
-    this._router.navigate(['/angarya/' + r.task_id]);
+    this._router.navigate(['/angarya/' + r._id]);
   }
 
   isExpired(d) {

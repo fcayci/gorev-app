@@ -34,9 +34,11 @@ export class AssignmentDetailComponent implements OnInit {
   notAvailable: Faculty[] = [];
 
   busytimes: Busy[];
-  alltasks: Task[];
+  opentasks: Task[];
   gorev: Task;
   gorevForm: FormGroup;
+  choosenPeopleIds: Array<string>;
+
   argor = true;
   dr = false;
   duration;
@@ -70,7 +72,7 @@ export class AssignmentDetailComponent implements OnInit {
 
     this._task.getOpenTasks()
       .subscribe((res: Task[]) => {
-        this.alltasks = res;
+        this.opentasks = res;
     });
 
     this.createForm();
@@ -87,17 +89,21 @@ export class AssignmentDetailComponent implements OnInit {
         } else {
           // The return will be a single item array. Just pass the first item.
           this.gorev = gorev[0];
-          this.title = this.gorev.title;
+          this.title = gorev[0].title;
           this.gorevForm.patchValue(this.gorev);
           this.parseTime(this.gorev);
+          this.choosenPeopleIds = gorev[0].choosenPeople;
 
           this.validateTimeAndFindAvailable();
         }
       });
   }
 
+  onSave(): void {
+    // Remove load/tasks from choosenPeopleIds - careful, old load should be removed
+    // Add load/tasks to new choosenPeople - new load should be added
+  }
   onDelete(): void {
-
     // var model : Busy = {
     //   title : gorev.title,
     //   startDate : gorev.startDate,
@@ -131,6 +137,22 @@ export class AssignmentDetailComponent implements OnInit {
             setTimeout(() => this._router.navigate(['/angarya']), 800);
          }
       });
+
+  //    // Add the task to the db
+  //   this._task.addTask(gorev)
+  //   .subscribe(res => {
+  //     for (let i = 0; i < gorev.peopleCount; i++) {
+  //       const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
+
+  //       // Add task to the each of the assigned people
+  //       this._user.addTaskAndIncrementLoadToKisi(p, res)
+  //         .subscribe((kisi: Faculty) => {
+  //           console.log(kisi);
+  //         });
+  //     }
+
+  //     this._router.navigate(['/angarya']);
+  // }); 
   }
 
   createForm(): void {
@@ -161,9 +183,10 @@ export class AssignmentDetailComponent implements OnInit {
     }
   }
 
-  onPersonClick(id: string) {
-    // Route to Person
-  }
+  // onPersonClick(id: string) {
+  //   const p = this.kadro.find(x => x._id === id);
+  //   this._router.navigate(['/kadro/' + p.username]);
+  // }
 
   parseTime(g): void {
     const m = {
@@ -220,7 +243,7 @@ export class AssignmentDetailComponent implements OnInit {
     const gorevrange = range(gs, ge);
 
     // Merge two arrays to have a unified busy object for testing.
-    const busies = Object.assign(this.busytimes, this.alltasks);
+    const busies = Object.assign(this.busytimes, this.opentasks);
 
     for (const busy of busies) {
 

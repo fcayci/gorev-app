@@ -36,7 +36,7 @@ export class AssignmentAddComponent implements OnInit {
   choosenPeople: Faculty[] = [];
 
   busytimes: Busy[];
-  alltasks: Task[];
+  opentasks: Task[];
   gorevForm: FormGroup;
   peopleForm: FormGroup;
 
@@ -77,7 +77,7 @@ export class AssignmentAddComponent implements OnInit {
     // Get currently open tasks for additional busy times
     this._task.getOpenTasks()
       .subscribe((res: Task[]) => {
-        this.alltasks = res;
+        this.opentasks = res;
     });
 
     // Get the people
@@ -100,7 +100,7 @@ export class AssignmentAddComponent implements OnInit {
           const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
 
           // Add task to the each of the assigned people
-          this._user.addTaskToKisi(p, res._id)
+          this._user.addTaskAndIncrementLoadToKisi(p, res)
             .subscribe((kisi: Faculty) => {
               console.log(kisi);
             });
@@ -232,7 +232,7 @@ export class AssignmentAddComponent implements OnInit {
     const gorevrange = range(gs, ge);
 
     // Merge two arrays to have a unified busy object for testing.
-    const busies = Object.assign(this.busytimes, this.alltasks);
+    const busies = Object.assign(this.busytimes, this.opentasks);
 
     for (const busy of busies) {
 

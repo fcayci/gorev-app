@@ -103,16 +103,17 @@ router.put('/kadro/:username', function(req, res, next){
   }
 });
 
-/* title: Add to tasks array of the passed username.
+/* title: Add to tasks array of the passed username
  * Expects task JSON data
  *
  * return: status msg
  */
 router.put('/kadro/:username/addtask', function(req, res, next){
-  const taskid = req.body;
-  
+  const task = req.body;
+
   Faculty.update({'username': req.params.username},
-    { $push : taskid },
+    { $push : {tasks : task._id},
+      $inc : {load : task.load} },
     function(err, msg){
       if (err) return console.error(err);
       res.send(msg);
@@ -120,16 +121,17 @@ router.put('/kadro/:username/addtask', function(req, res, next){
   });
 });
 
-/* title: Add to tasks array of the passed username.
+/* title: Add to tasks array of the passed username
  * Expects task JSON data
  *
  * return: unknown
  */
 router.put('/kadro/:username/deltask', function(req, res, next){
-  const taskid = req.body;
+  const task = req.body;
 
   Faculty.update({'username': req.params.username},
-    { $pull : taskid },
+  { $pull : {tasks : task._id},
+    $dec : {load : task.load} },
     function(err, msg){
       if (err) return console.error(err);
       res.send(msg);

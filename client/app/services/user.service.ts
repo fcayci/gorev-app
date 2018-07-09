@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Faculty } from '../faculty';
+import { Task } from '../task';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -40,18 +41,17 @@ export class UserService {
       );
   }
 
-
-  addTaskToKisi(kisi: Faculty, taskid: string): Observable<Faculty> {
+  addTaskAndIncrementLoadToKisi(kisi: Faculty, task: Task): Observable<Faculty> {
     const url = kadroUrl + '/' + kisi.username + '/addtask';
-    return this.http.put<Faculty>(url, JSON.stringify({ tasks : taskid }), httpOptions)
+    return this.http.put<Faculty>(url, JSON.stringify(task), httpOptions)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  deleteTaskFromKisi(kisi: Faculty, taskid: string): Observable<Faculty> {
+  deleteTaskAndDecrementLoadFromKisi(kisi: Faculty, task: Task): Observable<Faculty> {
     const url = kadroUrl + '/' + kisi.username + '/deltask';
-    return this.http.put<Faculty>(url, JSON.stringify({ tasks : taskid }), httpOptions)
+    return this.http.put<Faculty>(url, JSON.stringify(task), httpOptions)
       .pipe(
         catchError(this.handleError)
       );

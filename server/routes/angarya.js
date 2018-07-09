@@ -67,7 +67,6 @@ router.get('/angarya/:id', function(req, res, next){
     const ids = req.params.id.split(',');
     Task.find({ '_id': {$in: ids} }, function (err, gorev) {
       if (err) return console.error(err);
-      console.log(gorev)
       res.send(gorev);
       res.status(200);
     });
