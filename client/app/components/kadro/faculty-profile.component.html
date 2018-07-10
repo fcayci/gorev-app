@@ -4,8 +4,9 @@
       <mat-toolbar-row >
         <mat-icon>person</mat-icon>  <h2 style="padding-left:5px;">{{ profile?.position + ' ' + profile?.fullname }}</h2>
         <button *ngIf="kisiForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Kişiyi Düzenle"><mat-icon>edit</mat-icon></span></button>
-        <span class="fill-remaining-space"></span>
-        <button *ngIf="!kisiForm.disabled" class="add-button" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+        <button *ngIf="!kisiForm.disabled" style="margin-left:15px;" mat-mini-fab name="cancel" color="" (click)="onCancel()"><span matTooltip="Iptal"><mat-icon>cancel</mat-icon></span></button>
+        <button *ngIf="!kisiForm.disabled" style="margin-left:15px;" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+        <button *ngIf="!kisiForm.disabled" style="margin-left:15px;background-color:cornflowerblue;" mat-mini-fab name="save" color="warn" [disabled]="!kisiForm.valid" (click)="onSave()"><span matTooltip="Kaydet"><mat-icon>save</mat-icon></span></button>
       </mat-toolbar-row>
     </mat-toolbar>
 
@@ -59,13 +60,6 @@
             Bir sayı giriniz.
           </mat-error>
         </mat-form-field>
-      </div>
-
-      <div class="button-row">
-        <mat-dialog-actions>
-          <button mat-raised-button *ngIf="!kisiForm.disabled" color="warn" (click)="onCancel()">İptal</button>
-          <button mat-raised-button *ngIf="!kisiForm.disabled" color="primary" (click)="onSave()" [disabled]="!kisiForm.valid">Kaydet</button>
-        </mat-dialog-actions>
       </div>
     </mat-card-content>
   </div>

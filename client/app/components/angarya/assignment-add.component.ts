@@ -227,8 +227,8 @@ export class AssignmentAddComponent implements OnInit {
   findBusies(gs, ge): Array<string> {
     const { range } = extendMoment(moment);
 
-    // Not availables
-    const NAs = [];
+    // Busy people id list.
+    const busyIds = [];
     const gorevrange = range(gs, ge);
 
     // Merge two arrays to have a unified busy object for testing.
@@ -248,8 +248,8 @@ export class AssignmentAddComponent implements OnInit {
           const busyrange = range(bs, be);
 
           if (busyrange.overlaps(gorevrange)) {
-            if (NAs.indexOf(busy.owner_id) === -1) {
-              NAs.push(busy.owner_id);
+            if (busyIds.indexOf(busy.owner_id) === -1) {
+              busyIds.push(busy.owner_id);
             }
           }
         }
@@ -261,20 +261,20 @@ export class AssignmentAddComponent implements OnInit {
         // This can be both busytimes and tasks
         if (busyrange.overlaps(gorevrange)) {
           if (busy.owner_id) {
-            if (NAs.indexOf(busy.owner_id) === -1) {
-              NAs.push(busy.owner_id);
+            if (busyIds.indexOf(busy.owner_id) === -1) {
+              busyIds.push(busy.owner_id);
             }
           } else {
             for (let i = 0; i < busy.peopleCount; i++) {
-              if (NAs.indexOf(busy.choosenPeople[i])) {
-                NAs.push(busy.choosenPeople[i]);
+              if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
+                busyIds.push(busy.choosenPeople[i]);
               }
             }
           }
         }
       }
     }
-    return NAs;
+    return busyIds;
   }
 
   validateTimeAndFindAvailable(): void {
@@ -282,7 +282,6 @@ export class AssignmentAddComponent implements OnInit {
       if (status === 'VALID') {
 
         this.available = [];
-        this.notAvailable = [];
         const t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
@@ -295,6 +294,7 @@ export class AssignmentAddComponent implements OnInit {
         ed = ed.add(t.endTime.slice(0, 2), 'h');
         ed = ed.add(t.endTime.slice(-2), 'm');
 
+        // Calculate load based on duration and weight
         t.duration = moment.duration(ed.diff(sd)).as('hours');
         t.load = t.duration * t.weight;
 
@@ -309,20 +309,16 @@ export class AssignmentAddComponent implements OnInit {
           this.formTimeValid = true;
           this.showTimeError = false;
 
-          const NAids = this.findBusies(sd, ed);
+          const busyIds = this.findBusies(sd, ed);
 
           for (const k of this.kadro ) {
-            if (NAids.indexOf(k._id) === -1) {
+            if (busyIds.indexOf(k._id) === -1) {
               this.available.push(k);
-            } else {
-              this.notAvailable.push(k);
             }
           }
           this.available = this._fsort.transform(this.available, 'load');
-          this.notAvailable = this._fsort.transform(this.notAvailable, 'load');
         }
       }
     });
   }
-
 }

@@ -90,9 +90,11 @@ export class AssignmentDetailComponent implements OnInit {
           // The return will be a single item array. Just pass the first item.
           this.gorev = gorev[0];
           this.title = gorev[0].title;
+          this.gorev.gDate = moment(gorev[0].startDate).format('YYYY-MM-DD');
+          this.gorev.startTime = moment(gorev[0].startDate).format('HH:mm');
+          this.gorev.endTime = moment(gorev[0].endDate).format('HH:mm');
           this.gorevForm.patchValue(this.gorev);
-          this.parseTime(this.gorev);
-          this.choosenPeopleIds = gorev[0].choosenPeople;
+          this.choosenPeopleIds = JSON.parse(JSON.stringify(gorev[0].choosenPeople));
 
           this.validateTimeAndFindAvailable();
         }
@@ -103,6 +105,7 @@ export class AssignmentDetailComponent implements OnInit {
     // Remove load/tasks from choosenPeopleIds - careful, old load should be removed
     // Add load/tasks to new choosenPeople - new load should be added
   }
+
   onDelete(): void {
     // var model : Busy = {
     //   title : gorev.title,
@@ -152,7 +155,7 @@ export class AssignmentDetailComponent implements OnInit {
   //     }
 
   //     this._router.navigate(['/angarya']);
-  // }); 
+  // });
   }
 
   createForm(): void {
@@ -167,7 +170,7 @@ export class AssignmentDetailComponent implements OnInit {
       duration: [],
       startDate: [],
       endDate: [],
-      choosenPeople: [[]],
+      choosenPeople: [[], Validators.required],
       status: [],
       selector: [],
       selectedPerson: []
@@ -183,32 +186,26 @@ export class AssignmentDetailComponent implements OnInit {
     }
   }
 
+  // In case this feature is wanted
   // onPersonClick(id: string) {
   //   const p = this.kadro.find(x => x._id === id);
   //   this._router.navigate(['/kadro/' + p.username]);
   // }
 
-  parseTime(g): void {
-    const m = {
-      gDate : moment(g.startDate).format('YYYY-MM-DD'),
-      startTime : moment(g.startDate).format('HH:mm'),
-      endTime : moment(g.endDate).format('HH:mm')
-    };
-    this.gorevForm.patchValue(m);
-  }
-
   enableGroup(): void {
     this.gorevForm.enable();
   }
 
-  disableGroup(): void {
+  onCancel(): void {
+    this.gorevForm.reset();
     this.gorevForm.disable();
+    this.gorevForm.patchValue(this.gorev);
     this.gorevForm.controls['selectedPerson'].setValue('');
+    this.choosenPeopleIds = JSON.parse(JSON.stringify(this.gorev.choosenPeople));
   }
 
   removeFromChoosenPeople(pid) {
-    // FIXME: Remove person from the task
-    // FIXME: Remove task from persons list
+    this.choosenPeopleIds.splice(pid, 1);
   }
 
   addToChoosenPeople() {
@@ -238,8 +235,8 @@ export class AssignmentDetailComponent implements OnInit {
   findBusies(gs, ge): Array<string> {
     const { range } = extendMoment(moment);
 
-    // Not availables
-    const NAs = [];
+    // Busy people id list.
+    const busyIds = [];
     const gorevrange = range(gs, ge);
 
     // Merge two arrays to have a unified busy object for testing.
@@ -259,8 +256,8 @@ export class AssignmentDetailComponent implements OnInit {
           const busyrange = range(bs, be);
 
           if (busyrange.overlaps(gorevrange)) {
-            if (NAs.indexOf(busy.owner_id) === -1) {
-              NAs.push(busy.owner_id);
+            if (busyIds.indexOf(busy.owner_id) === -1) {
+              busyIds.push(busy.owner_id);
             }
           }
         }
@@ -271,21 +268,23 @@ export class AssignmentDetailComponent implements OnInit {
 
         // This can be both busytimes and tasks
         if (busyrange.overlaps(gorevrange)) {
+
+          // owner_id only exists in busytimes
           if (busy.owner_id) {
-            if (NAs.indexOf(busy.owner_id) === -1) {
-              NAs.push(busy.owner_id);
+            if (busyIds.indexOf(busy.owner_id) === -1) {
+              busyIds.push(busy.owner_id);
             }
           } else {
             for (let i = 0; i < busy.peopleCount; i++) {
-              if (NAs.indexOf(busy.choosenPeople[i])) {
-                NAs.push(busy.choosenPeople[i]);
+              if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
+                busyIds.push(busy.choosenPeople[i]);
               }
             }
           }
         }
       }
     }
-    return NAs;
+    return busyIds;
   }
 
   validateTimeAndFindAvailable(): void {
@@ -293,7 +292,6 @@ export class AssignmentDetailComponent implements OnInit {
       if (status === 'VALID') {
 
         this.available = [];
-        this.notAvailable = [];
         const t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
@@ -306,32 +304,29 @@ export class AssignmentDetailComponent implements OnInit {
         ed = ed.add(t.endTime.slice(0, 2), 'h');
         ed = ed.add(t.endTime.slice(-2), 'm');
 
+        // Calculate load based on duration and weight
         t.duration = moment.duration(ed.diff(sd)).as('hours');
         t.load = t.duration * t.weight;
 
         // Make sure start date is after end.
         if (sd.isSameOrAfter(ed)) {
           this.formTimeValid = false;
-          this.showTimeError = true;
         } else {
           this.gorevForm.value.startDate = sd.format();
           this.gorevForm.value.endDate = ed.format();
 
           this.formTimeValid = true;
-          this.showTimeError = false;
 
-          const NAids = this.findBusies(sd, ed);
+          const busyIds = this.findBusies(sd, ed);
 
           for (const k of this.kadro ) {
-            // If kisi id is not in NAids, AND not already assigned to task add to available
-            if (NAids.indexOf(k._id) === -1 && this.gorevForm.value.choosenPeople.indexOf(k._id) === -1){
+            // If kisi id is NOT in busyIds, AND not already assigned to task add to available
+            if (busyIds.indexOf(k._id) === -1 && this.choosenPeopleIds.indexOf(k._id) === -1) {
               this.available.push(k);
-            } else {
-              this.notAvailable.push(k);
             }
           }
+          // Sort the array for load
           this.available = this._fsort.transform(this.available, 'load');
-          this.notAvailable = this._fsort.transform(this.notAvailable, 'load');
         }
       }
     });

@@ -26,7 +26,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.kisiForm = this._fb.group({
-      fullname: '',
+      fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
       office: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('[0-9]{1,4}')]],
