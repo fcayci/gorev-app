@@ -44,7 +44,7 @@ export class AssignmentDetailComponent implements OnInit {
   duration;
   formTimeValid = false;
   showTimeError = true;
-
+  hede = false;
   gstates = GSTATES;
   types = TYPES;
   numbers: Array<number> = [];
@@ -194,6 +194,8 @@ export class AssignmentDetailComponent implements OnInit {
 
   enableGroup(): void {
     this.gorevForm.enable();
+    // Disable selected person since people should be full
+    this.gorevForm.controls['selectedPerson'].disable();
   }
 
   onCancel(): void {
@@ -206,30 +208,34 @@ export class AssignmentDetailComponent implements OnInit {
 
   removeFromChoosenPeople(pid) {
     this.choosenPeopleIds.splice(pid, 1);
+
+    // if (this.available.indexOf(p) === -1) {
+    //   this.available.push(p);
+    // }
+
+    this.gorevForm.controls['selectedPerson'].enable();
   }
 
   addToChoosenPeople() {
-    const g = this.gorevForm.value;
-    const p: Faculty = g.selectedPerson;
+    const p = this.gorevForm.value.selectedPerson;
 
-    // if(g.choosenPeople.indexOf(p) === -1) {
-    //   g.choosenPeople.push(p);
-    //   this.gorevForm.value.choosenPeople.push(p._id);
-    // }
+    if (this.choosenPeopleIds.indexOf(p._id) === -1) {
+        this.choosenPeopleIds.push(p._id);
+    }
 
-    // // Remove choosen from available
-    // let index = this.available.indexOf(p, 0);
+    // Remove seleted person from available list
+    // const index = this.available.indexOf(p);
     // if (index > -1) {
     //   this.available.splice(index, 1);
     // }
 
-    // // Disable form if good to go.
-    // if (this.gorevForm.value.peopleCount == this.choosenPeople.length) {
-    //   this.peopleForm.controls['selectedPerson'].disable();
-    // }
+    // Disable form if good to go.
+    if (this.gorevForm.value.peopleCount === this.choosenPeopleIds.length) {
+      this.gorevForm.controls['selectedPerson'].disable();
+    }
 
-    // // Reset form
-    // this.peopleForm.controls['selectedPerson'].setValue('');
+    // Reset form
+    this.gorevForm.controls['selectedPerson'].setValue('');
   }
 
   findBusies(gs, ge): Array<string> {
