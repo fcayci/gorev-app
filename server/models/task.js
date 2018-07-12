@@ -46,10 +46,10 @@ var TaskSchema = new Schema(
       }
     },
     status: {
-      type: String,
+      type: Number,
       required: true,
-      enum: ['open', 'closed'],
-      default: 'open'
+      enum: [0, 1],
+      default: 0
     }
   }, {collection: 'tasks'}
 );

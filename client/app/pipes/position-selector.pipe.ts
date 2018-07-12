@@ -11,5 +11,5 @@ export class PositionSelectorPipe implements PipeTransform {
     } else {
       return list;
     }
-  };
+  }
 }

@@ -88,24 +88,24 @@ export class AssignmentAddComponent implements OnInit {
     // Find the available people based on the busy times.
     this.validateTimeAndFindAvailable();
 
-    this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
+    // this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filter(value))
+    // );
   }
 
-  private _filter(value: String): Faculty[] {
-    console.log('hede', value)
-    const filterValue = value.toLowerCase();
-    return this.available.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
-  }
+  // private _filter(value: String): Faculty[] {
+  //   const filterValue = value.toLowerCase();
+  //   return this.available.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
+  // }
 
   onSubmit() {
     const gorev: Task = this.gorevForm.value;
-
+    console.log(gorev);
     // Add the task to the db
     this._task.addTask(gorev)
       .subscribe(res => {
+        console.log(res);
         for (let i = 0; i < gorev.peopleCount; i++) {
           const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
 
@@ -118,29 +118,6 @@ export class AssignmentAddComponent implements OnInit {
 
         this._router.navigate(['/angarya']);
     });
-  }
-
-  onChange(e)
-  {
-    console.log(e)
-  }
-  // FIXME: Security problem. Susceptible to XSS
-  parseForm() {
-    moment.locale('tr');
-    const g = this.gorevForm.value;
-    const x = moment(g.gDate);
-
-    let info = '<b>' + g.title + '</b> icin <i>' + g.type + '</i> kapsaminda ';
-    info += x.format('LL, dddd') + ' gunu ' + g.startTime + ' ve ' + g.endTime + ' saatleri arasinda,';
-    info += ' asagida eklenen ' + g.peopleCount + ' kisi gorevlendirilmistir.';
-    info += '<br/><br/>';
-    info += '<b>Gorevlendirilen kisiler:</b><br/>';
-
-    for (let i = 0; i < this.choosenPeople.length; i++) {
-      info += this.choosenPeople[i].position + ' ' + this.choosenPeople[i].fullname + '<br/>';
-    }
-
-    this.gorevInfo = info;
   }
 
   addToChoosenPeople(x?: Faculty) {
@@ -158,13 +135,13 @@ export class AssignmentAddComponent implements OnInit {
     }
 
     // Remove choosen from available
-    const index = this.available.indexOf(p, 0);
+    const index = this.available.indexOf(p);
     if (index > -1) {
       this.available.splice(index, 1);
     }
 
     // Disable form if good to go.
-    if (this.gorevForm.value.peopleCount === this.choosenPeople.length) {
+    if (this.gorevForm.value.peopleCount <= this.choosenPeople.length) {
       this.gorevForm.controls['selectedPerson'].disable();
     }
 
@@ -174,7 +151,7 @@ export class AssignmentAddComponent implements OnInit {
 
   removeFromChoosenPeople(p) {
     // Remove choosen from available
-    const index = this.choosenPeople.indexOf(p, 0);
+    const index = this.choosenPeople.indexOf(p);
     if (index > -1) {
       this.choosenPeople.splice(index, 1);
       this.gorevForm.value.choosenPeople.splice(index, 1);
@@ -184,7 +161,9 @@ export class AssignmentAddComponent implements OnInit {
     this.available = this._fsort.transform(this.available, 'load');
 
     // Enable form
-    this.gorevForm.controls['selectedPerson'].enable();
+    if (this.choosenPeople.length < this.gorevForm.get('peopleCount').value) {
+      this.gorevForm.controls['selectedPerson'].enable();
+    }
 
     // Reset form
     this.gorevForm.controls['selectedPerson'].setValue('');
@@ -193,17 +172,24 @@ export class AssignmentAddComponent implements OnInit {
   autoAssignPeople(): void {
     const g = this.gorevForm.value;
 
-    for (let i = 0; i < g.peopleCount; i++) {
+    for (let i = this.choosenPeople.length; i < g.peopleCount; i++) {
       if (g.selector === '0') {
-        this.addToChoosenPeople( this.available.filter(
-          people => people.position === 'Araştırma Görevlisi')[0]
-        );
+        const p = this.available.filter(
+          people => people.position === 'Araştırma Görevlisi')
+        if (p.length > 0) {
+          this.addToChoosenPeople(p[0]);
+        }
       } else if (g.selector === '1') {
-        this.addToChoosenPeople( this.available.filter(
-          people => people.position === 'Dr.')[0]
-        );
+        const p = this.available.filter(
+          people => people.position === 'Dr.');
+        if (p.length > 0) {
+          this.addToChoosenPeople(p[0]);
+        }
       } else {
-        this.addToChoosenPeople( this.available[0] );
+        const p = this.available;
+        if (p.length > 0) {
+          this.addToChoosenPeople(p[0]);
+        }
       }
     }
   }
@@ -228,9 +214,10 @@ export class AssignmentAddComponent implements OnInit {
       }),
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      selector: [0, Validators.required],
+      selector: ['0', Validators.required],
       choosenPeople: [[], ],
       status: [0],
+      load: [2],
       selectedPerson: [],
     });
   }
@@ -295,6 +282,7 @@ export class AssignmentAddComponent implements OnInit {
     this.gorevForm.get('when').statusChanges.subscribe(status => {
       if (status === 'VALID') {
         const t = this.gorevForm.get('when').value;
+        const g = this.gorevForm.value;
         this.available = [];
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
@@ -309,26 +297,27 @@ export class AssignmentAddComponent implements OnInit {
 
         // Calculate load based on duration and weight
         t.duration = moment.duration(ed.diff(sd)).as('hours');
-        t.load = t.duration * t.weight;
+        this.gorevForm.controls['load'].setValue(t.duration * g.weight);
 
         // Make sure start date is after end.
         if (sd.isSameOrAfter(ed)) {
           this.formTimeValid = false;
         } else {
-          this.gorevForm.value.startDate = sd.format();
-          this.gorevForm.value.endDate = ed.format();
+          t.startDate = sd.format();
+          t.endDate = ed.format();
 
           this.formTimeValid = true;
 
           const busyIds = this.findBusies(sd, ed);
 
           for (const k of this.kadro ) {
-            if (busyIds.indexOf(k._id) === -1) {
-              this.available.push(k);
+            if (k.vacation === false) {
+              if (busyIds.indexOf(k._id) === -1) {
+                this.available.push(k);
+              }
             }
           }
           this.available = this._fsort.transform(this.available, 'load');
-          console.log(this.available);
           // Just a hack to activate observable.
           this.gorevForm.controls['selectedPerson'].setValue('');
         }
