@@ -9,7 +9,7 @@ import { extendMoment } from 'moment-range';
 
 import { FSortPipe } from '../../pipes/fsort.pipe';
 
-import { Busy } from '../../busy';
+import { Time, Busy } from '../../busy';
 import { Task, TYPES, GSTATES } from '../../task';
 import { Faculty } from '../../faculty';
 import { TaskService } from '../../services/task.service';
@@ -44,11 +44,11 @@ export class AssignmentDetailComponent implements OnInit {
   duration;
   formTimeValid = false;
   showTimeError = true;
-  hede = false;
+
   gstates = GSTATES;
   types = TYPES;
-  numbers: Array<number> = [];
-  weights: Array<number> = [];
+  numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
+  weights: Array<number> = Array(13).fill(0).map((x, i) => i / 4);
 
   constructor(
     private _fsort: FSortPipe,
@@ -78,9 +78,6 @@ export class AssignmentDetailComponent implements OnInit {
     this.createForm();
     this.gorevForm.disable();
 
-    this.numbers = Array(7).fill(0).map((x, i) => i + 1);
-    this.weights = Array(12).fill(0).map((x, i) => (i + 1) / 4);
-
     const id = this._route.snapshot.paramMap.get('id');
     this._task.getTasksById(id)
       .subscribe((gorev: Task[]) => {
@@ -90,12 +87,12 @@ export class AssignmentDetailComponent implements OnInit {
           // The return will be a single item array. Just pass the first item.
           this.gorev = gorev[0];
           this.title = gorev[0].title;
-          this.gorev.gDate = moment(gorev[0].startDate).format('YYYY-MM-DD');
-          this.gorev.startTime = moment(gorev[0].startDate).format('HH:mm');
-          this.gorev.endTime = moment(gorev[0].endDate).format('HH:mm');
+          this.gorev.when.gDate = moment(gorev[0].startDate).format('YYYY-MM-DD');
+          this.gorev.when.startTime = moment(gorev[0].startDate).format('HH:mm');
+          this.gorev.when.endTime = moment(gorev[0].endDate).format('HH:mm');
           this.gorevForm.patchValue(this.gorev);
           this.choosenPeopleIds = JSON.parse(JSON.stringify(gorev[0].choosenPeople));
-
+          console.log(this.gorevForm.value)
           this.validateTimeAndFindAvailable();
         }
       });
@@ -160,19 +157,18 @@ export class AssignmentDetailComponent implements OnInit {
 
   createForm(): void {
     this.gorevForm = this._fb.group({
-      title: ['', Validators.required],
-      type: ['', Validators.required],
-      gDate: [, Validators.required],
-      startTime: [, Validators.required],
-      endTime: [, Validators.required],
-      weight: [, Validators.required],
-      peopleCount: [, [Validators.required, Validators.pattern('[1-7]')]],
-      duration: [],
-      startDate: [],
-      endDate: [],
+      title: [String, Validators.required],
+      type: [Number, Validators.required],
+      when: this._fb.group({
+        gDate: [ ],
+        startTime: [ ],
+        endTime: [ ]
+      }),
+      weight: [Number, Validators.required],
+      peopleCount: [Number, Validators.required],
       choosenPeople: [[], Validators.required],
-      status: [],
-      selector: [],
+      status: [Number],
+      selector: [Number],
       selectedPerson: []
     });
   }
@@ -333,6 +329,7 @@ export class AssignmentDetailComponent implements OnInit {
           }
           // Sort the array for load
           this.available = this._fsort.transform(this.available, 'load');
+          console.log(this.available)
         }
       }
     });

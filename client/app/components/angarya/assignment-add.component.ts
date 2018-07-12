@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material';
 
 import { map } from 'rxjs/operators';
 
@@ -43,8 +44,9 @@ export class AssignmentAddComponent implements OnInit {
   gorev: Task;
   gstates = GSTATES;
   types = TYPES;
-  numbers: Array<number> = [];
-  weights: Array<number> = [];
+  numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
+  weights: Array<number> = Array(13).fill(0).map((x, i) => i / 4);
+
   gorevInfo: string;
   formTimeValid = false;
   showTimeError = false;
@@ -61,9 +63,7 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Create arrays for weights and number of choosen people
-    this.numbers = Array(7).fill(0).map((x, i) => i + 1);
-    this.weights = Array(12).fill(0).map((x, i) => (i + 1) / 4);
+
 
     this.createGorevForm();
     this.createPeopleForm();
@@ -203,25 +203,28 @@ export class AssignmentAddComponent implements OnInit {
   createGorevForm(): void {
     this.gorevForm = this._fb.group({
       title: ['asdf', Validators.required],
-      type: ['Sekreterlik', Validators.required],
-      gDate: [ moment().startOf('day').format(), Validators.required],
-      startTime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
-      endTime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
+      type: ['hede', Validators.required],
+      when: this._fb.group({
+        gDate: [moment().startOf('day').format(), Validators.required],
+        startTime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
+        endTime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
+        startDate: [],
+        endDate: [],
+        duration: [2]
+      }),
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      duration: [2],
-      startDate: [],
       selector: [0, Validators.required],
-      endDate: [],
       choosenPeople: [[], ],
-      status: ['open'],
+      status: [0],
+      selectedPerson: [],
     });
   }
 
   createPeopleForm(): void {
-    this.peopleForm = this._fb.group({
-      selectedPerson: [{disabled: false}]
-    });
+    // this.peopleForm = this._fb.group({
+    //   selectedPerson: [{disabled: false}]
+    // });
   }
 
   findBusies(gs, ge): Array<string> {
@@ -236,38 +239,41 @@ export class AssignmentAddComponent implements OnInit {
 
     for (const busy of busies) {
 
-      // This is only availabe in busytimes, so no worries here
-      if (busy.recur) {
-        const interval = moment(busy.startDate).recur().every(busy.recur).days();
+      const b = busy.when;
+      if (b) {
+        // This is only availabe in busytimes, so no worries here
+        if (b.recur) {
+          const interval = moment(b.startDate).recur().every(b.recur).days();
 
-        if (interval.matches(gs)) {
+          if (interval.matches(gs)) {
 
-          // Since this is an interval, we need to create the exact date for checking.
-          const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(busy.startDate).format('HH:mm'));
-          const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(busy.endDate).format('HH:mm'));
-          const busyrange = range(bs, be);
+            // Since this is an interval, we need to create the exact date for checking.
+            const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(b.startDate).format('HH:mm'));
+            const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(b.endDate).format('HH:mm'));
+            const busyrange = range(bs, be);
 
-          if (busyrange.overlaps(gorevrange)) {
-            if (busyIds.indexOf(busy.owner_id) === -1) {
-              busyIds.push(busy.owner_id);
+            if (busyrange.overlaps(gorevrange)) {
+              if (busyIds.indexOf(busy.owner_id) === -1) {
+                busyIds.push(busy.owner_id);
+              }
             }
           }
-        }
-      } else {
-        const bs = moment(busy.startDate);
-        const be = moment(busy.endDate);
-        const busyrange = range(bs, be);
+        } else {
+          const bs = moment(b.startDate);
+          const be = moment(b.endDate);
+          const busyrange = range(bs, be);
 
-        // This can be both busytimes and tasks
-        if (busyrange.overlaps(gorevrange)) {
-          if (busy.owner_id) {
-            if (busyIds.indexOf(busy.owner_id) === -1) {
-              busyIds.push(busy.owner_id);
-            }
-          } else {
-            for (let i = 0; i < busy.peopleCount; i++) {
-              if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
-                busyIds.push(busy.choosenPeople[i]);
+          // This can be both busytimes and tasks
+          if (busyrange.overlaps(gorevrange)) {
+            if (busy.owner_id) {
+              if (busyIds.indexOf(busy.owner_id) === -1) {
+                busyIds.push(busy.owner_id);
+              }
+            } else {
+              for (let i = 0; i < busy.peopleCount; i++) {
+                if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
+                  busyIds.push(busy.choosenPeople[i]);
+                }
               }
             }
           }
@@ -278,11 +284,10 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   validateTimeAndFindAvailable(): void {
-    this.gorevForm.statusChanges.subscribe(status => {
+    this.gorevForm.get('when').statusChanges.subscribe(status => {
       if (status === 'VALID') {
-
+        const t = this.gorevForm.get('when').value;
         this.available = [];
-        const t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
         let sd = moment(t.gDate);
@@ -301,13 +306,11 @@ export class AssignmentAddComponent implements OnInit {
         // Make sure start date is after end.
         if (sd.isSameOrAfter(ed)) {
           this.formTimeValid = false;
-          this.showTimeError = true;
         } else {
           this.gorevForm.value.startDate = sd.format();
           this.gorevForm.value.endDate = ed.format();
 
           this.formTimeValid = true;
-          this.showTimeError = false;
 
           const busyIds = this.findBusies(sd, ed);
 
@@ -317,8 +320,10 @@ export class AssignmentAddComponent implements OnInit {
             }
           }
           this.available = this._fsort.transform(this.available, 'load');
+          console.log(this.available);
         }
       }
     });
   }
+
 }

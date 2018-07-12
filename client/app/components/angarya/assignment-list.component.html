@@ -10,7 +10,7 @@
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
       </mat-form-field>
       <span class="fill-remaining-space"></span>
-      <span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="warn" routerLink="/gorevekle"><mat-icon>note_add</mat-icon></button></span>
+      <span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="warn" (click)="openDialog()"><mat-icon>note_add</mat-icon></button></span>
     </div>
 
     <table mat-table [dataSource]="dataSource" matSort>

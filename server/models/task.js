@@ -12,22 +12,10 @@ var TaskSchema = new Schema(
       type: String,
       required: true
     },
-    startDate: {
-      type: Date,
-      required: true
-    },
-    endDate: {
-      type: Date,
-      required: true
-    },
     peopleCount: {
       type: Number,
       required: true,
       min: 1
-    },
-    duration: {
-      type: Number,
-      required: true
     },
     weight: {
       type: Number,
@@ -43,11 +31,24 @@ var TaskSchema = new Schema(
       ref: 'Faculty',
       required: false
     }],
+    when: {
+      startDate: {
+        type: Date,
+        required: true
+      },
+      endDate: {
+        type: Date,
+        required: true
+      },
+      duration: {
+        type: Number,
+        required: true
+      }
+    },
     status: {
-      type: String,
+      type: Number,
       required: true,
-      enum: ['open', 'past', 'closed'],
-      default: 'open'
+      default: 0
     }
   }, {collection: 'tasks'}
 );

@@ -1,23 +1,17 @@
-export interface TaskDB {
+import { Time } from './busy';
+
+export interface Task {
   _id?: string;
   title: string;
   type: string;
-  startDate: string;
-  endDate: string;
-  duration?: number;
-  weight?: number;
-  load?: number;
+  when: Time;
+  weight: number;
+  load: number;
   peopleCount: number;
   choosenPeople: Array<string>;
   status: number;
 }
 
-export interface Task extends TaskDB {
-  startTime?: string;
-  endTime?: string;
-  gDate?: string;
-}
+export const GSTATES = ['Açık', 'Kapalı'];
 
-export const GSTATES = ['Açık', 'Bitmiş', 'Kapalı'];
-
-export const TYPES = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Lab Asistanlığı', 'Diğer'];
+export const TYPES = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Lab Asistanlığı', 'Kurul', 'Diğer'];

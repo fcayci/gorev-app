@@ -5,9 +5,9 @@ import { Faculty } from '../faculty';
 export class FSortPipe implements PipeTransform {
   transform(list: Array<Faculty>, sel: string): Array<Faculty> {
     if (sel === 'name') {
-      return list.sort(compareLoad);
-    } else if (sel === 'load') {
       return list.sort(compareName);
+    } else if (sel === 'load') {
+      return list.sort(compareLoad);
     } else {
       return list;
     }
@@ -15,8 +15,8 @@ export class FSortPipe implements PipeTransform {
 }
 
 function compareLoad (a, b) {
-  if (a.load > b.load) { return -1; }
-  if (a.load < b.load) { return 1; }
+  if (a.load < b.load) { return -1; }
+  if (a.load > b.load) { return 1; }
   return 0;
 }
 

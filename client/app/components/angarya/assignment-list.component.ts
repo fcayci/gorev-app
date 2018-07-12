@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AssignmentAddComponent } from './assignment-add.component';
 
 import { Task } from '../../task';
 import { Faculty } from '../../faculty';
@@ -27,7 +28,8 @@ export class AssignmentListComponent implements OnInit {
   constructor(
     private _task: TaskService,
     private _user: UserService,
-    private _router: Router) {}
+    private _router: Router,
+    public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this._user.getKadro()
@@ -72,6 +74,21 @@ export class AssignmentListComponent implements OnInit {
       return name.match(/\b(\w)/g).join('').toLowerCase();
     } else return 'N/A'
   }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AssignmentAddComponent, {
+      width: '600px'
+    });
+
+    // FIXME: Add error snackbar message.
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this._toaster.info(result.position + ' ' + result.fullname + ' başarıyla eklendi.');
+        this.getAllPeople();
+      }
+    });
+  }
+
 
   goToPerson(id: string) {
     let p = this.kadro.find(x => x._id == id).username;

@@ -31,23 +31,23 @@
               </mat-error>
             </mat-form-field>
           </div>
+          <div formGroupName="when">
+            <div class="form-row">
+              <mat-form-field class="date-align" style="width:35%">
+                <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
+                <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
+                <mat-datepicker #gDate></mat-datepicker>
+              </mat-form-field>
 
-          <div class="form-row">
-            <mat-form-field class="date-align" style="width:35%">
-              <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
-              <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
-              <mat-datepicker #gDate></mat-datepicker>
-            </mat-form-field>
+              <mat-form-field style="width:25%">
+                <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
+              </mat-form-field>
 
-            <mat-form-field style="width:25%">
-              <input matInput formControlName="startTime" type="time" placeholder="Başlangıç Saati">
-            </mat-form-field>
-
-             <mat-form-field style="width:25%">
-              <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
-            </mat-form-field>
+              <mat-form-field style="width:25%">
+                <input matInput formControlName="endTime" type="time" placeholder="Bitiş Saati">
+              </mat-form-field>
+            </div>
           </div>
-
           <div class="form-row">
             <mat-form-field style="width:20%">
               <mat-select formControlName="peopleCount" placeholder="Kişi Sayısı">
