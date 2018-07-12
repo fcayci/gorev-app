@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material';
-
-import { map } from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
@@ -18,6 +18,7 @@ import { Task, TYPES, GSTATES } from '../../task';
 import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
 import { TaskService } from '../../services/task.service';
+import { start } from 'repl';
 
 export class Msg {
   'ok': number;
@@ -35,11 +36,11 @@ export class AssignmentAddComponent implements OnInit {
   available: Faculty[] = [];
   notAvailable: Faculty[] = [];
   choosenPeople: Faculty[] = [];
+  filteredPeople: Observable<Faculty[]>;
 
   busytimes: Busy[];
   opentasks: Task[];
   gorevForm: FormGroup;
-  peopleForm: FormGroup;
 
   gorev: Task;
   gstates = GSTATES;
@@ -64,9 +65,7 @@ export class AssignmentAddComponent implements OnInit {
 
   ngOnInit() {
 
-
     this.createGorevForm();
-    this.createPeopleForm();
 
     // Get the busy times of all the people
     this._busy.getBusyAll()
@@ -88,6 +87,17 @@ export class AssignmentAddComponent implements OnInit {
 
     // Find the available people based on the busy times.
     this.validateTimeAndFindAvailable();
+
+    this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+  }
+
+  private _filter(value: String): Faculty[] {
+    console.log('hede', value)
+    const filterValue = value.toLowerCase();
+    return this.available.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
   }
 
   onSubmit() {
@@ -110,6 +120,10 @@ export class AssignmentAddComponent implements OnInit {
     });
   }
 
+  onChange(e)
+  {
+    console.log(e)
+  }
   // FIXME: Security problem. Susceptible to XSS
   parseForm() {
     moment.locale('tr');
@@ -133,7 +147,7 @@ export class AssignmentAddComponent implements OnInit {
     let p: Faculty;
 
     if (!x) {
-      p = this.peopleForm.value.selectedPerson;
+      p = this.gorevForm.get('selectedPerson').value;
     } else {
       p = x;
     }
@@ -151,11 +165,11 @@ export class AssignmentAddComponent implements OnInit {
 
     // Disable form if good to go.
     if (this.gorevForm.value.peopleCount === this.choosenPeople.length) {
-      this.peopleForm.controls['selectedPerson'].disable();
+      this.gorevForm.controls['selectedPerson'].disable();
     }
 
     // Reset form
-    this.peopleForm.controls['selectedPerson'].setValue('');
+    this.gorevForm.controls['selectedPerson'].setValue('');
   }
 
   removeFromChoosenPeople(p) {
@@ -170,21 +184,21 @@ export class AssignmentAddComponent implements OnInit {
     this.available = this._fsort.transform(this.available, 'load');
 
     // Enable form
-    this.peopleForm.controls['selectedPerson'].enable();
+    this.gorevForm.controls['selectedPerson'].enable();
 
     // Reset form
-    this.peopleForm.controls['selectedPerson'].setValue('');
+    this.gorevForm.controls['selectedPerson'].setValue('');
   }
 
   autoAssignPeople(): void {
     const g = this.gorevForm.value;
 
     for (let i = 0; i < g.peopleCount; i++) {
-      if (g.selector === 0) {
+      if (g.selector === '0') {
         this.addToChoosenPeople( this.available.filter(
           people => people.position === 'Araştırma Görevlisi')[0]
         );
-      } else if (g.selector === 1) {
+      } else if (g.selector === '1') {
         this.addToChoosenPeople( this.available.filter(
           people => people.position === 'Dr.')[0]
         );
@@ -205,7 +219,7 @@ export class AssignmentAddComponent implements OnInit {
       title: ['asdf', Validators.required],
       type: ['hede', Validators.required],
       when: this._fb.group({
-        gDate: [moment().startOf('day').format(), Validators.required],
+        gDate: [, Validators.required],
         startTime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
         endTime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
         startDate: [],
@@ -219,12 +233,6 @@ export class AssignmentAddComponent implements OnInit {
       status: [0],
       selectedPerson: [],
     });
-  }
-
-  createPeopleForm(): void {
-    // this.peopleForm = this._fb.group({
-    //   selectedPerson: [{disabled: false}]
-    // });
   }
 
   findBusies(gs, ge): Array<string> {
@@ -321,6 +329,8 @@ export class AssignmentAddComponent implements OnInit {
           }
           this.available = this._fsort.transform(this.available, 'load');
           console.log(this.available);
+          // Just a hack to activate observable.
+          this.gorevForm.controls['selectedPerson'].setValue('');
         }
       }
     });

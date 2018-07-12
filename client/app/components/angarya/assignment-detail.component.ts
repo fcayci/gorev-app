@@ -87,12 +87,11 @@ export class AssignmentDetailComponent implements OnInit {
           // The return will be a single item array. Just pass the first item.
           this.gorev = gorev[0];
           this.title = gorev[0].title;
-          this.gorev.when.gDate = moment(gorev[0].startDate).format('YYYY-MM-DD');
-          this.gorev.when.startTime = moment(gorev[0].startDate).format('HH:mm');
-          this.gorev.when.endTime = moment(gorev[0].endDate).format('HH:mm');
+          this.gorev.when.gDate = moment(gorev[0].when.startDate).format('YYYY-MM-DD');
+          this.gorev.when.startTime = moment(gorev[0].when.startDate).format('HH:mm');
+          this.gorev.when.endTime = moment(gorev[0].when.endDate).format('HH:mm');
           this.gorevForm.patchValue(this.gorev);
           this.choosenPeopleIds = JSON.parse(JSON.stringify(gorev[0].choosenPeople));
-          console.log(this.gorevForm.value)
           this.validateTimeAndFindAvailable();
         }
       });
@@ -246,40 +245,44 @@ export class AssignmentDetailComponent implements OnInit {
 
     for (const busy of busies) {
 
-      // This is only availabe in busytimes, so no worries here
-      if (busy.recur) {
-        const interval = moment(busy.startDate).recur().every(busy.recur).days();
+      const b = busy.when;
+      // Just in case
+      if (b) {
+        // This is only availabe in busytimes, so no worries here
+        if (b.recur) {
+          const interval = moment(b.startDate).recur().every(b.recur).days();
 
-        if (interval.matches(gs)) {
+          if (interval.matches(gs)) {
 
-          // Since this is an interval, we need to create the exact date for checking.
-          const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(busy.startDate).format('HH:mm'));
-          const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(busy.endDate).format('HH:mm'));
-          const busyrange = range(bs, be);
+            // Since this is an interval, we need to create the exact date for checking.
+            const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(b.startDate).format('HH:mm'));
+            const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(b.endDate).format('HH:mm'));
+            const busyrange = range(bs, be);
 
-          if (busyrange.overlaps(gorevrange)) {
-            if (busyIds.indexOf(busy.owner_id) === -1) {
-              busyIds.push(busy.owner_id);
+            if (busyrange.overlaps(gorevrange)) {
+              if (busyIds.indexOf(busy.owner_id) === -1) {
+                busyIds.push(busy.owner_id);
+              }
             }
           }
-        }
-      } else {
-        const bs = moment(busy.startDate);
-        const be = moment(busy.endDate);
-        const busyrange = range(bs, be);
+        } else {
+          const bs = moment(b.startDate);
+          const be = moment(b.endDate);
+          const busyrange = range(bs, be);
 
-        // This can be both busytimes and tasks
-        if (busyrange.overlaps(gorevrange)) {
+          // This can be both busytimes and tasks
+          if (busyrange.overlaps(gorevrange)) {
 
-          // owner_id only exists in busytimes
-          if (busy.owner_id) {
-            if (busyIds.indexOf(busy.owner_id) === -1) {
-              busyIds.push(busy.owner_id);
-            }
-          } else {
-            for (let i = 0; i < busy.peopleCount; i++) {
-              if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
-                busyIds.push(busy.choosenPeople[i]);
+            // owner_id only exists in busytimes
+            if (busy.owner_id) {
+              if (busyIds.indexOf(busy.owner_id) === -1) {
+                busyIds.push(busy.owner_id);
+              }
+            } else {
+              for (let i = 0; i < busy.peopleCount; i++) {
+                if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
+                  busyIds.push(busy.choosenPeople[i]);
+                }
               }
             }
           }

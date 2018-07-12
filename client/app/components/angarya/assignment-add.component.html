@@ -3,11 +3,6 @@
 
   {{ gorevForm.value | json }} <br>
   {{ gorevForm.status }} <br><br>
-  {{ gorevForm.get('when').value | json }} <br>
-  {{ gorevForm.get('when').status }} <br><br>
-  {{ gorevForm.get('selectedPerson').value | json }} <br>
-  {{ gorevForm.get('selectedPerson').status }}
-
   <div class="form-row">
     <mat-form-field  style="width:40%">
       <input matInput formControlName="title" placeholder="Görev Adı">
@@ -74,6 +69,15 @@
   </div>
 
   <div class="form-row">
+    <!-- <mat-form-field style="width:65%">
+        <input type="text" placeholder="Kisi Sec" (select)="onChange($event)" matInput formControlName="selectedPerson" [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let c of ((filteredPeople | async) | selector:gorevForm.get('selector').value)"  [value]="c.fullname">
+            {{c.fullname}} <span style="margin-right: 4px; padding: 1px 5px; border-radius: 24px; background-color: #cecece">{{c.load}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field> -->
+
     <mat-form-field  style="width:65%">
       <mat-select formControlName="selectedPerson" placeholder="Kisi Sec">
         <mat-option *ngFor="let c of (available | selector:gorevForm.get('selector').value)" [value]="c">
@@ -84,10 +88,6 @@
     </mat-form-field>
 
     <div>
-      {{ gorevForm.status === 'INVALID' }}
-      {{ !formTimeValid }}
-      {{ gorevForm.get('selectedPerson').value }}
-      {{ gorevForm.get('peopleCount').value <= gorevForm.get('choosenPeople').length }}
       <button mat-button color="primary" (click)="addToChoosenPeople()"
         [disabled]="gorevForm.status === 'INVALID' || !formTimeValid || !gorevForm.get('selectedPerson').value || gorevForm.get('peopleCount').value <= gorevForm.get('choosenPeople').length">
         Ekle
@@ -98,7 +98,11 @@
   Atanan kisiler:
   <div class="form-row">
     <mat-chip-list class="mat-chip-list-stacked">
-      <mat-chip *ngFor="let c of choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c"><mat-icon style="margin-left:0; margin-right:7px" matChipRemove>cancel</mat-icon> {{c.fullname}} <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span></mat-chip>
+      <mat-chip *ngFor="let c of choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c">
+        <mat-icon style="margin-left:0; margin-right:7px" matChipRemove>cancel</mat-icon>
+        {{c.fullname}}
+        <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span>
+      </mat-chip>
     </mat-chip-list>
   </div>
 </section>

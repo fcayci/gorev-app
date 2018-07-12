@@ -9,7 +9,9 @@ import { MatToolbarModule, MatFormFieldModule, MatProgressSpinnerModule,
   MatInputModule, MatButtonModule, MatChipsModule, MatSidenavModule,
   MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule,
   MatSelectModule, MatTableModule, MatPaginatorModule, MatSortModule,
-  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule, MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule, MatButtonToggleModule, MatRadioModule, MatAutocompleteModule } from '@angular/material';
+  MatTooltipModule, MatDialogModule, MatSlideToggleModule, MatDatepickerModule,
+  MatCheckboxModule, MatSnackBarModule, MatStepperModule, MatBadgeModule,
+  MatButtonToggleModule, MatRadioModule, MatAutocompleteModule } from '@angular/material';
 
 import {MatExpansionModule} from '@angular/material/expansion';
 

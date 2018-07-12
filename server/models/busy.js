@@ -32,7 +32,7 @@ var BusySchema = new Schema(
         enum: [0, 1, 7]
       }
     }
-  }, {collection: 'times'}
+  }, {collection: 'busy'}
 );
 
 //Export model
