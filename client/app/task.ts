@@ -9,7 +9,7 @@ export interface Task {
   load: number;
   peopleCount: number;
   choosenPeople: Array<string>;
-  status: string;
+  status: number;
 }
 
 export const GSTATES = ['Açık', 'Kapalı'];

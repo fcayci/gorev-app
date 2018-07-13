@@ -12,12 +12,12 @@
 
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>Tarih</th>
-          <td mat-cell *matCellDef="let row">{{ row.startDate | date: 'dd MMMM EEEE':'':'tr' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.when.startDate | date: 'dd MMMM EEEE':'':'tr' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="time">
           <th mat-header-cell *matHeaderCellDef>Saat</th>
-          <td mat-cell *matCellDef="let row">{{row.startDate | date: "HH:mm"}} - {{row.endDate | date: "HH:mm"}}</td>
+          <td mat-cell *matCellDef="let row">{{row.when.startDate | date: "HH:mm"}} - {{row.when.endDate | date: "HH:mm"}}</td>
         </ng-container>
 
         <ng-container matColumnDef="load">
@@ -27,8 +27,9 @@
         </ng-container>
 
         <ng-container matColumnDef="expired">
-          <th mat-header-cell *matHeaderCellDef>Durumu</th>
-          <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.endDate) ? 'Geçmiş' : 'Aktif' }}
+          <th mat-header-cell *matHeaderCellDef>Durum</th>
+          <td mat-cell *matCellDef="let row; let i = index">{{gstates[row.status]}}
+            ({{ isExpired(row.when.endDate) ? 'Geçmiş' : 'Aktif' }})
         </td>
         </ng-container>
 

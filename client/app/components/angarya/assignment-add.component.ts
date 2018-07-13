@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+
+import { Observable } from 'rxjs';
+// import {map, startWith} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
@@ -11,14 +12,12 @@ import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
 import { FSortPipe } from '../../pipes/fsort.pipe';
-
 import { Faculty } from '../../faculty';
 import { Busy } from '../../busy';
 import { Task, TYPES, GSTATES } from '../../task';
 import { BusyService } from '../../services/busy.service';
 import { UserService } from '../../services/user.service';
 import { TaskService } from '../../services/task.service';
-import { start } from 'repl';
 
 export class Msg {
   'ok': number;
@@ -55,6 +54,7 @@ export class AssignmentAddComponent implements OnInit {
   title = 'Yeni Görev Oluştur';
 
   constructor(
+    public dialogRef: MatDialogRef<AssignmentAddComponent>,
     private _fsort: FSortPipe,
     private _fb: FormBuilder,
     private _router: Router,
@@ -101,22 +101,21 @@ export class AssignmentAddComponent implements OnInit {
 
   onSubmit() {
     const gorev: Task = this.gorevForm.value;
-    console.log(gorev);
     // Add the task to the db
     this._task.addTask(gorev)
       .subscribe(res => {
-        console.log(res);
+        // FIXME: Add error handling
         for (let i = 0; i < gorev.peopleCount; i++) {
           const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
 
           // Add task to the each of the assigned people
           this._user.addTaskAndIncrementLoadToKisi(p, res)
             .subscribe((kisi: Faculty) => {
-              console.log(kisi);
+              // FIXME: Add error handling
             });
         }
 
-        this._router.navigate(['/angarya']);
+        this.dialogRef.close(res);
     });
   }
 
@@ -202,8 +201,8 @@ export class AssignmentAddComponent implements OnInit {
 
   createGorevForm(): void {
     this.gorevForm = this._fb.group({
-      title: ['asdf', Validators.required],
-      type: ['hede', Validators.required],
+      title: [, Validators.required],
+      type: [, Validators.required],
       when: this._fb.group({
         gDate: [, Validators.required],
         startTime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
@@ -214,8 +213,8 @@ export class AssignmentAddComponent implements OnInit {
       }),
       weight: [1, Validators.required],
       peopleCount: [1, [Validators.required, Validators.pattern('[1-7]')]],
-      selector: ['0', Validators.required],
       choosenPeople: [[], ],
+      selector: ['0', Validators.required],
       status: [0],
       load: [2],
       selectedPerson: [],
@@ -260,6 +259,7 @@ export class AssignmentAddComponent implements OnInit {
 
           // This can be both busytimes and tasks
           if (busyrange.overlaps(gorevrange)) {
+            // owner_id only exists in busytimes
             if (busy.owner_id) {
               if (busyIds.indexOf(busy.owner_id) === -1) {
                 busyIds.push(busy.owner_id);
@@ -279,6 +279,11 @@ export class AssignmentAddComponent implements OnInit {
   }
 
   validateTimeAndFindAvailable(): void {
+    this.gorevForm.get('weight').valueChanges.subscribe(value => {
+      if ( this.gorevForm.value.when ) {
+        this.gorevForm.controls['load'].setValue(this.gorevForm.value.when.duration * value);
+      }
+    });
     this.gorevForm.get('when').statusChanges.subscribe(status => {
       if (status === 'VALID') {
         const t = this.gorevForm.get('when').value;
@@ -319,7 +324,7 @@ export class AssignmentAddComponent implements OnInit {
           }
           this.available = this._fsort.transform(this.available, 'load');
           // Just a hack to activate observable.
-          this.gorevForm.controls['selectedPerson'].setValue('');
+          // this.gorevForm.controls['selectedPerson'].setValue('');
         }
       }
     });

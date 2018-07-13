@@ -36,14 +36,6 @@ export class TaskService {
       );
   }
 
-  getPastTasks(): Observable<Task[]> {
-    const url = angaryaUrl + '/past';
-    return this.http.get<Task[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
   getClosedTasks(): Observable<Task[]> {
     const url = angaryaUrl + '/closed';
     return this.http.get<Task[]>(url)

@@ -10,31 +10,36 @@
         <button *ngIf="!gorevForm.disabled" style="margin-left:15px;" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Görevi Sil"><mat-icon>delete_forever</mat-icon></span></button>
         <button *ngIf="!gorevForm.disabled" style="margin-left:15px;background-color:cornflowerblue;color:white;" mat-mini-fab name="save" color="" (click)="onSave()"><span matTooltip="Kaydet"><mat-icon>save</mat-icon></span></button>
         <span class="fill-remaining-space"></span>
-        <button *ngIf="!gorevForm.disabled" style="margin-left:15px;" mat-mini-fab name="finalize" color="warn" (click)="onFinalize()"><span matTooltip="Görevi Sonlandir"><mat-icon>done</mat-icon></span></button>
+        <button *ngIf="isExpired()" style="margin-left:15px;" mat-mini-fab name="finalize" color="warn" (click)="onFinalize()"><span matTooltip="Görevi Sonlandir"><mat-icon>done</mat-icon></span></button>
       </mat-toolbar-row>
     </mat-toolbar>
 
     <mat-card-content style="padding:24px;" [formGroup]="gorevForm">
       <div style="display:flex">
         <div style="width:55%">
-          <div class="form-row">
-            <mat-form-field  style="width:50%">
-              <input matInput formControlName="title" placeholder="Görev Adı">
-            </mat-form-field>
+            <div class="form-row">
+              <mat-form-field  style="width:40%">
+                <input matInput formControlName="title" placeholder="Görev Adı">
+              </mat-form-field>
 
-            <mat-form-field  style="width:40%">
-              <mat-select formControlName="type" placeholder="Görev Türü">
-                <mat-option *ngFor="let t of types" [value]="t">{{[t]}}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="!gorevForm.hasError('type')">
-                Bir görev türü seçiniz.
-              </mat-error>
-            </mat-form-field>
-          </div>
+              <mat-form-field  style="width:35%">
+                <mat-select formControlName="type" placeholder="Görev Türü">
+                  <mat-option *ngFor="let t of types" [value]="t">{{[t]}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field style="width:20%">
+                <span matTooltip="Varsayılanı 1'dir. Görev süresiyle çarpılır.">
+                  <mat-select formControlName="weight" placeholder="Ağırlık">
+                    <mat-option *ngFor="let n of weights" [value]="n">{{[n]}}</mat-option>
+                  </mat-select></span>
+                <mat-hint align="end">Görev ağırlığı</mat-hint>
+              </mat-form-field>
+            </div>
           <div formGroupName="when">
             <div class="form-row">
               <mat-form-field class="date-align" style="width:35%">
-                <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih">
+                <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih Sec">
                 <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
                 <mat-datepicker #gDate></mat-datepicker>
               </mat-form-field>
@@ -48,29 +53,19 @@
               </mat-form-field>
             </div>
           </div>
+
           <div class="form-row">
             <mat-form-field style="width:20%">
               <mat-select formControlName="peopleCount" placeholder="Kişi Sayısı">
                 <mat-option *ngFor="let n of numbers" [value]="n">{{[n]}}</mat-option>
               </mat-select>
-              <mat-error *ngIf="!gorevForm.hasError('peopleCount')">
-                Görevlendirilecek kişi sayısı seçiniz.
-              </mat-error>
             </mat-form-field>
 
-            <mat-form-field style="width:20%">
-              <span matTooltip="Varsayılanı 1'dir. Görev süresiyle çarpılır.">
-                <mat-select formControlName="weight" placeholder="Ağırlık">
-                  <mat-option *ngFor="let n of weights" [value]="n">{{[n]}}</mat-option>
-                </mat-select>
-              </span>
-            </mat-form-field>
             <mat-button-toggle-group formControlName="selector" style="max-height:36px" value="0">
               <mat-button-toggle value="0">Ar. Gör.</mat-button-toggle>
               <mat-button-toggle value="1">Dr.</mat-button-toggle>
               <mat-button-toggle value="2">Tümü</mat-button-toggle>
             </mat-button-toggle-group>
-
           </div>
         </div>
         <div style="width:45%; margin-left:40px">

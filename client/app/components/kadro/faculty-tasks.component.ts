@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { Faculty } from '../../faculty';
-import { Task } from '../../task';
+import { GSTATES, Task } from '../../task';
 import { TaskService } from '../../services/task.service';
 
 @Component({
@@ -17,9 +17,10 @@ export class FacultyTasksComponent implements OnInit, OnChanges {
 
   @Input() profile: Faculty;
 
-  displayedColumns = ['title', 'date', 'time', 'expired', 'load'];
+  displayedColumns = ['title', 'date', 'time', 'load', 'expired'];
   dataSource: MatTableDataSource<Task>;
   today;
+  gstates = GSTATES;
   totalLoad: number;
   title = 'Görevlendirmeler';
 

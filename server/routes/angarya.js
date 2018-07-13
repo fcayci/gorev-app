@@ -24,19 +24,7 @@ router.get('/angarya', function(req, res, next){
  * return: angarya
  */
 router.get('/angarya/open', function(req, res, next){
-  Task.find({ 'status': 'open' }, function (err, angarya) {
-    if (err) return console.error(err);
-    res.send(angarya);
-    res.status(200);
-  });
-});
-
-/* title: Get past gorev in angarya
- *
- * return: angarya
- */
-router.get('/angarya/past', function(req, res, next){
-  Task.find({ 'status': 'past' }, function (err, angarya) {
+  Task.find({ 'status': 0 }, function (err, angarya) {
     if (err) return console.error(err);
     res.send(angarya);
     res.status(200);
@@ -48,7 +36,7 @@ router.get('/angarya/past', function(req, res, next){
  * return: angarya
  */
 router.get('/angarya/closed', function(req, res, next){
-  Task.find({ 'status': 'closed' }, function (err, angarya) {
+  Task.find({ 'status': 1 }, function (err, angarya) {
     if (err) return console.error(err);
     res.send(angarya);
     res.status(200);
@@ -79,7 +67,7 @@ router.get('/angarya/:id', function(req, res, next){
  * return: single person
  */
 router.post('/angarya', function(req, res, next){
-
+  console.log(req.body)
   // TOOD: Make approperiate checks for the candidate
   var candidate = req.body;
   if (!candidate || candidate == 'undefined'){

@@ -77,10 +77,12 @@ export class FacultyBusyAddComponent implements OnInit  {
 
     const model: Busy = {
       title : f.title,
-      startDate : sd.format(),
-      endDate : ed.format(),
       owner_id : this.data._id,
-      recur : f.recur
+      when : {
+        startDate : sd.format(),
+        endDate : ed.format(),
+        recur : f.recur
+      }
     };
 
     return model;

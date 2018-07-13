@@ -97,6 +97,11 @@ export class AssignmentDetailComponent implements OnInit {
       });
   }
 
+  isExpired() {
+    const today = moment();
+    return today.isAfter(this.gorev.when.endDate);
+  }
+
   onSave(): void {
     // Remove load/tasks from choosenPeopleIds - careful, old load should be removed
     // Add load/tasks to new choosenPeople - new load should be added
@@ -157,17 +162,21 @@ export class AssignmentDetailComponent implements OnInit {
   createForm(): void {
     this.gorevForm = this._fb.group({
       title: [String, Validators.required],
-      type: [Number, Validators.required],
+      type: [String, Validators.required],
       when: this._fb.group({
-        gDate: [ ],
-        startTime: [ ],
-        endTime: [ ]
+        gDate: [],
+        startTime: [],
+        endTime: [],
+        startDate: [, Validators.required],
+        endDate: [, Validators.required],
+        duration: [, Validators.required]
       }),
       weight: [Number, Validators.required],
       peopleCount: [Number, Validators.required],
       choosenPeople: [[], Validators.required],
+      selector: ['0'],
       status: [Number],
-      selector: [Number],
+      load: [Number],
       selectedPerson: []
     });
   }
@@ -194,7 +203,7 @@ export class AssignmentDetailComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.gorevForm.reset();
+    // this.gorevForm.reset();
     this.gorevForm.disable();
     this.gorevForm.patchValue(this.gorev);
     this.gorevForm.controls['selectedPerson'].setValue('');
@@ -272,7 +281,6 @@ export class AssignmentDetailComponent implements OnInit {
 
           // This can be both busytimes and tasks
           if (busyrange.overlaps(gorevrange)) {
-
             // owner_id only exists in busytimes
             if (busy.owner_id) {
               if (busyIds.indexOf(busy.owner_id) === -1) {
@@ -293,11 +301,16 @@ export class AssignmentDetailComponent implements OnInit {
   }
 
   validateTimeAndFindAvailable(): void {
-    this.gorevForm.statusChanges.subscribe(status => {
+    this.gorevForm.get('weight').valueChanges.subscribe(value => {
+      if ( this.gorevForm.value.when ) {
+        this.gorevForm.controls['load'].setValue(this.gorevForm.value.when.duration * value);
+      }
+    });
+    this.gorevForm.get('when').statusChanges.subscribe(status => {
       if (status === 'VALID') {
-
+        const t = this.gorevForm.get('when').value;
+        const g = this.gorevForm.value;
         this.available = [];
-        const t = this.gorevForm.value;
 
         // Get the dates as is. if .dateOnly() method is used, we lose timezone.
         let sd = moment(t.gDate);
@@ -311,28 +324,31 @@ export class AssignmentDetailComponent implements OnInit {
 
         // Calculate load based on duration and weight
         t.duration = moment.duration(ed.diff(sd)).as('hours');
-        t.load = t.duration * t.weight;
+        this.gorevForm.controls['load'].setValue(t.duration * g.weight);
 
         // Make sure start date is after end.
         if (sd.isSameOrAfter(ed)) {
           this.formTimeValid = false;
         } else {
-          this.gorevForm.value.startDate = sd.format();
-          this.gorevForm.value.endDate = ed.format();
+          t.startDate = sd.format();
+          t.endDate = ed.format();
 
           this.formTimeValid = true;
 
           const busyIds = this.findBusies(sd, ed);
 
           for (const k of this.kadro ) {
-            // If kisi id is NOT in busyIds, AND not already assigned to task add to available
-            if (busyIds.indexOf(k._id) === -1 && this.choosenPeopleIds.indexOf(k._id) === -1) {
-              this.available.push(k);
+            if (k.vacation === false) {
+              // If kisi id is NOT in busyIds, AND not already assigned to task add to available
+              if (busyIds.indexOf(k._id) === -1 && this.choosenPeopleIds.indexOf(k._id) === -1) {
+                this.available.push(k);
+              }
             }
           }
           // Sort the array for load
           this.available = this._fsort.transform(this.available, 'load');
-          console.log(this.available)
+          // Just a hack to activate observable.
+          // this.gorevForm.controls['selectedPerson'].setValue('');
         }
       }
     });

@@ -99,38 +99,3 @@
     <button mat-raised-button color="primary" (click)="onSubmit()">Onayla & Bilgilendir</button>
   </div>
 </section>
-
-            <!--
-
-              <div class="form-row" style="width: 75%">
-
-                <mat-form-field  style="width:65%">
-                  <mat-select formControlName="selectedPerson" placeholder="Kendim seçeceğim">
-                    <mat-option *ngFor="let c of (available | selector:gorevForm.value.selector)" [value]="c">
-                      <span style="margin-right: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span>
-                      <span> {{c.fullname}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <button mat-button color="primary" (click)="addToChoosenPeople()"
-                  [disabled]="available.indexOf(peopleForm.value.selectedPerson) === -1">
-                  Ekle
-                </button>
-
-              </div>
-              Atanan kisiler:
-              <div class="form-row">
-                <mat-chip-list class="mat-chip-list-stacked">
-                  <mat-chip *ngFor="let c of choosenPeople" (removed)="removeFromChoosenPeople(c)" [value]="c"><mat-icon style="margin-left:0; margin-right:7px" matChipRemove>cancel</mat-icon> {{c.fullname}} <span style="margin-left: 4px; padding: 0 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span></mat-chip>
-                </mat-chip-list>
-
-              </div> <div class="button-row">
-              <button mat-button matStepperPrevious (click)="clearAssignedPeople()" color="warn">Temizle & Geri</button>
-              <button mat-button matStepperNext color="primary" [disabled]="choosenPeople.length != gorevForm.value.peopleCount" (click)="parseForm()">Devam</button>
-            </div> <mat-card><div [innerHTML]="gorevInfo"></div></mat-card>
-            <div class="button-row">
-              <button mat-button matStepperPrevious>Geri</button>
-              <button mat-button color="warn" (click)="stepper.reset()">Temizle & Baştan</button>
-              <button mat-raised-button color="primary" (click)="onSubmit()">Onayla & Bilgilendir</button>
-            </div> -->
