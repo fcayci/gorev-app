@@ -124,7 +124,7 @@ export class AssignmentDetailComponent implements OnInit {
     //     });
     // }
 
-    var gids;
+    let gids;
 
     this._busy.getBusyById('task', this.gorev._id)
       .subscribe((res) => {
@@ -301,6 +301,13 @@ export class AssignmentDetailComponent implements OnInit {
   }
 
   validateTimeAndFindAvailable(): void {
+    this.gorevForm.get('peopleCount').valueChanges.subscribe(value => {
+      if (value > this.gorev.peopleCount) {
+        this.gorevForm.controls['selectedPerson'].enable();
+      } else {
+        this.gorevForm.controls['selectedPerson'].disable();
+      }
+    });
     this.gorevForm.get('weight').valueChanges.subscribe(value => {
       if ( this.gorevForm.value.when ) {
         this.gorevForm.controls['load'].setValue(this.gorevForm.value.when.duration * value);
@@ -347,6 +354,7 @@ export class AssignmentDetailComponent implements OnInit {
           }
           // Sort the array for load
           this.available = this._fsort.transform(this.available, 'load');
+          console.log(this.available);
           // Just a hack to activate observable.
           // this.gorevForm.controls['selectedPerson'].setValue('');
         }

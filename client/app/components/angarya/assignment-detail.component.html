@@ -7,10 +7,10 @@
         <mat-icon>description</mat-icon>  <h2 style="padding-left:5px; margin-right:15px">{{ title }}</h2>
         <button *ngIf="gorevForm.disabled"  style="margin-left:15px;" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Görevi Düzenle"><mat-icon>edit</mat-icon></span></button>
         <button *ngIf="!gorevForm.disabled" style="margin-left:15px;" mat-mini-fab name="cancel" color="" (click)="onCancel()"><span matTooltip="Iptal"><mat-icon>cancel</mat-icon></span></button>
-        <button *ngIf="!gorevForm.disabled" style="margin-left:15px;" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Görevi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+        <button style="margin-left:15px;" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Görevi Sil"><mat-icon>delete_forever</mat-icon></span></button>
         <button *ngIf="!gorevForm.disabled" style="margin-left:15px;background-color:cornflowerblue;color:white;" mat-mini-fab name="save" color="" (click)="onSave()"><span matTooltip="Kaydet"><mat-icon>save</mat-icon></span></button>
         <span class="fill-remaining-space"></span>
-        <button *ngIf="isExpired()" style="margin-left:15px;" mat-mini-fab name="finalize" color="warn" (click)="onFinalize()"><span matTooltip="Görevi Sonlandir"><mat-icon>done</mat-icon></span></button>
+        <button *ngIf="isExpired()" style="margin-left:15px;background-color:lightgreen;color:grey;" mat-mini-fab name="finalize" color="" (click)="onFinalize()"><span matTooltip="Görevi Sonlandir"><mat-icon>done</mat-icon></span></button>
       </mat-toolbar-row>
     </mat-toolbar>
 
