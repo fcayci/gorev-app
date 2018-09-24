@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 
 import { Faculty, POSITIONS } from '../../faculty';
 import { UserService } from '../../services/user.service';
-import { ToasterService } from '../../services/toaster.service';
 
 @Component({
   selector: 'faculty-profile',
@@ -14,22 +13,21 @@ import { ToasterService } from '../../services/toaster.service';
 export class FacultyProfileComponent implements OnInit, OnChanges {
 
   @Input() profile: Faculty;
-  @Output() submitEvent = new EventEmitter<string>();
+  @Output() submitEvent = new EventEmitter();
 
   positions = POSITIONS;
   kisiForm: FormGroup;
 
   constructor(
     private _fb: FormBuilder,
-    private _toaster: ToasterService,
     private _user: UserService) {}
 
   ngOnInit(): void {
     this.kisiForm = this._fb.group({
       fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
-      office: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern('[0-9]{1,4}')]],
+      office: [''],
+      phone: ['', Validators.pattern('[0-9]{4}')],
       position: ['', Validators.required],
       mobile: ['', Validators.pattern('[0-9]{11}')],
       load: [, [Validators.required, Validators.pattern('[0-9.]{1,10}')]],
@@ -51,18 +49,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   onSave(): void {
     const candidate: Faculty = this.kisiForm.value;
     candidate.username = this.profile.username;
-
-    this._user.updateKisi(candidate)
-      .subscribe(
-        (kisi: Faculty) => {
-          this.profile = kisi;
-          this._toaster.info(kisi.fullname + ' başarıyla düzenlendi.');
-        },
-        err => {
-          this.kisiForm.patchValue( this.profile );
-          this._toaster.info(err);
-        }
-      );
+    this.submitEvent.emit({ event: 'save', content: candidate });
     this.disableGroup();
   }
 
@@ -73,7 +60,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   }
 
   onDelete(): void {
-    this.submitEvent.emit('delete');
+    this.submitEvent.emit({ event: 'delete', content: 'null' });
   }
 
   enableGroup(): void {

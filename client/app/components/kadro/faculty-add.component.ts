@@ -27,12 +27,13 @@ export class FacultyAddComponent implements OnInit  {
 
   createForm() {
     this.kisiForm = this._fb.group({
-      fullname: [''],
+      fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
       office: [''],
       phone: ['', Validators.pattern('[0-9]{4}')],
       position: ['', Validators.required],
       mobile: ['', Validators.pattern('[0-9]{11}')],
+      load: 0,
       vacation: false
     });
   }

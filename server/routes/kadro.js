@@ -6,13 +6,23 @@ const Busy = require('../models/busy');
 
 var kisi = '';
 
+const POSITIONS = [
+  {'position': 'Dr.', 'rank': 10},
+  {'position': 'Öğretim Görevlisi', 'rank': 20},
+  {'position': 'Araştırma Görevlisi', 'rank': 30},
+  {'position': 'Uzman', 'rank': 40},
+  {'position': 'Memur', 'rank': 50},
+  {'position': 'Diğer', 'rank': 100}
+];
+
 router.get('/', function(req, res, next){
 
   res.send('KADRO PAGE');
 });
 
 /**
- * Sistemde kayıtlı bütün kullanıcıların listesini çağır.
+ * Sistemde kayıtlı bütün kullanıcıların listesini çeker.
+ * rank'a göre sıralar.
  *
  * @return Kullanıcı ve bilgilerinin listesi
  */
@@ -22,11 +32,11 @@ router.get('/kadro', function(req, res, next){
     if (err) return console.error(err);
     res.json(kadro);
     res.status(200);
-  });
+  }).sort({ rank: 1});
 });
 
 /**
- * Kullanıcı adı verilen kişiyi çağır. Eğer bulamazsa hata verir.
+ * Kullanıcı adı verilen kişiyi çeker. Eğer bulamazsa hata verir.
  *
  * @param username Kullanıcı adı (e-posta adı)
  * @return         Kullanıcı bilgileri
@@ -39,16 +49,20 @@ router.get('/kadro/:username', function(req, res, next){
   } else {
     Faculty.findOne({ 'username': req.params.username }, function (err, kisi) {
       if (err) return console.error(err);
-      res.json(kisi);
-      res.status(200);
-      kisi = kisi;
+      if (kisi) {
+        res.json(kisi);
+        res.status(200);
+      } else {
+        res.status(404);
+        res.json({"error" : "Böyle bir kullanıcı mevcut değil."});
+      }
     });
   }
 });
 
 /**
- * Verilen kullanıcıyı ekler. 
- * Kullanıcı FacultySchema şemasından olması lazımdır.
+ * Yeni kullanıcı ekleme.
+ * Kullanıcı FacultyModel şemasından olması lazımdır.
  *
  * @return Eklenen kullanıcı veya hata
  */
@@ -63,6 +77,14 @@ router.post('/kadro', function(req, res, next){
   else {
     candidate.username = candidate.email;
     const kisi = new Faculty(candidate);
+
+    // add rank object
+    const r = POSITIONS.find(x => x.position === kisi.position);
+    if (r) {
+      kisi.rank = r.rank;
+    } else {
+      kisi.rank = 100;
+    }
 
     Faculty.findOne( { username: kisi.username }, function (err, resp) {
       if (err) return console.error(err);
@@ -86,7 +108,7 @@ router.post('/kadro', function(req, res, next){
 
 /**
  * Kullanıcı adı verilen kullanıcıyı siler.
- * 
+ *
  * @param username Kullanıcı adı
  * @return         başarı mesajı veya hata
  */
@@ -106,7 +128,7 @@ router.delete('/kadro/:username', function(req, res, next){
 
 /**
  * kullanıcı adı verilen kullanıcıyı günceller.
- * 
+ *
  * @param username Kullanıcı adı
  * @return         başarı mesajı veya hata
  */
@@ -121,14 +143,18 @@ router.put('/kadro/:username', function(req, res, next){
     var query = { 'username' : candidate.username },
         options = { upsert: false, new: true }
 
+    // add rank object
+    const r = POSITIONS.find(x => x.position === candidate.position);
+    if (r) { candidate.rank = r.rank; }
+    else { candidate.rank = 100; }
+
     // Check if the email is changed.
     if (candidate.email === candidate.username) {
-
       Faculty.findOneAndUpdate(query, candidate, options, (err, kisi) => {
         if (err) return console.error(err);
         res.json(kisi);
         res.status(200);
-      })
+      });
     } else {
       Faculty.findOne({'email' : candidate.email}, (err, resp) => {
         if (err) return console.error(err);

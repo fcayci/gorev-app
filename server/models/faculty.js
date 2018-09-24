@@ -34,6 +34,10 @@ const FacultySchema = new Schema(
       type: String,
       required: true
     },
+    rank: {
+      type: Number,
+      required: true
+    },
     office: {
       type: String,
       required: false
