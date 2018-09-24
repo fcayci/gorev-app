@@ -50,15 +50,19 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 
   onSave(): void {
     const candidate: Faculty = this.kisiForm.value;
-    candidate.username = candidate.email;
+    candidate.username = this.profile.username;
 
-    // FIXME: Add snackbar error message
     this._user.updateKisi(candidate)
-      .subscribe((kisi: Faculty) => {
-        this.profile = kisi;
-        this._toaster.info(kisi.fullname + ' duzenlendi.');
-    });
-
+      .subscribe(
+        (kisi: Faculty) => {
+          this.profile = kisi;
+          this._toaster.info(kisi.fullname + ' başarıyla düzenlendi.');
+        },
+        err => {
+          this.kisiForm.patchValue( this.profile );
+          this._toaster.info(err);
+        }
+      );
     this.disableGroup();
   }
 

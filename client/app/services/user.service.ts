@@ -59,15 +59,7 @@ export class UserService {
 
   updateKisi(kisi: Faculty): Observable<Faculty> {
     const url = kadroUrl + '/' + kisi.username;
-
-    if (this.kisicache.username === kisi.username) {
-      var diff = this.compareJSON(this.kisicache, kisi);
-    }
-
-    // Append _id so that we can find who to update in the backend
-    diff['_id'] = this.kisicache._id;
-
-    return this.http.put<Faculty>(url, diff, httpOptions)
+    return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
       .pipe(
         catchError(this.handleError)
       );
@@ -89,19 +81,6 @@ export class UserService {
       );
   }
 
-  private compareJSON = function(obj1, obj2) {
-    const ret = {};
-    for (const i in obj2) {
-      if (!i.startsWith('__')) {
-        if (!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
-          ret[i] = obj2[i];
-        }
-      }
-    }
-    return ret;
-  };
-
-
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -114,7 +93,7 @@ export class UserService {
         `body was: ${error.error}`);
     }
     // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
+    // return throwError('Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.');
+    return throwError(error.error);
   }
 }

@@ -1,4 +1,4 @@
-const mongoose   = require('mongoose'); //,
+const mongoose   = require('mongoose');
 //      timestamps = require('mongoose-timestamp');
 
 const Schema = mongoose.Schema;
@@ -14,14 +14,14 @@ const FacultySchema = new Schema(
     email: {
       type: String,
       required: true,
-      max: 30,
+      max: 111,
       lowercase: true,
       trim: true
     },
     username: {
       type: String,
       required: true,
-      max: 30,
+      max: 100,
       lowercase: true,
       trim: true
     },
@@ -36,11 +36,11 @@ const FacultySchema = new Schema(
     },
     office: {
       type: String,
-      required: true
+      required: false
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
       min: 4,
       max: 4
     },

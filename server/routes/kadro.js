@@ -7,14 +7,17 @@ const Busy = require('../models/busy');
 var kisi = '';
 
 router.get('/', function(req, res, next){
+
   res.send('KADRO PAGE');
 });
 
-/* title: Get every person in kadro
+/**
+ * Sistemde kayıtlı bütün kullanıcıların listesini çağır.
  *
- * return: kadro
+ * @return Kullanıcı ve bilgilerinin listesi
  */
 router.get('/kadro', function(req, res, next){
+
   Faculty.find(function (err, kadro) {
     if (err) return console.error(err);
     res.json(kadro);
@@ -22,11 +25,14 @@ router.get('/kadro', function(req, res, next){
   });
 });
 
-/* title: Get a single person by username
+/**
+ * Kullanıcı adı verilen kişiyi çağır. Eğer bulamazsa hata verir.
  *
- * return: single person
+ * @param username Kullanıcı adı (e-posta adı)
+ * @return         Kullanıcı bilgileri
  */
 router.get('/kadro/:username', function(req, res, next){
+
   if (!req.params.username || req.params.username == 'undefined') {
     res.status(400);
     res.json({"error" : "Bad Data"});
@@ -40,33 +46,49 @@ router.get('/kadro/:username', function(req, res, next){
   }
 });
 
-/* title: Add a person to kadro
+/**
+ * Verilen kullanıcıyı ekler. 
+ * Kullanıcı FacultySchema şemasından olması lazımdır.
  *
- * return: single person
+ * @return Eklenen kullanıcı veya hata
  */
 router.post('/kadro', function(req, res, next){
 
   const candidate = req.body;
 
-  if (!candidate.fullname || !candidate.email) {
+  if (!candidate.fullname || !candidate.email || !candidate.position) {
     res.status(400);
-    res.json({"error" : "Bad Data"});
+    res.json("Eksik Bilgi!");
   }
   else {
     candidate.username = candidate.email;
-
     const kisi = new Faculty(candidate);
-    kisi.save(function(err){
+
+    Faculty.findOne( { username: kisi.username }, function (err, resp) {
       if (err) return console.error(err);
-      res.status(200);
-      res.json(kisi);
+      if (resp) {
+        res.status(400);
+        res.json(kisi.username + "@gtu.edu.tr sistemde zaten kayıtlı!");
+      } else {
+        kisi.save(function(err) {
+          if (err) {
+            res.status(400);
+            res.json(err.message);
+          } else {
+            res.status(200);
+            res.json(kisi);
+          }
+        });
+      }
     });
   }
 });
 
-/* title: Remove single person from kadro matching the username.
- *
- * return: status msg
+/**
+ * Kullanıcı adı verilen kullanıcıyı siler.
+ * 
+ * @param username Kullanıcı adı
+ * @return         başarı mesajı veya hata
  */
 router.delete('/kadro/:username', function(req, res, next){
 
@@ -82,24 +104,48 @@ router.delete('/kadro/:username', function(req, res, next){
   }
 });
 
-/* title: Update kisi with username matcing the _id
- * Expects full JSON of the candidate.
- *
- * return: status msg
+/**
+ * kullanıcı adı verilen kullanıcıyı günceller.
+ * 
+ * @param username Kullanıcı adı
+ * @return         başarı mesajı veya hata
  */
 router.put('/kadro/:username', function(req, res, next){
+
   const candidate = req.body;
-  if (!candidate || candidate == 'undefined'){
+
+  if (!candidate || candidate == 'undefined' || !candidate.email || !candidate.username){
     res.status(400);
     res.json({"error" : "Bad Data"});
   } else {
-    const id = candidate._id;
-    // new: true makes it return the updated kisi object.
-    Faculty.findByIdAndUpdate(id, candidate, {new: true}, (err, kisi) => {
-      if (err) return console.error(err);
-      res.json(kisi);
-      res.status(200);
-    })
+    var query = { 'username' : candidate.username },
+        options = { upsert: false, new: true }
+
+    // Check if the email is changed.
+    if (candidate.email === candidate.username) {
+
+      Faculty.findOneAndUpdate(query, candidate, options, (err, kisi) => {
+        if (err) return console.error(err);
+        res.json(kisi);
+        res.status(200);
+      })
+    } else {
+      Faculty.findOne({'email' : candidate.email}, (err, resp) => {
+        if (err) return console.error(err);
+        if (resp) {
+          res.status(400);
+          res.json(candidate.email + "@gtu.edu.tr sistemde kayıtlı!");
+        } else {
+          // Update username to match the email and save the result
+          candidate.username = candidate.email;
+          Faculty.findOneAndUpdate(query, candidate, options, (err, kisi) => {
+            if (err) return console.error(err);
+            res.json(kisi);
+            res.status(200);
+          })
+        }
+      });
+    }
   }
 });
 
@@ -156,5 +202,18 @@ router.put('/kadro/:username/deltask', function(req, res, next){
 //       res.send(msg);
 //   });
 // });
+
+
+function compareJSON(obj1, obj2) {
+  const ret = {};
+  for (const i in obj2) {
+    if (!i.startsWith('__')) {
+      if (!obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) {
+        ret[i] = obj2[i];
+      }
+    }
+  }
+  return ret;
+};
 
 module.exports = router;

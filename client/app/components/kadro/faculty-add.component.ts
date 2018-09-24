@@ -13,7 +13,7 @@ import { UserService } from '../../services/user.service';
 export class FacultyAddComponent implements OnInit  {
 
   positions = POSITIONS;
-  kisiForm : FormGroup;
+  kisiForm: FormGroup;
   title = 'Yeni Kişi Ekle';
 
   constructor(
@@ -27,10 +27,10 @@ export class FacultyAddComponent implements OnInit  {
 
   createForm() {
     this.kisiForm = this._fb.group({
-      fullname: ['', Validators.required],
+      fullname: [''],
       email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
-      office: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern('[0-9]{4}')]],
+      office: [''],
+      phone: ['', Validators.pattern('[0-9]{4}')],
       position: ['', Validators.required],
       mobile: ['', Validators.pattern('[0-9]{11}')],
       vacation: false
@@ -44,8 +44,9 @@ export class FacultyAddComponent implements OnInit  {
   onSubmit() {
     const profile: Faculty = this.kisiForm.value;
     this._user.addKisi(profile)
-      .subscribe(res => {
-    });
-    this.dialogRef.close(profile);
+      .subscribe(
+        res => { this.dialogRef.close(res); },
+        err => { this.dialogRef.close(err); }
+    );
   }
 }

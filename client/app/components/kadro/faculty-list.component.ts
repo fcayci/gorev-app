@@ -46,11 +46,14 @@ export class FacultyListComponent implements OnInit {
       width: '460px'
     });
 
-    // FIXME: Add error snackbar message.
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this._toaster.info(result.position + ' ' + result.fullname + ' başarıyla eklendi.');
-        this.getAllPeople();
+    dialogRef.afterClosed().subscribe( res => {
+      if (res) {
+        if (res.fullname) {
+          this._toaster.info(res.position + ' ' + res.fullname + ' başarıyla eklendi.');
+          this.getAllPeople();
+        } else {
+          this._toaster.info(res);
+        }
       }
     });
   }
