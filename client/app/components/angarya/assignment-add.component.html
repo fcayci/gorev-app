@@ -27,7 +27,7 @@
   <div formGroupName="when">
     <div class="form-row">
       <mat-form-field class="date-align" style="width:35%">
-        <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih Sec">
+        <input matInput formControlName="gDate" [matDatepicker]="gDate" placeholder="Tarih Seç">
         <mat-datepicker-toggle matSuffix [for]="gDate"></mat-datepicker-toggle>
         <mat-datepicker #gDate></mat-datepicker>
       </mat-form-field>
@@ -68,7 +68,7 @@
   <div class="form-row">
 
     <mat-form-field  style="width:65%">
-      <mat-select formControlName="selectedPerson" placeholder="Kisi Sec">
+      <mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
         <mat-option *ngFor="let c of (available | selector:gorevForm.value.selector)" [value]="c">
           <span> {{c.fullname}}</span>
           <span style="margin-right: 4px; padding: 1px 5px; border-radius: 24px; background-color: #cecece">{{c.load}}</span>

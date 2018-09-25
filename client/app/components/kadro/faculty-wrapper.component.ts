@@ -58,7 +58,7 @@ export class FacultyWrapperComponent implements OnInit {
     );
   }
 
-  handleMessage(e) {
+  profileEventHandler(e) {
     if (e.event === 'delete') {
       this.onDelete();
     } else if (e.event === 'save') {

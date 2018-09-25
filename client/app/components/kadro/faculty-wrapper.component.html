@@ -1,8 +1,5 @@
 <mat-spinner *ngIf="!kisi"></mat-spinner>
 
-<faculty-profile *ngIf="kisi" [profile]="kisi" (submitEvent)="handleMessage($event)"></faculty-profile>
-
+<faculty-profile *ngIf="kisi" [profile]="kisi" (profileEvent)="profileEventHandler($event)"></faculty-profile>
 <faculty-busy *ngIf="kisi" [profile]="kisi"></faculty-busy>
-
 <faculty-tasks *ngIf="kisi"[profile]="kisi"></faculty-tasks>
-

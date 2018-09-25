@@ -45,7 +45,7 @@ export class AssignmentAddComponent implements OnInit {
   gstates = GSTATES;
   types = TYPES;
   numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
-  weights: Array<number> = Array(13).fill(0).map((x, i) => i / 4);
+  weights: Array<number> = Array(41).fill(0).map((x, i) => i / 4);
 
   gorevInfo: string;
   formTimeValid = false;
@@ -67,7 +67,7 @@ export class AssignmentAddComponent implements OnInit {
 
     this.createGorevForm();
 
-    // Get the busy times of all the people
+    // Get busy times of all the people
     this._busy.getBusyAll()
       .subscribe((res: Busy[]) => {
         this.busytimes = res;
@@ -79,7 +79,7 @@ export class AssignmentAddComponent implements OnInit {
         this.opentasks = res;
     });
 
-    // Get the people
+    // Get people
     this._user.getKadro()
       .subscribe((kadro: Faculty[]) => {
         this.kadro = kadro;
@@ -329,5 +329,4 @@ export class AssignmentAddComponent implements OnInit {
       }
     });
   }
-
 }

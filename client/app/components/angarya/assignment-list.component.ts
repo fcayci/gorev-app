@@ -72,7 +72,8 @@ export class AssignmentListComponent implements OnInit {
   getPerson(id: string) {
     if (this.kadro.length > 0) {
       return this.kadro.find(x => x._id === id).fullname;
-    } else { return 'N/A';
+    } else {
+      return 'N/A';
     }
   }
 
@@ -80,7 +81,8 @@ export class AssignmentListComponent implements OnInit {
     if (this.kadro.length > 0) {
       const name = this.kadro.find(x => x._id === id).fullname;
       return name.match(/\b(\w)/g).join('').toLowerCase();
-    } else { return 'N/A';
+    } else {
+      return 'N/A';
     }
   }
 

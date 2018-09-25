@@ -14,4 +14,4 @@ export interface Task {
 
 export const GSTATES = ['Açık', 'Kapalı'];
 
-export const TYPES = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Lab Asistanlığı', 'Kurul', 'Diğer'];
+export const TYPES = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Ders Asistanlığı', 'Lab Asistanlığı', 'Kurul', 'Diğer'];

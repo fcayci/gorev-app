@@ -5,6 +5,7 @@ export interface FacultyDB {
   username?: string;
   password?: string;
   position: string;
+  rank: number;
   office: string;
   phone: string;
   mobile?: string;

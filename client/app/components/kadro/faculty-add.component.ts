@@ -43,6 +43,7 @@ export class FacultyAddComponent implements OnInit  {
   }
 
   onSubmit() {
+    // this.kisiForm.value.fullname = this.kisiForm.value.fullname.toProperCase();
     const profile: Faculty = this.kisiForm.value;
     this._user.addKisi(profile)
       .subscribe(
@@ -51,3 +52,9 @@ export class FacultyAddComponent implements OnInit  {
     );
   }
 }
+
+// String.prototype.toProperCase = function () {
+//   return this.replace(/\w\S*/g, function(txt) {
+//     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+//   });
+// };

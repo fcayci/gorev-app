@@ -13,7 +13,7 @@ import { UserService } from '../../services/user.service';
 export class FacultyProfileComponent implements OnInit, OnChanges {
 
   @Input() profile: Faculty;
-  @Output() submitEvent = new EventEmitter();
+  @Output() profileEvent = new EventEmitter();
 
   positions = POSITIONS;
   kisiForm: FormGroup;
@@ -49,7 +49,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   onSave(): void {
     const candidate: Faculty = this.kisiForm.value;
     candidate.username = this.profile.username;
-    this.submitEvent.emit({ event: 'save', content: candidate });
+    this.profileEvent.emit({ event: 'save', content: candidate });
     this.disableGroup();
   }
 
@@ -60,7 +60,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
   }
 
   onDelete(): void {
-    this.submitEvent.emit({ event: 'delete', content: 'null' });
+    this.profileEvent.emit({ event: 'delete', content: 'null' });
   }
 
   enableGroup(): void {
