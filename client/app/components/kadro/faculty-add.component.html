@@ -4,7 +4,7 @@
     <div class="form-row">
       <mat-form-field style="width:40%">
         <mat-select formControlName="position" placeholder="Akademik Ünvan">
-          <mat-option *ngFor="let pos of positions" [value]="pos">{{[pos]}}</mat-option>
+          <mat-option *ngFor="let r of roles" [value]="r.position">{{[r.position]}}</mat-option>
         </mat-select>
         <mat-error *ngIf="!kisiForm.hasError('position')">
           Bir ünvan seçiniz giriniz
