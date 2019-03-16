@@ -33,7 +33,7 @@ router.get('/busy/:type/:id', function(req, res, next) {
 	var type = req.params.type
 	var id = req.params.id
 	// check if they both exist
-	if ( !type || type == 'undefined' || !id !! id == 'undefined' ){
+	if ( !type || type == 'undefined' || !id || id == 'undefined' ){
 		res.status(400);
 		res.json({"error" : "Bad Data"});
 	} 
