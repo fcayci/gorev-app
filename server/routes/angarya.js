@@ -4,19 +4,24 @@ var router = express.Router();
 const Task = require('../models/task');
 
 router.get('/', function(req, res, next){
-  res.send('ANGARYA PAGE');
+	res.send('ANGARYA PAGE');
 });
 
-/* title: Get every gorev in angarya
+/**
+ * get every gorev in angarya
  *
- * return: angarya
+ * @remarks
+ *
+ * @returns angarya
+ *
+ * @beta
  */
 router.get('/angarya', function(req, res, next){
-  Task.find(function (err, angarya) {
-    if (err) return console.error(err);
-    res.send(angarya);
-    res.status(200);
-  });
+	Task.find(function (err, angarya) {
+		if (err) return console.error(err);
+		res.send(angarya);
+		res.status(200);
+	});
 });
 
 /* title: Get open gorev in angarya
@@ -24,11 +29,11 @@ router.get('/angarya', function(req, res, next){
  * return: angarya
  */
 router.get('/angarya/open', function(req, res, next){
-  Task.find({ 'status': 0 }, function (err, angarya) {
-    if (err) return console.error(err);
-    res.send(angarya);
-    res.status(200);
-  });
+	Task.find({ 'status': 0 }, function (err, angarya) {
+		if (err) return console.error(err);
+		res.send(angarya);
+		res.status(200);
+	});
 });
 
 /* title: Get closed gorev in angarya
@@ -36,11 +41,11 @@ router.get('/angarya/open', function(req, res, next){
  * return: angarya
  */
 router.get('/angarya/closed', function(req, res, next){
-  Task.find({ 'status': 1 }, function (err, angarya) {
-    if (err) return console.error(err);
-    res.send(angarya);
-    res.status(200);
-  });
+	Task.find({ 'status': 1 }, function (err, angarya) {
+		if (err) return console.error(err);
+		res.send(angarya);
+		res.status(200);
+	});
 });
 
 /* title: Get gorev
@@ -48,17 +53,21 @@ router.get('/angarya/closed', function(req, res, next){
  * return: an array of angarya/gorev given id(s)
  */
 router.get('/angarya/:id', function(req, res, next){
-  if (!req.params.id || req.params.id == 'undefined'){
-    res.status(200);
-    res.json({"error" : "No Data"});
-  } else {
-    const ids = req.params.id.split(',');
-    Task.find({ '_id': {$in: ids} }, function (err, gorev) {
-      if (err) return console.error(err);
-      res.send(gorev);
-      res.status(200);
-    });
-  }
+	// if id is not present or undefined throw error
+	// FIXME: make error messages generic
+	if ( !req.params.id || req.params.id == 'undefined'){
+		res.status(200);
+		res.json({"error" : "No Data"});
+	} else {
+		// this is to make sure to respond multiple ids
+		// FIXME: check one vs multiple
+		const ids = req.params.id.split(',');
+		Task.find({ '_id': {$in: ids} }, function (err, gorev) {
+			if (err) return console.error(err);
+			res.send(gorev);
+			res.status(200);
+		});
+	}
 });
 
 
@@ -67,20 +76,22 @@ router.get('/angarya/:id', function(req, res, next){
  * return: single person
  */
 router.post('/angarya', function(req, res, next){
-  console.log(req.body)
-  // TOOD: Make approperiate checks for the candidate
-  var candidate = req.body;
-  if (!candidate || candidate == 'undefined'){
-    res.status(400);
-    res.json({"error" : "Bad Data"});
-  } else {
-    var gorev = new Task(candidate);
-    gorev.save(function(err){
-      if (err) return console.error(err);
-      res.status(200);
-      res.json(gorev);
-    });
-  }
+	// FIXME: remove
+	console.log(req.body)
+	// TODO: Make approperiate checks for the candidate
+	var candidate = req.body;
+	if ( !candidate || candidate == 'undefined'){
+		res.status(400);
+		res.json({"error" : "Bad Data"});
+	} else {
+		// TODO: implement the query operation
+		var gorev = new Task(candidate);
+		gorev.save(function(err){
+			if (err) return console.error(err);
+			res.status(200);
+			res.json(gorev);
+		});
+	}
 });
 
 
@@ -89,16 +100,18 @@ router.post('/angarya', function(req, res, next){
  * return: status msg
  */
 router.delete('/angarya/:id', function(req, res, next){
-  if(!req.params.id || req.params.id == 'undefined') {
-    res.status(400);
-    res.json({"error" : "Bad Data"});
-  } else {
-    Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
-      if (err) return console.error(err);
-        res.send(msg);
-        res.status(200);
-    });
-  }
+	// check if id is available and not undefined
+	if( !req.params.id || req.params.id == 'undefined') {
+		res.status(400);
+		res.json({"error" : "Bad Data"});
+	} else {
+		// FIXME: what happens if multiple ids are passed?
+		Task.deleteOne({ '_id': req.params.id }, function (err, msg) {
+			if (err) return console.error(err);
+			res.send(msg);
+			res.status(200);
+		});
+	}
 });
 
 module.exports = router;

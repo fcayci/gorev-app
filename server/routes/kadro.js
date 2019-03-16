@@ -182,22 +182,22 @@ router.put('/kadro/:username', function(req, res, next){
 			});
 		} else {
 			Faculty.findOne({'email' : candidate.email}, (err, resp) => {
-			if (err) return console.error(err);
-			if (resp) {
-				res.status(400);
-				res.json(candidate.email + "@gtu.edu.tr sistemde kayıtlı!");
-        } else {
-          // Update username to match the email and save the result
-          candidate.username = candidate.email;
-          Faculty.findOneAndUpdate(query, candidate, options, (err, kisi) => {
-            if (err) return console.error(err);
-            res.json(kisi);
-            res.status(200);
-          })
-        }
-      });
-    }
-  }
+				if (err) return console.error(err);
+				if (resp) {
+					res.status(400);
+					res.json(candidate.email + "@gtu.edu.tr sistemde kayıtlı!");
+				} else {
+					// Update username to match the email and save the result
+					candidate.username = candidate.email;
+					Faculty.findOneAndUpdate(query, candidate, options, (err, kisi) => {
+						if (err) return console.error(err);
+						res.json(kisi);
+						res.status(200);
+					})
+				}
+			});
+		}
+	}
 });
 
 /* 

@@ -6,53 +6,55 @@ const Faculty = require('../models/faculty');
 const Busy = require('../models/busy');
 
 router.get('/', function(req, res, next){
-  res.send('BUSY PAGE');
+	res.send('BUSY PAGE');
 });
 
-/* title: Get all the busy times in the universe.
+/*
+ * varolan bütün meşgul zamanları döndürür
+ * buna task lar + kişilerin meşgul zamanları
  *
- * return: Array of Busy
+ * return tüm meşgul listesi
  */
 router.get('/busy', function(req, res, next) {
-  Busy.find(function (err, busy){
-    if (err) return console.error(err);
-    res.status(200);
-    res.json(busy);
-  });
+	Busy.find(function (err, busy){
+		if (err) return console.error(err);
+		res.status(200);
+		res.json(busy);
+	});
 });
 
-/* title: Get busy for a given type/id pair
- *
- * return: Busy object
+/*
+ * meşguliyet tipine göre meşgul zamanları döndürür
+ * 
+ * return meşgul listesi
  */
 router.get('/busy/:type/:id', function(req, res, next) {
-  var type = req.params.type
-  var id = req.params.id
-  if (!type || type == 'undefined'){
-    res.status(400);
-    res.json({"error" : "Bad Data"});
-  }
-  else if (!id || id == 'undefined') {
-    res.status(400);
-    res.json({"error" : "Bad Data"});
-  }
-  
-  if (type == 'owner') {
-    Busy.find({ 'owner_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
-      if (err) return console.error(err);
-      res.json(busy);
-      res.status(200);
-    });
-  } else if (type == 'task') {
-    Busy.find({ 'task_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
-      if (err) return console.error(err);
-      res.json(busy);
-      res.status(200);
-    });
-  } else {
-    res.status(400);
-    res.json('{"error" : "Bad Data"}')
-  }
+	// get type and id parameters
+	var type = req.params.type
+	var id = req.params.id
+	// check if they both exist
+	if ( !type || type == 'undefined' || !id !! id == 'undefined' ){
+		res.status(400);
+		res.json({"error" : "Bad Data"});
+	} 
+	// get busies for a person
+	if (type == 'owner') {
+		Busy.find({ 'owner_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
+			if (err) return console.error(err);
+			res.json(busy);
+			res.status(200);
+		});
+	// get busies for task
+	} else if (type == 'task') {
+		Busy.find({ 'task_id': mongoose.Types.ObjectId(id) }, function (err, busy) {
+			if (err) return console.error(err);
+			res.json(busy);
+			res.status(200);
+		});
+	} else {
+		res.status(400);
+		res.json('{"error" : "Bad Data"}')
+	}
 });
 
 /* title: Create a busy time
