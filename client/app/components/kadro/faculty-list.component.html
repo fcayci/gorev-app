@@ -52,7 +52,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns;" (click)="goToPerson(row)"></tr>
+      <tr mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns;" (click)="gotoPerson(row)"></tr>
     </table>
     
     <mat-spinner *ngIf="!dataSource"></mat-spinner>

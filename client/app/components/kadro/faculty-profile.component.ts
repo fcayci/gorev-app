@@ -2,8 +2,8 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Faculty, POSITIONS } from '../../faculty';
-import { UserService } from '../../services/user.service';
+import { Faculty, ROLES } from '../../models/FacultyModel';
+import { UserService } from '../../services/facultys.service';
 
 @Component({
   selector: 'faculty-profile',
@@ -12,62 +12,72 @@ import { UserService } from '../../services/user.service';
 
 export class FacultyProfileComponent implements OnInit, OnChanges {
 
-  @Input() profile: Faculty;
-  @Output() profileEvent = new EventEmitter();
+	@Input() profile: Faculty;
+	@Output() profileEvent = new EventEmitter();
 
-  positions = POSITIONS;
-  kisiForm: FormGroup;
+	roles = ROLES;
+	kisiForm: FormGroup;
 
-  constructor(
-    private _fb: FormBuilder,
-    private _user: UserService) {}
+	constructor(
+		private _fb: FormBuilder,
+		private _user: UserService
+	) {}
 
-  ngOnInit(): void {
-    this.kisiForm = this._fb.group({
-      fullname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
-      office: [''],
-      phone: ['', Validators.pattern('[0-9]{4}')],
-      position: ['', Validators.required],
-      mobile: ['', Validators.pattern('[0-9]{11}')],
-      load: [, [Validators.required, Validators.pattern('[0-9.]{1,10}')]],
-      vacation: [false, Validators.required]
-    });
+	ngOnInit(): void {
+		this.kisiForm = this._fb.group({
+		fullname: ['', Validators.required],
+		email: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+')]],
+		office: [''],
+		phone: ['', Validators.pattern('[0-9]{4}')],
+		position: ['', Validators.required],
+		mobile: ['', Validators.pattern('[0-9]{11}')],
+		load: [, [Validators.required, Validators.pattern('[0-9.]{1,10}')]],
+		vacation: [false, Validators.required]
+		});
+	
+		this.kisiForm.disable();
+		this.kisiForm.patchValue( this.profile );
+	}
 
-    this.kisiForm.disable();
-    this.kisiForm.patchValue( this.profile );
-  }
+	// OnChanges is needed since profile is not ready when OnInit is executed
+	// if (this.kisiForm) is needed since OnChanges is executed before OnInit for the first time.
+	ngOnChanges(): void {
+		if (this.kisiForm) {
+			this.kisiForm.patchValue( this.profile );
+		}
+	}
 
-  // OnChanges is needed since profile is not ready when OnInit is executed
-  // if (this.kisiForm) is needed since OnChanges is executed before OnInit for the first time.
-  ngOnChanges(): void {
-    if (this.kisiForm) {
-      this.kisiForm.patchValue( this.profile );
-    }
-  }
+	onSave(): void {
+		const candidate: Faculty = this.kisiForm.value;
+		candidate["_id"] = this.profile._id;
 
-  onSave(): void {
-    const candidate: Faculty = this.kisiForm.value;
-    candidate.username = this.profile.username;
-    this.profileEvent.emit({ event: 'save', content: candidate });
-    this.disableGroup();
-  }
+		// add rank object
+		const r = ROLES.find(x => x.position === candidate.position);
+		// if position is in the list, get its rank, otherwise just assign 100
+		if (r) candidate["rank"] = r.rank;
+		else candidate["rank"] = 100;
 
-  onCancel(): void {
-    this.kisiForm.reset();
-    this.kisiForm.disable();
-    this.kisiForm.patchValue( this.profile );
-  }
 
-  onDelete(): void {
-    this.profileEvent.emit({ event: 'delete', content: 'null' });
-  }
+		this.profileEvent.emit({ event: 'save', content: candidate });
+		this.disableGroup();
+	}
 
-  enableGroup(): void {
-    this.kisiForm.enable();
-  }
+	onCancel(): void {
+		this.kisiForm.reset();
+		this.kisiForm.disable();
+		this.kisiForm.patchValue( this.profile );
+	}
 
-  disableGroup(): void {
-    this.kisiForm.disable();
-  }
+	onDelete(): void {
+		this.profileEvent.emit({ event: 'delete', content: 'null' });
+	}
+
+	enableGroup(): void {
+		this.kisiForm.enable();
+	}
+
+	disableGroup(): void {
+		this.kisiForm.disable();
+	}
 }
+

@@ -79,7 +79,17 @@ export class FacultyListComponent implements OnInit {
 		}
 	}
 
-	goToPerson(p) {
-		this._router.navigate(['/kadro/' + p.username]);
+	// TODO: find a way to make this kisi.username
+	// active service is added for that purpose
+	// to emit the events on kisi change
+	// however there is the problem when a user
+	// directly goes to a user's page using url
+	gotoPerson(kisi: Faculty): void {
+		this._user.getKisi(kisi)
+		.subscribe((kisi: Faculty) => {
+			this._router.navigate(['/kadro/' + kisi._id]);
+		}, err => {
+		this._toaster.info(err);
+		});
 	}
 }

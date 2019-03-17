@@ -19,7 +19,7 @@ const kadroUrl = '/api/kadro';
 })
 export class UserService {
 
-	kisicache: Faculty;
+	cache_kisi: Faculty;
 	cache_kadro: Faculty[];
 	constructor(private http: HttpClient) {}
 
@@ -40,14 +40,36 @@ export class UserService {
 		);
 	}
 
-	getKisi(id: string): Observable<Faculty> {
+	getKisi(kisi: Faculty): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id;
+		return this.http.get<Faculty>(url)
+		.pipe(
+			catchError(this.handleError),
+			tap(kisi => this.cache_kisi = kisi)
+		);
+	}
+
+	getKisibyId(id: string): Observable<Faculty> {
 		const url = kadroUrl + '/' + id;
 		return this.http.get<Faculty>(url)
 		.pipe(
 			catchError(this.handleError),
-			tap(kisi => this.kisicache = kisi)
+			tap(kisi => this.cache_kisi = kisi)
 		);
 	}
+
+	updateKisi(kisi: Faculty): Observable<Faculty> {
+		console.log('updating')
+		console.log(kisi)
+		const url = kadroUrl + '/' + kisi._id;
+		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		.pipe(
+			catchError(this.handleError),
+			tap(kisi => this.cache_kisi = kisi)
+		);
+	}
+
+
 
   // addTaskAndIncrementLoadToKisi(kisi: Faculty, task: Task): Observable<Faculty> {
   //   const url = kadroUrl + '/' + kisi.username + '/addtask';
@@ -64,14 +86,6 @@ export class UserService {
   //       catchError(this.handleError)
   //     );
   // }
-
-  updateKisi(kisi: Faculty): Observable<Faculty> {
-    const url = kadroUrl + '/' + kisi.username;
-    return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
 
   
 
