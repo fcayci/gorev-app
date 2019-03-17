@@ -1,41 +1,42 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { Busy } from '../busy';
+import { catchError, tap } from 'rxjs/operators';
+import { Busy } from '../models/BusyModel';
 
 const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-    'Authorization': 'SUPERSECRET'
-  })
+	headers: new HttpHeaders({
+		'Content-Type':  'application/json',
+		'Authorization': 'SUPERSECRET'
+	})
 };
 
-const busyUrl = '/api/busy';
+const busyUrl = '/api/mesgul';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class BusyService {
 
-  constructor(private http:HttpClient) {
-  }
+	cahce_busies:Busy[];
+	constructor(private http:HttpClient) {}
 
-  getBusyAll(): Observable<Busy[]>{
-    let url = busyUrl;
-    return this.http.get<Busy[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	getBusyAll(): Observable<Busy[]>{
+		let url = busyUrl;
+		return this.http.get<Busy[]>(url)
+		.pipe(
+			catchError(this.handleError),
+			//tap()
+		);
+	}
 
-  getBusyById(type: string, id: string): Observable<Busy[]>{
-    let url = busyUrl + '/' + type + '/' + id;
-    return this.http.get<Busy[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	getBusyById(type: string, id: string): Observable<Busy[]>{
+		let url = busyUrl + '/' + type + '/' + id;
+		return this.http.get<Busy[]>(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
   // FIXME: Owner / Task ID search should be done by the service
   // getBusyByOwnerId(oid: string): Observable<Busy>{
@@ -47,23 +48,24 @@ export class BusyService {
 
   //   return busies.filter(i=>i.owner_id === oid)
   // }
-
-  deleteBusy(busy: Busy): Observable<{}>{
-    let url = busyUrl + '/' + busy._id;
-    return this.http.delete(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  setBusy(busy: Busy): Observable<Busy>{
-    let url = busyUrl
-    return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
+  //
+  // deleteBusy(busy: Busy): Observable<{}>{
+  //   let url = busyUrl + '/' + busy._id;
+  //   return this.http.delete(url)
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  // }
+  //
+  // setBusy(busy: Busy): Observable<Busy>{
+  //   let url = busyUrl
+  //   return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  // }
+  //
+  // FIXME: move this to handlers
  private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

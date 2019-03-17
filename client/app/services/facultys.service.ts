@@ -28,6 +28,7 @@ export class UserService {
 		return this.http.get<Faculty[]>(url)
 		.pipe(
 			catchError(this.handleError),
+			//.map((res: Response) => res.json())
 			//tap(Faculty[] => this.cache_kadro = Faculty[])
 		);
 	}

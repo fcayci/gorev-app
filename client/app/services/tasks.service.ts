@@ -1,48 +1,55 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { Task } from '../task';
+import { catchError, tap } from 'rxjs/operators';
+import { Task } from '../models/TaskModel';
 
 const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-    'Authorization': 'SUPERSECRET'
-  })
+	headers: new HttpHeaders({
+		'Content-Type':  'application/json',
+		'Authorization': 'SUPERSECRET'
+	})
 };
 
 const angaryaUrl = '/api/angarya';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class TaskService {
 
-  constructor(private http: HttpClient) {}
+	cache_task: Task;
+	cache_tasks: Task[];
+	constructor(private http: HttpClient) {}
 
-  getAllTasks(): Observable<Task[]> {
-    const url = angaryaUrl;
-    return this.http.get<Task[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	// TODO: add caching
+	getTasks(): Observable<Task[]> {
+		const url = angaryaUrl;
+		return this.http.get<Task[]>(url)
+		.pipe(
+			catchError(this.handleError),
+			//tap(Task[] => this.cache_tasks = Task[])
+		);
+	}
 
-  getOpenTasks(): Observable<Task[]> {
-    const url = angaryaUrl + '/open';
-    return this.http.get<Task[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	// // TODO: add caching
+	// getOpenTasks(): Observable<Task[]> {
+	// 	const url = angaryaUrl + '/open';
+	// 	return this.http.get<Task[]>(url)
+	// 	.pipe(
+	// 		catchError(this.handleError)
+	// 	);
+	// }
 
-  getClosedTasks(): Observable<Task[]> {
-    const url = angaryaUrl + '/closed';
-    return this.http.get<Task[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	// TODO: add caching
+	// FIXME: change this to getAllTasks()
+	getClosedTasks(): Observable<Task[]> {
+		const url = angaryaUrl + '/closed';
+		return this.http.get<Task[]>(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
   getTasksById(id: string): Observable<Task[]> {
     const url = angaryaUrl + '/' + id;
