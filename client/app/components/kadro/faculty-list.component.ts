@@ -59,6 +59,7 @@ export class FacultyListComponent implements OnInit {
 		});
 
 		dialogRef.afterClosed().subscribe( res => {
+		// FIXME: what happens is res is nil?
 		if (res) {
 			if (res.fullname) {
 				this._toaster.info(res.position + ' ' + res.fullname + ' başarıyla eklendi.');
@@ -66,6 +67,8 @@ export class FacultyListComponent implements OnInit {
 			} else {
 				this._toaster.info(res);
 			}
+		} else {
+			this._toaster.info('I should not be here');
 		}
 		});
 	}
