@@ -11,29 +11,29 @@
 
       <table mat-table [dataSource]="dataSource" matSort>
 
-        <ng-container matColumnDef="title">
+        <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Başlık</th>
-          <td mat-cell *matCellDef="let row">{{row.title}}</td>
+          <td mat-cell *matCellDef="let row">{{row.name}}</td>
         </ng-container>
 
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>Tarih</th>
-          <td mat-cell *matCellDef="let row">{{ row.when.startDate | date: 'dd.MM.yyyy' }} - {{ row.when.endDate | date: 'dd.MM.yyyy' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.startdate | date: 'dd.MM.yyyy' }} - {{ row.enddate | date: 'dd.MM.yyyy' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="time">
           <th mat-header-cell *matHeaderCellDef>Saat</th>
-          <td mat-cell *matCellDef="let row">{{row.when.startDate | date: "HH:mm"}} - {{row.when.endDate | date: "HH:mm"}}</td>
+          <td mat-cell *matCellDef="let row">{{row.startdate | date: "HH:mm"}} - {{row.enddate | date: "HH:mm"}}</td>
         </ng-container>
 
         <ng-container matColumnDef="recur">
           <th mat-header-cell *matHeaderCellDef>Tekrar</th>
-          <td mat-cell *matCellDef="let row">{{row.when.recur ? (row.when.recur == 1 ? 'Günlük' : 'Her ' + (row.when.startDate | date: 'EEEE': '': 'tr')) : '-'}}</td>
+          <td mat-cell *matCellDef="let row">{{row.recur ? (row.recur == 1 ? 'Günlük' : 'Her ' + (row.startdate | date: 'EEEE': '': 'tr')) : '-'}}</td>
         </ng-container>
 
         <ng-container matColumnDef="expired">
           <th mat-header-cell *matHeaderCellDef>Durumu</th>
-          <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.when.endDate) ? 'Süresi Geçmiş' : 'Aktif' }}
+          <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.enddate) ? 'Süresi Geçmiş' : 'Aktif' }}
             <span class="fill-remaining-space"></span>
             <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
               <mat-icon aria-label="delete">cancel</mat-icon>

@@ -6,101 +6,110 @@ import * as moment from 'moment';
 import 'moment-recur-ts';
 import 'moment-duration-format';
 
-import { BusyService } from '../../services/busy.service';
-import { Busy, REPEATS } from '../../busy';
+// import models
+import { Busy, REPEATS } from '../../models/BusyModel';
+// import services
+import { BusyService } from '../../services/busys.service';
 
 @Component({
-  selector: 'faculty-busy-add',
-  templateUrl: './faculty-busy-add.component.html'
+	selector: 'faculty-busy-add',
+	templateUrl: './faculty-busy-add.component.html'
 })
 
 export class FacultyBusyAddComponent implements OnInit  {
 
-  busyForm: FormGroup;
-  repeats = JSON.parse(JSON.stringify(REPEATS));
-  tor = [0, 1, 7];
+	busyForm: FormGroup;
+	repeats = JSON.parse(JSON.stringify(REPEATS));
+	tor = [0, 1, 7];
+	formValid = false;
+	startdate;
+	enddate;
 
-  constructor(
-    private _busy: BusyService,
-    public dialogRef: MatDialogRef<FacultyBusyAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private _fb: FormBuilder) {}
+	constructor(
+		private _busy: BusyService,
+		public dialogRef: MatDialogRef<FacultyBusyAddComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: any,
+		private _fb: FormBuilder
+	) {}
 
-  ngOnInit() {
-    moment.locale('tr');
-    const day = moment().format('dddd');
-    this.repeats[2] = REPEATS[2] + ' ' +  day;
-    this.createForm();
-  }
+	ngOnInit() {
+		moment.locale('tr');
+		const day = moment().format('dddd');
+		this.repeats[2] = REPEATS[2] + ' ' +  day;
+		this.createForm();
 
-  // Prevent Saturday and Sunday from being selected.
-  weekendFilter = (d: Date): boolean => {
-    const day = moment(d).format('E');
-    return day !== '6' && day !== '7';
-  }
+		this.validateInputDate();
+	}
 
-  createForm() {
-    this.busyForm = this._fb.group({
-      title: ['', Validators.required],
-      startDate: [ moment().startOf('day').format(), Validators.required],
-      endDate: [ moment().startOf('day').format(), Validators.required],
-      startTime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
-      endTime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
-      recur: [ 0, Validators.required],
-    });
-  }
+	validateInputDate(): void {
+		this.busyForm.statusChanges
+		.subscribe(status => {
+			if (status === 'VALID') {
+				console.log('checking time...');
+				const t = this.busyForm.value;
 
-  updateDay(e) {
-    const day = e.value.format('dddd');
-    this.repeats[2] = REPEATS[2] + ' ' +  day;
-  }
+				// get date as is. if dateOnly() method is used,
+				//   timezone is lost
+				let sd = moment(t.startday);
+				let ed = moment(t.endday);
+				// combine the date & times
+				sd = sd.add(t.starttime.slice(0, 2), 'h');
+				sd = sd.add(t.starttime.slice(-2), 'm');
+				ed = ed.add(t.endtime.slice(0, 2), 'h');
+				ed = ed.add(t.endtime.slice(-2), 'm');
 
-  parseForm(f) {
-    // Get the dates as is. if .dateOnly() method is used, we lose timezone.
-    let sd = moment(f.startDate);
-    let ed = moment(f.endDate);
+				// check if the time is correct
+				if (ed.isAfter(sd)) {
+					this.formValid = true; 
+				} else {
+					this.formValid = false;
+				}
 
-    // Make sure dates are the same or end is bigger
-    if (sd.isAfter(ed)) {
-      return -1;
-    }
+				this.startdate = sd;
+				this.enddate = ed;
+			}
+		});
+	}
 
-    sd = sd.add(f.startTime.slice(0, 2), 'h');
-    sd = sd.add(f.startTime.slice(-2), 'm');
-    ed = ed.add(f.endTime.slice(0, 2), 'h');
-    ed = ed.add(f.endTime.slice(-2), 'm');
+	// Prevent Saturday and Sunday from being selected.
+	weekendFilter = (d: Date): boolean => {
+		const day = moment(d).format('E');
+		return day !== '6' && day !== '7';
+	}
 
-    // Make sure start date is after end.
-    if (sd.isSameOrAfter(ed)) {
-      return -1;
-    }
+	createForm() {
+		this.busyForm = this._fb.group({
+			name: ['', Validators.required],
+			startday: [ moment().startOf('day').format(), Validators.required],
+			endday: [ moment().startOf('day').format(), Validators.required],
+			starttime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
+			endtime: [ moment('1000', 'hhmm').format('HH:mm'), Validators.required],
+			recur: [ , Validators.required],
+		});
+	}
 
-    const model: Busy = {
-      title : f.title,
-      owner_id : this.data._id,
-      when : {
-        startDate : sd.format(),
-        endDate : ed.format(),
-        recur : f.recur
-      }
-    };
+	updateDay(e) {
+		const day = e.value.format('dddd');
+		this.repeats[2] = REPEATS[2] + ' ' +  day;
+	}
 
-    return model;
-  }
+	onNoClick(): void {
+		this.dialogRef.close();
+	}
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  onSubmit() {
-    const busy = this.parseForm(this.busyForm.value);
-    if (busy !== -1) {
-        this._busy.setBusy(busy)
-          .subscribe(res => {
-            this.dialogRef.close(res);
-        });
-    } else {
-      this.dialogRef.close(-1);
-    }
-  }
+	onSubmit() {
+ 		const b = this.busyForm.value;
+		const model: Busy = {
+			name: b.name,
+			startdate : this.startdate.format(),
+			enddate : this.enddate.format(),
+			owner : this.data._id,
+			recur : b.recur
+		};
+			
+		this._busy.setBusy(model)
+		.subscribe(res => {
+			this.dialogRef.close(res);
+		});
+	}
 }

@@ -30,8 +30,18 @@ export class BusyService {
 		);
 	}
 
-	getBusyById(type: string, id: string): Observable<Busy[]>{
-		let url = busyUrl + '/' + type + '/' + id;
+	// get buys object by given id
+	getBusy(id: string): Observable<Busy>{
+		let url = busyUrl + '/' + id;
+		return this.http.get<Busy>(url)
+		.pipe(
+			catchError(this.handleError),
+			//tap()
+		);
+	}
+
+	getFacultyBusyTimes(ownerid: string): Observable<Busy[]>{
+		let url = busyUrl + '/user/' + ownerid;
 		return this.http.get<Busy[]>(url)
 		.pipe(
 			catchError(this.handleError)
@@ -48,23 +58,24 @@ export class BusyService {
 
   //   return busies.filter(i=>i.owner_id === oid)
   // }
-  //
-  // deleteBusy(busy: Busy): Observable<{}>{
-  //   let url = busyUrl + '/' + busy._id;
-  //   return this.http.delete(url)
-  //     .pipe(
-  //       catchError(this.handleError)
-  //     );
-  // }
-  //
-  // setBusy(busy: Busy): Observable<Busy>{
-  //   let url = busyUrl
-  //   return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
-  //     .pipe(
-  //       catchError(this.handleError)
-  //     );
-  // }
-  //
+
+	// FIXME: Update cache
+	deleteBusy(busy: Busy): Observable<{}>{
+		let url = busyUrl + '/' + busy._id;
+		return this.http.delete(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	setBusy(busy: Busy): Observable<Busy>{
+		let url = busyUrl
+		return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
   // FIXME: move this to handlers
  private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -75,7 +86,7 @@ export class BusyService {
       // The response body may contain clues as to what went wrong,
       console.error(
         `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `body was: ${JSON.stringify(error.error)}`);
     }
     // return an observable with a user-facing error message
     return throwError(

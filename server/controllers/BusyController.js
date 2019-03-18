@@ -25,6 +25,28 @@ module.exports = {
     /**
      * BusyController.show()
      */
+    showUser: function (req, res) {
+        var id = req.params.id;
+        BusyModel.find({owner: id}, function (err, Busy) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting Busy.',
+                    error: err
+                });
+            }
+            // if (!Busy) {
+            //     return res.status(404).json({
+            //         message: 'No such Busy'
+            //     });
+            // }
+            return res.json(Busy);
+        });
+    },
+
+ 
+    /**
+     * BusyController.show()
+     */
     show: function (req, res) {
         var id = req.params.id;
         BusyModel.findOne({_id: id}, function (err, Busy) {

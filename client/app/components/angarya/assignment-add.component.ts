@@ -112,7 +112,7 @@ export class AssignmentAddComponent implements OnInit {
 			this.kadro = res;
 		});
 
-		this.validateDate();
+		this.validateInputDate();
 
 		// Find the available people based on the busy times.
 		//this.validateTimeAndFindAvailable();
@@ -123,7 +123,7 @@ export class AssignmentAddComponent implements OnInit {
     // );
   }
 
-	validateDate(): void {
+	validateInputDate(): void {
 		// subscribe and check the time validity
 		this.gorevForm.get('when').statusChanges
 		.subscribe(status => {
@@ -136,9 +136,9 @@ export class AssignmentAddComponent implements OnInit {
 				//   timezone is lost
 				let sd = moment(t.sd);
 				let ed = moment(t.sd);
-  				// combine the date & times
-  				sd = sd.add(t.stime.slice(0, 2), 'h');
-  				sd = sd.add(t.stime.slice(-2), 'm');
+				// combine the date & times
+				sd = sd.add(t.stime.slice(0, 2), 'h');
+				sd = sd.add(t.stime.slice(-2), 'm');
 				ed = ed.add(t.etime.slice(0, 2), 'h');
 				ed = ed.add(t.etime.slice(-2), 'm');
 
@@ -148,7 +148,7 @@ export class AssignmentAddComponent implements OnInit {
 					t.duration = 0; 
 				} else {
 					this.formTimeValid = true;
-					t.duration = moment.duration(ed.diff(sd)).as('hours');
+					t.duration = Math.trunc(moment.duration(ed.diff(sd)).as('minutes'));
 				}
 
 				// write the start / end date to local cache
@@ -162,7 +162,6 @@ export class AssignmentAddComponent implements OnInit {
 			}
 		});
 	}
-
 
   // private _filter(value: String): Faculty[] {
   //   const filterValue = value.toLowerCase();
@@ -293,19 +292,32 @@ export class AssignmentAddComponent implements OnInit {
 			selectedPerson: [],
 		});
 	}
-    //
-	// findBusies(sdate, edate): Array<string> {
-	// 	const { range } = extendMoment(moment);
-	// 	taskrange = range(sdate, sedate);
-	// 	// merge two arrays to have a unified busy object for searching
-	// 	const busymaster = Object.assign(this.busies, this.tasks);
-    //
-	// 	for (const b of busymaster) {
-	// 		// if recur is set, evaluate differently
-	// 		if (b.recur) {
-	// 			const interval = moment(b.startdate).recur().every(b.recur).days();
-	// 			if (interval.matches(edate
-    //
+
+	findAvailablePeople(sdate, edate): Array<string> {
+		const { range } = extendMoment(moment);
+		const taskrange = range(sdate, edate);
+		// merge two arrays to have a unified busy object for searching
+		const busymaster = Object.assign(this.busies, this.tasks);
+
+		for (const b of busymaster) {
+			// if recur is set, evaluate differently
+			if (b.recur) {
+				// create an interval from startdate to enddate
+				//const interval = moment(b.startdate).recur().every(b.recur).days();
+				//const interval = moment(b.startdate).recur(b.enddate).every(b.recur).days();
+				const interval = moment().recur(b.startdate, b.enddate).every(b.recur).days();
+				// sdate and edate should be the same for this case
+				//   so if interval dates match sdate, check the time
+				//if (interval.matches(sdate) {
+					
+				//}
+			}
+		}
+
+		//FIXME: fill this in
+		return [];
+	}
+
   // findBusies(gs, ge): Array<string> {
   //   const { range } = extendMoment(moment);
   //

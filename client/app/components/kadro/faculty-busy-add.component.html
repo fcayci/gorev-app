@@ -1,21 +1,21 @@
   <section [formGroup]="busyForm">
       <mat-form-field style="width:100%">
-        <input matInput formControlName="title" placeholder="Başlık Ekle">
+        <input matInput formControlName="name" placeholder="Başlık Ekle">
       </mat-form-field>
 
     <div class="form-row">
 
       <mat-form-field class="date-align" style="width:45%">
-        <input matInput formControlName="startDate" (dateInput)="updateDay($event)" [matDatepicker]="startDate" placeholder="Başlangıç">
-        <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-        <mat-datepicker #startDate></mat-datepicker>
+        <input matInput formControlName="startday" (dateInput)="updateDay($event)" [matDatepicker]="startday" placeholder="Başlangıç">
+        <mat-datepicker-toggle matSuffix [for]="startday"></mat-datepicker-toggle>
+        <mat-datepicker #startday></mat-datepicker>
       </mat-form-field>
 
 
       <mat-form-field class="date-align" style="width:45%">
-        <input matInput formControlName="endDate" [matDatepicker]="endDate" placeholder="Bitiş">
-        <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-        <mat-datepicker #endDate></mat-datepicker>
+        <input matInput formControlName="endday" [matDatepicker]="endday" placeholder="Bitiş">
+        <mat-datepicker-toggle matSuffix [for]="endday"></mat-datepicker-toggle>
+        <mat-datepicker #endday></mat-datepicker>
       </mat-form-field>
 
     </div>
@@ -23,11 +23,11 @@
     <div class="form-row">
 
       <mat-form-field style="width:45%">
-        <input matInput formControlName="startTime" type="time">
+        <input matInput formControlName="starttime" type="time">
       </mat-form-field>
 
       <mat-form-field style="width:45%">
-        <input matInput formControlName="endTime" type="time">
+        <input matInput formControlName="endtime" type="time">
       </mat-form-field>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="button-row">
       <mat-dialog-actions>
         <button mat-raised-button color="warn" (click)="onNoClick()">İptal</button>
-        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!busyForm.valid">Kaydet</button>
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!busyForm.valid || !formValid">Kaydet</button>
       </mat-dialog-actions>
     </div>
 
