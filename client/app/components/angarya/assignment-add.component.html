@@ -68,15 +68,16 @@
   <div class="form-row">
 
     <mat-form-field  style="width:65%">
+      <!-- <mat&#45;select formControlName="selectedPerson" placeholder="Kişi Seç" [disabled]="gorevForm.status === 'INVALID'"> -->
       <mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
         <mat-option *ngFor="let c of (availablePeople | selector:gorevForm.value.sel)" [value]="c">
-          <span> {{c.fullname}}</span>
           <span style="margin-right: 4px; padding: 1px 5px; border-radius: 24px; background-color: #cecece">{{c.load}}</span>
+          <span> - {{c.fullname}}</span>
         </mat-option>
       </mat-select>
     </mat-form-field>
     <div>
-      <button mat-button color="primary" (click)="addToChoosenPeople()"
+      <button mat-button color="primary" (click)="addToOwners()"
         [disabled]="gorevForm.status === 'INVALID' || !formTimeValid || !gorevForm.get('selectedPerson').value || gorevForm.get('peoplecount').value <= gorevForm.get('owners').length">
         Ekle
       </button>
@@ -92,7 +93,7 @@ Herkesi Göster</mat-slide-toggle>
   Atanan kisiler:
   <div class="form-row">
     <mat-chip-list class="mat-chip-list-stacked">
-      <mat-chip *ngFor="let c of owners" (removed)="removeFromChoosenPeople(c)" [value]="c">
+      <mat-chip *ngFor="let c of owners" (removed)="removeFromOwners(c)" [value]="c">
         <mat-icon style="margin-left:0; margin-right:7px" matChipRemove>cancel</mat-icon>
         {{c.position + ' ' + c.fullname}}
         <span style="margin-left: 4px; padding: 1px 5px; border-radius: 24px; background-color: #a7a7a7">{{c.load}}</span>

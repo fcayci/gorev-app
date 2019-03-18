@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material';
 
 import { Observable } from 'rxjs';
-// import {map, startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
@@ -49,7 +49,7 @@ export class AssignmentAddComponent implements OnInit {
 	busyPeople: Faculty[] = [];
 
 	// chosen from assignment before finalization
-	chosens: Faculty[] = [];
+	owners: Faculty[] = [];
 	// hmmm.. FIXME
 	filteredPeople: Observable<Faculty[]>;
 
@@ -106,23 +106,19 @@ export class AssignmentAddComponent implements OnInit {
 
 		this.validateInputDate();
 
-
-		// Find the available people based on the busy times.
-		//this.validateTimeAndFindAvailable();
-
-    // this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges.pipe(
-    //   startWith(''),
-    //   map(value => this._filter(value))
-    // );
-  }
+		// this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges
+		// .pipe(
+		// 	startWith(''),
+		// 	map(value => this._filter(value))
+		// );
+	}
 
 	validateInputDate(): void {
 		// subscribe and check the time validity
 		this.gorevForm.get('when').statusChanges
 		.subscribe(status => {
+
 			if (status === 'VALID') {
-				// FIXME: remove
-				console.log('checking time...');
 				const t = this.gorevForm.get('when').value;
 
 				// get date as is. if dateOnly() method is used,
@@ -160,11 +156,12 @@ export class AssignmentAddComponent implements OnInit {
 		});
 	}
 
-  // private _filter(value: String): Faculty[] {
-  //   const filterValue = value.toLowerCase();
-  //   return this.available.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
-  // }
-  //
+	// private _filter(value: String): Faculty[] {
+	// 	const filterValue = value.toLowerCase();
+	// 	console.log(filterValue);
+	// 	return this.availablePeople.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
+	// }
+
   // onSubmit() {
   //   const gorev: Task = this.gorevForm.value;
   //   // Add the task to the db
@@ -184,81 +181,83 @@ export class AssignmentAddComponent implements OnInit {
   //       this.dialogRef.close(res);
   //   });
   // }
-  //
-  // addToChoosenPeople(x?: Faculty) {
-  //   let p: Faculty;
-  //
-  //   if (!x) {
-  //     p = this.gorevForm.get('selectedPerson').value;
-  //   } else {
-  //     p = x;
-  //   }
-  //
-  //   if (this.choosenPeople.indexOf(p) === -1) {
-  //     this.choosenPeople.push(p);
-  //     this.gorevForm.value.choosenPeople.push(p._id);
-  //   }
-  //
-  //   // Remove choosen from available
-  //   const index = this.available.indexOf(p);
-  //   if (index > -1) {
-  //     this.available.splice(index, 1);
-  //   }
-  //
-  //   // Disable form if good to go.
-  //   if (this.gorevForm.value.peoplecount <= this.choosenPeople.length) {
-  //     this.gorevForm.controls['selectedPerson'].disable();
-  //   }
-  //
-  //   // Reset form
-  //   this.gorevForm.controls['selectedPerson'].setValue('');
-  // }
-  //
-  // removeFromChoosenPeople(p) {
-  //   // Remove choosen from available
-  //   const index = this.choosenPeople.indexOf(p);
-  //   if (index > -1) {
-  //     this.choosenPeople.splice(index, 1);
-  //     this.gorevForm.value.choosenPeople.splice(index, 1);
-  //   }
-  //
-  //   this.available.push(p);
-  //   this.available = this._fsort.transform(this.available, 'load');
-  //
-  //   // Enable form
-  //   if (this.choosenPeople.length < this.gorevForm.get('peoplecount').value) {
-  //     this.gorevForm.controls['selectedPerson'].enable();
-  //   }
-  //
-  //   // Reset form
-  //   this.gorevForm.controls['selectedPerson'].setValue('');
-  // }
-  //
-  // autoAssignPeople(): void {
-  //   const g = this.gorevForm.value;
-  //
-  //   for (let i = this.choosenPeople.length; i < g.peoplecount; i++) {
-  //     if (g.selector === '0') {
-  //       const p = this.available.filter(
-  //         people => people.position === 'Araştırma Görevlisi')
-  //       if (p.length > 0) {
-  //         this.addToChoosenPeople(p[0]);
-  //       }
-  //     } else if (g.selector === '1') {
-  //       const p = this.available.filter(
-  //         people => people.position === 'Dr.');
-  //       if (p.length > 0) {
-  //         this.addToChoosenPeople(p[0]);
-  //       }
-  //     } else {
-  //       const p = this.available;
-  //       if (p.length > 0) {
-  //         this.addToChoosenPeople(p[0]);
-  //       }
-  //     }
-  //   }
-  // }
-  //
+
+	addToOwners(x?: Faculty) {
+		let p: Faculty;
+	
+		// assign p depending on the parameter
+		p = x ? x : this.gorevForm.get('selectedPerson').value;
+
+		if (this.owners.indexOf(p) === -1) {
+			this.owners.push(p);
+			this.gorevForm.value.owners.push(p._id);
+		}
+
+		// Remove candidate from availablePeople
+		const i = this.availablePeople.indexOf(p);
+		if (i > -1) {
+			this.availablePeople.splice(i, 1);
+		}
+	
+		// Disable form if good to go.
+		if (this.gorevForm.value.peoplecount <= this.owners.length) {
+			this.gorevForm.controls['selectedPerson'].disable();
+		}
+
+		// Reset form
+		this.gorevForm.controls['selectedPerson'].setValue('');
+	}
+	
+	removeFromOwners(p) {
+	console.log('p', p);
+	
+	// Remove candidate from available
+	const i = this.owners.indexOf(p);
+	if (i > -1) {
+		this.owners.splice(i, 1);
+		this.gorevForm.value.owners.splice(i, 1);
+	}
+
+	if (this.availablePeople.indexOf(p) === -1) {
+		this.availablePeople.push(p);
+	}
+	this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+
+	// Enable form
+	if (this.owners.length < this.gorevForm.get('peoplecount').value) {
+		this.gorevForm.controls['selectedPerson'].enable();
+	}
+
+	// Reset form
+	this.gorevForm.controls['selectedPerson'].setValue('');
+}
+
+	// FIXME: go over this function
+	// autoAssignPeople(): void {
+	// 	const g = this.gorevForm.value;
+    //
+	// 	for (let i = this.owners.length; i < g.peoplecount; i++) {
+	// 		if (g.sel === '0') {
+	// 			const p = this.available.filter( people => 
+	// 				people.position === 'Araştırma Görevlisi')
+	// 			if (p.length > 0) {
+	// 				this.addToOwners(p[0]);
+	// 			}
+	// 		} else if (g.selector === '1') {
+	// 			const p = this.available.filter( people => 
+	// 				people.position === 'Dr.');
+	// 			if (p.length > 0) {
+	// 				this.addToChoosenPeople(p[0]);
+	// 			}
+	// 		} else {
+	// 			const p = this.available;
+	// 			if (p.length > 0) {
+	// 				this.addToChoosenPeople(p[0]);
+	// 			}
+	// 		}
+	// 	}
+	// }
+  
   // clearAssignedPeople(): void {
   //   this.choosenPeople = [];
   //   this.gorevForm.controls['choosenPeople'].setValue([]);
@@ -266,10 +265,11 @@ export class AssignmentAddComponent implements OnInit {
   // }
   //
   
+  	// FIXME: remove default values
 	createGorevForm(): void {
 		this.gorevForm = this._fb.group({
-			name: [, Validators.required],
-			group: [, Validators.required],
+			name: ['hede', Validators.required],
+			group: ['Sekreterlik', Validators.required],
 			when: this._fb.group({
 				sday: [, Validators.required],
 				//eday: [, Validators.required],
@@ -293,7 +293,6 @@ export class AssignmentAddComponent implements OnInit {
 	updateAvailablePeople(sdate, edate) {
 		// arrays to hold busy/available id
 		let busyIds = [];
-		let availablePeople = [];
 
 		const { range } = extendMoment(moment);
 		const gorevrange = range(sdate, edate);
@@ -361,63 +360,11 @@ export class AssignmentAddComponent implements OnInit {
 				}
 			}
 		}
+		// FIXME: remove
 		console.log('available', this.availablePeople);
 		console.log('busies', this.busyPeople);
 
 		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
-		// Just a hack to activate observable.
-		//this.gorevForm.controls['selectedPerson'].setValue('');
 	}
 
-  // validateTimeAndFindAvailable(): void {
-  //   this.gorevForm.get('weight').valueChanges.subscribe(value => {
-  //     if ( this.gorevForm.value.when ) {
-  //       this.gorevForm.controls['load'].setValue(this.gorevForm.value.when.duration * value);
-  //     }
-  //   });
-  //   this.gorevForm.get('when').statusChanges.subscribe(status => {
-  //     if (status === 'VALID') {
-  //       const t = this.gorevForm.get('when').value;
-  //       const g = this.gorevForm.value;
-  //       this.available = [];
-  //
-  //       // Get the dates as is. if .dateOnly() method is used, we lose timezone.
-  //       let sd = moment(t.gDate);
-  //       let ed = moment(t.gDate);
-  //
-  //       // Combine the date & times
-  //       sd = sd.add(t.startTime.slice(0, 2), 'h');
-  //       sd = sd.add(t.startTime.slice(-2), 'm');
-  //       ed = ed.add(t.endTime.slice(0, 2), 'h');
-  //       ed = ed.add(t.endTime.slice(-2), 'm');
-  //
-  //       // Calculate load based on duration and weight
-  //       t.duration = moment.duration(ed.diff(sd)).as('hours');
-  //       this.gorevForm.controls['load'].setValue(t.duration * g.weight);
-  //
-  //       // Make sure start date is after end.
-  //       if (sd.isSameOrAfter(ed)) {
-  //         this.formTimeValid = false;
-  //       } else {
-  //         t.startDate = sd.format();
-  //         t.endDate = ed.format();
-  //
-  //         this.formTimeValid = true;
-  //
-  //         const busyIds = this.findBusies(sd, ed);
-  //
-  //         for (const k of this.kadro ) {
-  //           if (k.vacation === false) {
-  //             if (busyIds.indexOf(k._id) === -1) {
-  //               this.available.push(k);
-  //             }
-  //           }
-  //         }
-  //         this.available = this._fsort.transform(this.available, 'load');
-  //         // Just a hack to activate observable.
-  //         // this.gorevForm.controls['selectedPerson'].setValue('');
-  //       }
-  //     }
-  //   });
-  // }
 }
