@@ -99,7 +99,9 @@ module.exports = {
 			Faculty.phone = req.body.phone ? req.body.phone : Faculty.phone;
 			Faculty.mobile = req.body.mobile ? req.body.mobile : Faculty.mobile;
 			Faculty.load = req.body.load ? req.body.load : Faculty.load;
-			Faculty.vacation = req.body.vacation ? req.body.vacation : Faculty.vacation;
+			if ( req.body.vacation !== undefined ) {
+				Faculty.vacation = req.body.vacation;
+			} 
 			Faculty.busy = req.body.busy ? req.body.busy : Faculty.busy;
 			
             Faculty.save(function (err, Faculty) {
