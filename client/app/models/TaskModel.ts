@@ -2,7 +2,7 @@ export interface Task {
 	_id?: string;
 	name: string;
 	group: string;
-	peoplecount: string;
+	peoplecount: number;
 	weight: number;
 	load: number;
 	owners: Array<string>;

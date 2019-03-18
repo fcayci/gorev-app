@@ -23,6 +23,7 @@ export interface Faculty extends FacultyDB {
 /*
  * People list and their relative ranks
  * Other positions can be added
+ * FIXME: figure out the type of this
  */
 export const ROLES = [
 	{position: "Dr.", rank: 10},

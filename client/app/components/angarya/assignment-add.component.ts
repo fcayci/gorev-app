@@ -25,11 +25,6 @@ import { ToasterService } from '../../services/toaster.service';
 // import pipes
 import { FSortPipe } from '../../pipes/fsort.pipe';
 
-export class Msg {
-	'ok': number;
-	'n': number;
-}
-
 @Component({
 	selector: 'assignment-add',
 	templateUrl: './assignment-add.component.html'
@@ -50,11 +45,8 @@ export class AssignmentAddComponent implements OnInit {
 	startdate = moment();
 	enddate = moment();
 
-	// get the available from the whole kadro
-	// FIXME: make a pipe?
-	available: Faculty[] = [];
-	// opposite of available
-	notAvailable: Faculty[] = [];
+	availablePeople: Faculty[] = [];
+	busyPeople: Faculty[] = [];
 
 	// chosen from assignment before finalization
 	chosens: Faculty[] = [];
@@ -77,7 +69,7 @@ export class AssignmentAddComponent implements OnInit {
 
 	constructor(
 		public dialogRef: MatDialogRef<AssignmentAddComponent>,
-		//private _fsort: FSortPipe,
+		private _fsort: FSortPipe,
 		private _fb: FormBuilder,
 		private _router: Router,
 		private _user: UserService,
@@ -113,6 +105,7 @@ export class AssignmentAddComponent implements OnInit {
 		});
 
 		this.validateInputDate();
+
 
 		// Find the available people based on the busy times.
 		//this.validateTimeAndFindAvailable();
@@ -154,6 +147,10 @@ export class AssignmentAddComponent implements OnInit {
 				// write the start / end date to local cache
 				this.startdate = sd;
 				this.enddate = ed;
+
+				// update tables
+				this.updateAvailablePeople(sd, ed);
+
 				// TODO: 
 				// update taskdate once task is assigned
 				// this.taskdate.startdate = sd.format();
@@ -286,16 +283,20 @@ export class AssignmentAddComponent implements OnInit {
 			owners: [[], ],
 			state: [0],
 			//load: [2],
-			// these two are temporary holders
-			selector: ['0', Validators.required],
+			// these are temporary holders
+			sel: ['0', Validators.required],
 			showallpeople: [false, Validators.required],
 			selectedPerson: [],
 		});
 	}
 
-	findAvailablePeople(sdate, edate): Array<string> {
+	updateAvailablePeople(sdate, edate) {
+		// arrays to hold busy/available id
+		let busyIds = [];
+		let availablePeople = [];
+
 		const { range } = extendMoment(moment);
-		const taskrange = range(sdate, edate);
+		const gorevrange = range(sdate, edate);
 		// merge two arrays to have a unified busy object for searching
 		const busymaster = Object.assign(this.busies, this.tasks);
 
@@ -308,73 +309,66 @@ export class AssignmentAddComponent implements OnInit {
 				const interval = moment().recur(b.startdate, b.enddate).every(b.recur).days();
 				// sdate and edate should be the same for this case
 				//   so if interval dates match sdate, check the time
-				//if (interval.matches(sdate) {
-					
-				//}
+				if (interval.matches(sdate)) {
+					const bs = moment(sdate.format('YYYY-MM-DD') + 'T' + moment(b.startdate).format('HH:mm'));
+					const be = moment(sdate.format('YYYY-MM-DD') + 'T' + moment(b.enddate).format('HH:mm'));
+					const busyrange = range(bs, be);
+
+					if (busyrange.overlaps(gorevrange)) {
+						// this person is busy, add it to the array if 
+						//  she is not already included
+						if (busyIds.indexOf(b.owner) === -1) {
+							busyIds.push(b.owner);
+						}
+					}
+				}
+
+			} else {
+				// if recur is not set
+				const bs = moment(b.startdate);
+				const be = moment(b.enddate);
+				const busyrange = range(bs, be);
+
+				// This can be both busytimes and tasks
+				if (busyrange.overlaps(gorevrange)) {
+					// owner only exists in busytimes
+					if (b.owner) {
+						if (busyIds.indexOf(b.owner) === -1) {
+							busyIds.push(b.owner);
+						}
+					} else {
+						// this is for open tasks
+						for (let i = 0; i < +b.peoplecount; i++) {
+							if (busyIds.indexOf(b.owners[i]) === -1) {
+								busyIds.push(b.owners[i]);
+							}
+						}
+					}
+				}
 			}
 		}
 
-		//FIXME: fill this in
-		return [];
+		// zero out lists before the storm
+		this.availablePeople = [];
+		this.busyPeople = [];
+		// FIXME: integrate vacation in other places
+		for (const k of this.kadro) {
+			if (k.vacation === false) {
+				if (busyIds.indexOf(k._id) === -1) {
+					this.availablePeople.push(k);
+				} else {
+					this.busyPeople.push(k);
+				}
+			}
+		}
+		console.log('available', this.availablePeople);
+		console.log('busies', this.busyPeople);
+
+		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+		// Just a hack to activate observable.
+		//this.gorevForm.controls['selectedPerson'].setValue('');
 	}
 
-  // findBusies(gs, ge): Array<string> {
-  //   const { range } = extendMoment(moment);
-  //
-  //   // Busy people id list.
-  //   const busyIds = [];
-  //   const gorevrange = range(gs, ge);
-  //
-  //   // Merge two arrays to have a unified busy object for testing.
-  //   const busies = Object.assign(this.busytimes, this.opentasks);
-  //
-  //   for (const busy of busies) {
-  //
-  //     const b = busy.when;
-  //     if (b) {
-  //       // This is only availabe in busytimes, so no worries here
-  //       if (b.recur) {
-  //         const interval = moment(b.startDate).recur().every(b.recur).days();
-  //
-  //         if (interval.matches(gs)) {
-  //
-  //           // Since this is an interval, we need to create the exact date for checking.
-  //           const bs = moment(gs.format('YYYY-MM-DD') + 'T' + moment(b.startDate).format('HH:mm'));
-  //           const be = moment(ge.format('YYYY-MM-DD') + 'T' + moment(b.endDate).format('HH:mm'));
-  //           const busyrange = range(bs, be);
-  //
-  //           if (busyrange.overlaps(gorevrange)) {
-  //             if (busyIds.indexOf(busy.owner_id) === -1) {
-  //               busyIds.push(busy.owner_id);
-  //             }
-  //           }
-  //         }
-  //       } else {
-  //         const bs = moment(b.startDate);
-  //         const be = moment(b.endDate);
-  //         const busyrange = range(bs, be);
-  //
-  //         // This can be both busytimes and tasks
-  //         if (busyrange.overlaps(gorevrange)) {
-  //           // owner_id only exists in busytimes
-  //           if (busy.owner_id) {
-  //             if (busyIds.indexOf(busy.owner_id) === -1) {
-  //               busyIds.push(busy.owner_id);
-  //             }
-  //           } else {
-  //             for (let i = 0; i < busy.peoplecount; i++) {
-  //               if (busyIds.indexOf(busy.choosenPeople[i]) === -1) {
-  //                 busyIds.push(busy.choosenPeople[i]);
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return busyIds;
-  // }
-  //
   // validateTimeAndFindAvailable(): void {
   //   this.gorevForm.get('weight').valueChanges.subscribe(value => {
   //     if ( this.gorevForm.value.when ) {

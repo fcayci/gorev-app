@@ -54,7 +54,7 @@
       </mat-error>
     </mat-form-field>
     <div>
-      <mat-button-toggle-group formControlName="selector" value="0">
+      <mat-button-toggle-group formControlName="sel" value="0">
         <mat-button-toggle value="0">Ar. Gör.</mat-button-toggle>
         <mat-button-toggle value="1">Dr.</mat-button-toggle>
         <mat-button-toggle value="2">Tümü</mat-button-toggle>
@@ -69,10 +69,10 @@
 
     <mat-form-field  style="width:65%">
       <mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
-        <!-- <mat&#45;option *ngFor="let c of (available | selector:gorevForm.value.selector)" [value]="c"> -->
-        <!--   <span> {{c.fullname}}</span> -->
-        <!--   <span style="margin&#45;right: 4px; padding: 1px 5px; border&#45;radius: 24px; background&#45;color: #cecece">{{c.load}}</span> -->
-        <!-- </mat&#45;option> -->
+        <mat-option *ngFor="let c of (availablePeople | selector:gorevForm.value.sel)" [value]="c">
+          <span> {{c.fullname}}</span>
+          <span style="margin-right: 4px; padding: 1px 5px; border-radius: 24px; background-color: #cecece">{{c.load}}</span>
+        </mat-option>
       </mat-select>
     </mat-form-field>
     <div>
