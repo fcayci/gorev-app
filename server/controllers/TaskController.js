@@ -49,15 +49,15 @@ module.exports = {
     create: function (req, res) {
         var Task = new TaskModel({
 			name : req.body.name,
-			type : req.body.type,
+			group : req.body.group,
 			peoplecount : req.body.peoplecount,
 			weight : req.body.weight,
 			load : req.body.load,
-			chosens : req.body.chosens,
+			owners : req.body.owners,
 			startdate : req.body.startdate,
 			enddate : req.body.enddate,
 			duration : req.body.duration,
-			status : req.body.status
+			state : req.body.state
 
         });
 
@@ -91,15 +91,15 @@ module.exports = {
             }
 
             Task.name = req.body.name ? req.body.name : Task.name;
-			Task.type = req.body.type ? req.body.type : Task.type;
+			Task.group = req.body.group ? req.body.group : Task.group;
 			Task.peoplecount = req.body.peoplecount ? req.body.peoplecount : Task.peoplecount;
 			Task.weight = req.body.weight ? req.body.weight : Task.weight;
 			Task.load = req.body.load ? req.body.load : Task.load;
-			Task.chosens = req.body.chosens ? req.body.chosens : Task.chosens;
+			Task.owners = req.body.owners ? req.body.owners : Task.owners;
 			Task.startdate = req.body.startdate ? req.body.startdate : Task.startdate;
 			Task.enddate = req.body.enddate ? req.body.enddate : Task.enddate;
 			Task.duration = req.body.duration ? req.body.duration : Task.duration;
-			Task.status = req.body.status ? req.body.status : Task.status;
+			Task.state = req.body.state ? req.body.state : Task.state;
 			
             Task.save(function (err, Task) {
                 if (err) {
