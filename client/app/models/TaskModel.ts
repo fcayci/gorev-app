@@ -15,5 +15,15 @@ export interface Task {
 
 export const TASK_STATES = ['Açık', 'Kapalı'];
 
-export const TASK_GROUPS = ['Gözetmenlik', 'Sekreterlik', 'Kalite/Müdek/Tanıtım', 'Ders Asistanlığı', 'Lab Asistanlığı', 'Kurul', 'Diğer'];
+export const TASK_GROUPS = [
+	'Gözetmenlik', 
+	'Ders Asistanlığı', 
+	'Lab Asistanlığı', 
+	'Sekreterlik', 
+	'Kalite', 
+	'Abet', 
+	'Tanıtım', 
+	'Kurul', 
+	'Diğer'
+];
 
