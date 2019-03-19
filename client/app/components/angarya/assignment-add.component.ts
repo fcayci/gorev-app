@@ -105,6 +105,13 @@ export class AssignmentAddComponent implements OnInit {
 		});
 
 		this.validateInputDate();
+		
+		// reset selected person when selector changes
+		this.gorevForm.get('sel').valueChanges
+		.subscribe( _ => {
+			// Reset form
+			this.gorevForm.controls['selectedPerson'].setValue('');
+		});
 
 		// this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges
 		// .pipe(
