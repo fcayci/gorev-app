@@ -13,6 +13,11 @@ router.get('/', TaskController.list);
 router.get('/:id', TaskController.show);
 
 /*
+ * GET
+ */
+router.get('/user/:id', TaskController.showUser);
+
+/*
  * POST
  */
 router.post('/', TaskController.create);

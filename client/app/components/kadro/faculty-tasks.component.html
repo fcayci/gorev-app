@@ -5,9 +5,9 @@
 
       <table mat-table [dataSource]="dataSource" matSort>
 
-        <ng-container matColumnDef="title">
+        <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Başlık</th>
-          <td mat-cell *matCellDef="let row">{{row.title}}</td>
+          <td mat-cell *matCellDef="let row">{{row.name}}</td>
         </ng-container>
 
         <ng-container matColumnDef="date">

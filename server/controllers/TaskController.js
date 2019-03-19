@@ -43,6 +43,28 @@ module.exports = {
         });
     },
 
+   /**
+     * TaskController.show()
+     */
+    showUser: function (req, res) {
+        var id = req.params.id;
+        TaskModel.find({owner: id}, function (err, Task) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting Task.',
+                    error: err
+                });
+            }
+            // if (!Task) {
+            //     return res.status(404).json({
+            //         message: 'No such Task'
+            //     });
+            // }
+            return res.json(Task);
+        });
+    },
+
+
     /**
      * TaskController.create()
      */

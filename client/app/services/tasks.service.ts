@@ -51,13 +51,13 @@ export class TaskService {
 		);
 	}
 
-  getTasksById(id: string): Observable<Task[]> {
-    const url = angaryaUrl + '/' + id;
-    return this.http.get<Task[]>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+	getFacultyTasks(ownerid: string): Observable<Task[]> {
+		const url = angaryaUrl + '/user/' + ownerid;
+		return this.http.get<Task[]>(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
   getTasksByIds(ids: Array<string>): Observable<Task[]> {
     // If the ids is empty return an empty array to prevent from
