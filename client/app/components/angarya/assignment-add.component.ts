@@ -25,6 +25,9 @@ import { ToasterService } from '../../services/toaster.service';
 // import pipes
 import { FSortPipe } from '../../pipes/fsort.pipe';
 
+// import directives
+import { peopleCountValidator } from '../../directives/peoplecount.directive';
+
 @Component({
 	selector: 'assignment-add',
 	templateUrl: './assignment-add.component.html'
@@ -44,6 +47,7 @@ export class AssignmentAddComponent implements OnInit {
 	// holder for task date
 	startdate = moment();
 	enddate = moment();
+	duration = 0;
 
 	availablePeople: Faculty[] = [];
 	busyPeople: Faculty[] = [];
@@ -55,9 +59,7 @@ export class AssignmentAddComponent implements OnInit {
 
 	gorevForm: FormGroup;
 
-	gorev: Task;
-	gorev_state = TASK_STATES;
-	groups = TASK_GROUPS;
+	task_groups = TASK_GROUPS;
 	// create weights and numbers for people / load weight
 	numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
 	weights: Array<number> = Array(41).fill(0).map((x, i) => i / 4);
@@ -95,7 +97,7 @@ export class AssignmentAddComponent implements OnInit {
 			console.log(res);
 			this.tasks = res;
 		});
-		
+
 		// Get people
 		this._user.getKadro()
 		.subscribe((res: Faculty[]) => {
@@ -105,13 +107,26 @@ export class AssignmentAddComponent implements OnInit {
 		});
 
 		this.validateInputDate();
-		
+
 		// reset selected person when selector changes
 		this.gorevForm.get('sel').valueChanges
 		.subscribe( _ => {
 			// Reset form
 			this.gorevForm.controls['selectedPerson'].setValue('');
 		});
+
+		// enable disable place
+		// this.gorevForm.valueChanges
+		// .subscribe( g => {
+		// 	console.log('formchane', g);
+		// 	if (g.peoplecount <= g.owners.length) {
+		// 		g.selectedPerson.disable();
+		// 	} else {
+		// 		g.selectedPerson.enable();
+		// 	}
+		// 	Reset form
+		// 	this.gorevForm.controls['selectedPerson'].setValue('');
+		// });
 
 		// this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges
 		// .pipe(
@@ -127,6 +142,7 @@ export class AssignmentAddComponent implements OnInit {
 
 			if (status === 'VALID') {
 				const t = this.gorevForm.get('when').value;
+				let d = 0;
 
 				// get date as is. if dateOnly() method is used,
 				//   timezone is lost
@@ -141,20 +157,20 @@ export class AssignmentAddComponent implements OnInit {
 				// check if the time is correct
 				if (sd.isSameOrAfter(ed)) {
 					this.formTimeValid = false;
-					t.duration = 0; 
+					d = 0;
 				} else {
 					this.formTimeValid = true;
-					t.duration = Math.trunc(moment.duration(ed.diff(sd)).as('minutes'));
+					d = Math.trunc(moment.duration(ed.diff(sd)).as('minutes'));
 				}
-
 				// write the start / end date to local cache
 				this.startdate = sd;
 				this.enddate = ed;
+				this.duration = d;
 
 				// update tables
 				this.updateAvailablePeople(sd, ed);
 
-				// TODO: 
+				// TODO:
 				// update taskdate once task is assigned
 				// this.taskdate.startdate = sd.format();
 				// this.taskdate.enddate = ed.format();
@@ -169,29 +185,49 @@ export class AssignmentAddComponent implements OnInit {
 	// 	return this.availablePeople.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
 	// }
 
-  // onSubmit() {
-  //   const gorev: Task = this.gorevForm.value;
-  //   // Add the task to the db
-  //   this._task.addTask(gorev)
-  //     .subscribe(res => {
-  //       // FIXME: Add error handling
-  //       for (let i = 0; i < gorev.peoplecount; i++) {
-  //         const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
-  //
-  //         // Add task to the each of the assigned people
-  //         this._user.addTaskAndIncrementLoadToKisi(p, res)
-  //           .subscribe((kisi: Faculty) => {
-  //             // FIXME: Add error handling
-  //           });
-  //       }
-  //
-  //       this.dialogRef.close(res);
-  //   });
-  // }
+	onSubmit() {
+		const g = this.gorevForm.value;
+		// FIXME: remove
+		console.log('g', g);
+		// calculate load
+		const load = Math.trunc(this.duration * g.weight / 60);
+		const model: Task = {
+			name: g.name,
+			group: g.group,
+			peoplecount: g.peoplecount,
+			weight: g.weight,
+			load: load,
+			owners: g.owners,
+			// these are from the cache
+			startdate: this.startdate.format(),
+			enddate: this.enddate.format(),
+			duration: this.duration,
+			recur: 0,
+			// FIXME: Think about state
+			state: 0
+		};
+
+		// FIXME: remove
+		console.log('model', model);
+		// Add the task to the db
+		//  this._task.addTask(gorev)
+		//  .subscribe(res => {
+		//  	// FIXME: Add error handling
+		//  	for (let i = 0; i < gorev.peoplecount; i++) {
+		//  		const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
+		//  		// Add task to the each of the assigned people
+		//  		this._user.addTaskAndIncrementLoadToKisi(p, res)
+		//  		.subscribe((kisi: Faculty) => {
+		//  			// FIXME: Add error handling
+		//  		});
+		//  	}
+		//  	this.dialogRef.close(res);
+		// });
+	}
 
 	addToOwners(x?: Faculty) {
 		let p: Faculty;
-	
+
 		// assign p depending on the parameter
 		p = x ? x : this.gorevForm.get('selectedPerson').value;
 
@@ -205,7 +241,7 @@ export class AssignmentAddComponent implements OnInit {
 		if (i > -1) {
 			this.availablePeople.splice(i, 1);
 		}
-	
+
 		// Disable form if good to go.
 		if (this.gorevForm.value.peoplecount <= this.owners.length) {
 			this.gorevForm.controls['selectedPerson'].disable();
@@ -214,30 +250,32 @@ export class AssignmentAddComponent implements OnInit {
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
 	}
-	
+
 	removeFromOwners(p) {
-	console.log('p', p);
-	
-	// Remove candidate from available
-	const i = this.owners.indexOf(p);
-	if (i > -1) {
-		this.owners.splice(i, 1);
-		this.gorevForm.value.owners.splice(i, 1);
-	}
 
-	if (this.availablePeople.indexOf(p) === -1) {
-		this.availablePeople.push(p);
-	}
-	this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+		// FIXME: remove
+		console.log('p', p);
 
-	// Enable form
-	if (this.owners.length < this.gorevForm.get('peoplecount').value) {
-		this.gorevForm.controls['selectedPerson'].enable();
-	}
+		// Remove candidate from available
+		const i = this.owners.indexOf(p);
+		if (i > -1) {
+			this.owners.splice(i, 1);
+			this.gorevForm.value.owners.splice(i, 1);
+		}
 
-	// Reset form
-	this.gorevForm.controls['selectedPerson'].setValue('');
-}
+		if (this.availablePeople.indexOf(p) === -1) {
+			this.availablePeople.push(p);
+		}
+		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+
+		// Enable form
+		if (this.owners.length < this.gorevForm.get('peoplecount').value) {
+			this.gorevForm.controls['selectedPerson'].enable();
+		}
+
+		// Reset form
+		this.gorevForm.controls['selectedPerson'].setValue('');
+	}
 
 	// FIXME: go over this function
 	// autoAssignPeople(): void {
@@ -245,13 +283,13 @@ export class AssignmentAddComponent implements OnInit {
     //
 	// 	for (let i = this.owners.length; i < g.peoplecount; i++) {
 	// 		if (g.sel === '0') {
-	// 			const p = this.available.filter( people => 
+	// 			const p = this.available.filter( people =>
 	// 				people.position === 'Araştırma Görevlisi')
 	// 			if (p.length > 0) {
 	// 				this.addToOwners(p[0]);
 	// 			}
 	// 		} else if (g.selector === '1') {
-	// 			const p = this.available.filter( people => 
+	// 			const p = this.available.filter( people =>
 	// 				people.position === 'Dr.');
 	// 			if (p.length > 0) {
 	// 				this.addToChoosenPeople(p[0]);
@@ -264,37 +302,37 @@ export class AssignmentAddComponent implements OnInit {
 	// 		}
 	// 	}
 	// }
-  
+
   // clearAssignedPeople(): void {
   //   this.choosenPeople = [];
   //   this.gorevForm.controls['choosenPeople'].setValue([]);
   //   this.gorevForm.patchValue({peoplecount: ''});
   // }
   //
-  
+
   	// FIXME: remove default values
 	createGorevForm(): void {
 		this.gorevForm = this._fb.group({
-			name: ['hede', Validators.required],
+			name: ['User Test',
+				Validators.required],
 			group: ['Sekreterlik', Validators.required],
 			when: this._fb.group({
 				sday: [, Validators.required],
-				//eday: [, Validators.required],
 				stime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
 				etime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
-				duration: [2],
-				//recur: [0]
 			}),
 			weight: [1, Validators.required],
-			peoplecount: [1, [Validators.required, Validators.pattern('[1-7]')]],
+			peoplecount: [1, [
+				Validators.required, 
+				Validators.pattern('[1-7]')]
+			],
 			owners: [[], ],
 			state: [0],
-			//load: [2],
 			// these are temporary holders
 			sel: ['0', Validators.required],
 			showallpeople: [false, Validators.required],
-			selectedPerson: [],
-		});
+			selectedPerson: [{value: '', disabled: true}],
+		}, {validators: peopleCountValidator});
 	}
 
 	updateAvailablePeople(sdate, edate) {
@@ -321,7 +359,7 @@ export class AssignmentAddComponent implements OnInit {
 					const busyrange = range(bs, be);
 
 					if (busyrange.overlaps(gorevrange)) {
-						// this person is busy, add it to the array if 
+						// this person is busy, add it to the array if
 						//  she is not already included
 						if (busyIds.indexOf(b.owner) === -1) {
 							busyIds.push(b.owner);
@@ -372,6 +410,11 @@ export class AssignmentAddComponent implements OnInit {
 		console.log('busies', this.busyPeople);
 
 		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+		// Reset form
+		this.gorevForm.controls['selectedPerson'].setValue('');
 	}
+	
+
+	get name() { return this.gorevForm.get('name'); }
 
 }
