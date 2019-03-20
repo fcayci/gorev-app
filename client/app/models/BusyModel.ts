@@ -3,18 +3,15 @@ export interface Busy {
 	name: string;
 	startdate: string;
 	enddate: string;
-	recur: number; 
+	recur: number;
 	owner: string;
 }
 
-
-export class Time {
-	sday: string;
-	eday: string;
-	stime: string;
-	etime: string;
+export class TaskDate {
+	valid: boolean;
+	startdate: string;
+	enddate: string;
 	duration: number;
-	recur?: number; // 0, 1, 7 are the values.
 }
 
 export const REPEATS = ['Tek Seferlik', 'Günlük', 'Her Hafta'];

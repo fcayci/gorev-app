@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material';
-
-import { Observable } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import 'moment-recur-ts';
@@ -12,15 +8,15 @@ import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
 // import models
-import { Task, TASK_GROUPS, TASK_STATES} from '../../models/TaskModel';
-import { Faculty } from '../../models/FacultyModel';
-import { Busy, Time } from '../../models/BusyModel';
+import { Task, TASK_GROUPS} from '../../models/TaskModel';
+import { Faculty, ROLES } from '../../models/FacultyModel';
+import { Busy, TaskDate } from '../../models/BusyModel';
 
 // import services
 import { TaskService } from '../../services/tasks.service';
 import { UserService } from '../../services/facultys.service';
 import { BusyService } from '../../services/busys.service';
-import { ToasterService } from '../../services/toaster.service';
+import { ValidationService } from '../../services/validation.service';
 
 // import pipes
 import { FSortPipe } from '../../pipes/fsort.pipe';
@@ -37,50 +33,54 @@ export class AssignmentAddComponent implements OnInit {
 
 	title = 'Yeni Görev Oluştur';
 
-	// holder for the whole kadro
-	kadro: Faculty[] = [];
-	// all busy times
-	busies: Busy[] = [];
-	// all tasks that are open
-	tasks: Task[] = [];
-
-	// holder for task date
-	startdate = moment();
-	enddate = moment();
-	duration = 0;
-
-	availablePeople: Faculty[] = [];
-	busyPeople: Faculty[] = [];
-
-	// chosen from assignment before finalization
-	owners: Faculty[] = [];
-	// hmmm.. FIXME
-	filteredPeople: Observable<Faculty[]>;
+	kadro: Faculty[] = []; // holder for the whole kadro
+	busies: Busy[] = []; // all busy times
+	tasks: Task[] = []; // all tasks that are open
 
 	gorevForm: FormGroup;
 
+	taskdate: TaskDate; // holder for task dates
 	task_groups = TASK_GROUPS;
+
+	availablePeople: Faculty[] = [];
+	busyPeople: Faculty[] = [];
+	owners: Faculty[] =[];
+
 	// create weights and numbers for people / load weight
 	numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
 	weights: Array<number> = Array(41).fill(0).map((x, i) => i / 4);
-
-	//gorevInfo: string;
-	// for dialog popup errors
-	formTimeValid = false;
-	showTimeError = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<AssignmentAddComponent>,
 		private _fsort: FSortPipe,
 		private _fb: FormBuilder,
-		private _router: Router,
 		private _user: UserService,
 		private _busy: BusyService,
-		private _task: TaskService
+		private _task: TaskService,
+		private _valiDate: ValidationService
 	) {}
 
 	ngOnInit() {
-		this.createGorevForm();
+		// FIXME: remove default values
+		this.gorevForm = this._fb.group({
+			name: ['User Test',
+				Validators.required],
+			group: ['Sekreterlik', Validators.required],
+			when: this._fb.group({
+				sday: [, Validators.required],
+				stime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
+				etime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
+			}, {validators: this.validateDate.bind(this, this.taskdate)}),
+			weight: [1, Validators.required],
+			peoplecount: [1, Validators.required],
+			owners: [[], ],
+			state: [0],
+			// these are temporary holders
+			sel: ['0', Validators.required],
+			showallpeople: [false, Validators.required],
+			selectedPerson: [],
+		}, {validators: peopleCountValidator});
+
 
 		// Get busy times of all the people
 		this._busy.getBusyAll()
@@ -106,7 +106,17 @@ export class AssignmentAddComponent implements OnInit {
 			this.kadro = res;
 		});
 
-		this.validateInputDate();
+		this.gorevForm.get('when').statusChanges
+		.subscribe( status => {
+			if (status === 'VALID') {
+				const t = this.gorevForm.get('when').value;
+				this.taskdate = this._valiDate.validateDate(t.sday, t.sday, t.stime, t.etime);
+				console.log('taskdate', this.taskdate);
+				if (this.taskdate.valid) {
+					this.updateAvailablePeople(this.taskdate.startdate, this.taskdate.enddate);
+				}
+			}
+		});
 
 		// reset selected person when selector changes
 		this.gorevForm.get('sel').valueChanges
@@ -115,82 +125,14 @@ export class AssignmentAddComponent implements OnInit {
 			this.gorevForm.controls['selectedPerson'].setValue('');
 		});
 
-		// enable disable place
-		// this.gorevForm.valueChanges
-		// .subscribe( g => {
-		// 	console.log('formchane', g);
-		// 	if (g.peoplecount <= g.owners.length) {
-		// 		g.selectedPerson.disable();
-		// 	} else {
-		// 		g.selectedPerson.enable();
-		// 	}
-		// 	Reset form
-		// 	this.gorevForm.controls['selectedPerson'].setValue('');
-		// });
-
-		// this.filteredPeople = this.gorevForm.get('selectedPerson').valueChanges
-		// .pipe(
-		// 	startWith(''),
-		// 	map(value => this._filter(value))
-		// );
 	}
-
-	validateInputDate(): void {
-		// subscribe and check the time validity
-		this.gorevForm.get('when').statusChanges
-		.subscribe(status => {
-
-			if (status === 'VALID') {
-				const t = this.gorevForm.get('when').value;
-				let d = 0;
-
-				// get date as is. if dateOnly() method is used,
-				//   timezone is lost
-				let sd = moment(t.sd);
-				let ed = moment(t.sd);
-				// combine the date & times
-				sd = sd.add(t.stime.slice(0, 2), 'h');
-				sd = sd.add(t.stime.slice(-2), 'm');
-				ed = ed.add(t.etime.slice(0, 2), 'h');
-				ed = ed.add(t.etime.slice(-2), 'm');
-
-				// check if the time is correct
-				if (sd.isSameOrAfter(ed)) {
-					this.formTimeValid = false;
-					d = 0;
-				} else {
-					this.formTimeValid = true;
-					d = Math.trunc(moment.duration(ed.diff(sd)).as('minutes'));
-				}
-				// write the start / end date to local cache
-				this.startdate = sd;
-				this.enddate = ed;
-				this.duration = d;
-
-				// update tables
-				this.updateAvailablePeople(sd, ed);
-
-				// TODO:
-				// update taskdate once task is assigned
-				// this.taskdate.startdate = sd.format();
-				// this.taskdate.enddate = ed.format();
-				// this.taskdate.recur = 0;
-			}
-		});
-	}
-
-	// private _filter(value: String): Faculty[] {
-	// 	const filterValue = value.toLowerCase();
-	// 	console.log(filterValue);
-	// 	return this.availablePeople.filter(option => option.fullname.toLowerCase().indexOf(filterValue) === 0);
-	// }
 
 	onSubmit() {
 		const g = this.gorevForm.value;
 		// FIXME: remove
 		console.log('g', g);
 		// calculate load
-		const load = Math.trunc(this.duration * g.weight / 60);
+		const load = Math.trunc(this.taskdate.duration * g.weight / 60);
 		const model: Task = {
 			name: g.name,
 			group: g.group,
@@ -198,23 +140,20 @@ export class AssignmentAddComponent implements OnInit {
 			weight: g.weight,
 			load: load,
 			owners: g.owners,
-			// these are from the cache
-			startdate: this.startdate.format(),
-			enddate: this.enddate.format(),
-			duration: this.duration,
+			startdate: this.taskdate.startdate,
+			enddate: this.taskdate.enddate,
+			duration: this.taskdate.duration,
 			recur: 0,
 			// FIXME: Think about state
 			state: 0
 		};
 
-		// FIXME: remove
-		console.log('model', model);
 		// Add the task to the db
-		//  this._task.addTask(gorev)
+		//  this._task.addTask(model)
 		//  .subscribe(res => {
 		//  	// FIXME: Add error handling
-		//  	for (let i = 0; i < gorev.peoplecount; i++) {
-		//  		const p = this.kadro.filter(faculty => faculty._id === gorev.choosenPeople[i])[0];
+		//  	for (let i = 0; i < model.peoplecount; i++) {
+		//  		const p = this.kadro.filter(faculty => faculty._id === model.choosenPeople[i])[0];
 		//  		// Add task to the each of the assigned people
 		//  		this._user.addTaskAndIncrementLoadToKisi(p, res)
 		//  		.subscribe((kisi: Faculty) => {
@@ -253,9 +192,6 @@ export class AssignmentAddComponent implements OnInit {
 
 	removeFromOwners(p) {
 
-		// FIXME: remove
-		console.log('p', p);
-
 		// Remove candidate from available
 		const i = this.owners.indexOf(p);
 		if (i > -1) {
@@ -277,31 +213,31 @@ export class AssignmentAddComponent implements OnInit {
 		this.gorevForm.controls['selectedPerson'].setValue('');
 	}
 
-	// FIXME: go over this function
-	// autoAssignPeople(): void {
-	// 	const g = this.gorevForm.value;
-    //
-	// 	for (let i = this.owners.length; i < g.peoplecount; i++) {
-	// 		if (g.sel === '0') {
-	// 			const p = this.available.filter( people =>
-	// 				people.position === 'Araştırma Görevlisi')
-	// 			if (p.length > 0) {
-	// 				this.addToOwners(p[0]);
-	// 			}
-	// 		} else if (g.selector === '1') {
-	// 			const p = this.available.filter( people =>
-	// 				people.position === 'Dr.');
-	// 			if (p.length > 0) {
-	// 				this.addToChoosenPeople(p[0]);
-	// 			}
-	// 		} else {
-	// 			const p = this.available;
-	// 			if (p.length > 0) {
-	// 				this.addToChoosenPeople(p[0]);
-	// 			}
-	// 		}
-	// 	}
-	// }
+	autoAssignPeople(): void {
+		const g = this.gorevForm.value;
+
+		for (let i = this.owners.length; i < g.peoplecount; i++) {
+			if (g.sel === '0') {
+				console.log(ROLES[2].position)
+				const p = this.availablePeople.filter( people =>
+					people.position === ROLES[2].position)
+				if (p.length > 0) {
+					this.addToOwners(p[0]);
+				}
+			} else if (g.sel === '1') {
+				const p = this.availablePeople.filter( people =>
+					people.position === ROLES[0].position);
+				if (p.length > 0) {
+					this.addToOwners(p[0]);
+				}
+			} else {
+				const p = this.availablePeople;
+				if (p.length > 0) {
+					this.addToOwners(p[0]);
+				}
+			}
+		}
+	}
 
   // clearAssignedPeople(): void {
   //   this.choosenPeople = [];
@@ -310,34 +246,11 @@ export class AssignmentAddComponent implements OnInit {
   // }
   //
 
-  	// FIXME: remove default values
-	createGorevForm(): void {
-		this.gorevForm = this._fb.group({
-			name: ['User Test',
-				Validators.required],
-			group: ['Sekreterlik', Validators.required],
-			when: this._fb.group({
-				sday: [, Validators.required],
-				stime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
-				etime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
-			}),
-			weight: [1, Validators.required],
-			peoplecount: [1, [
-				Validators.required, 
-				Validators.pattern('[1-7]')]
-			],
-			owners: [[], ],
-			state: [0],
-			// these are temporary holders
-			sel: ['0', Validators.required],
-			showallpeople: [false, Validators.required],
-			selectedPerson: [{value: '', disabled: true}],
-		}, {validators: peopleCountValidator});
-	}
-
-	updateAvailablePeople(sdate, edate) {
+	updateAvailablePeople(sd: string, ed: string) {
 		// arrays to hold busy/available id
 		let busyIds = [];
+		let sdate = moment(sd);
+		let edate = moment(ed);
 
 		const { range } = extendMoment(moment);
 		const gorevrange = range(sdate, edate);
@@ -413,8 +326,10 @@ export class AssignmentAddComponent implements OnInit {
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
 	}
-	
 
-	get name() { return this.gorevForm.get('name'); }
+	// for when validation in the form
+	validateDate(c: FormControl, t: TaskDate) {
+		return t.valid ? null :  { timenotvalid : true };
+	}
 
 }
