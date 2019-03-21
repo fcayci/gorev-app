@@ -10,9 +10,9 @@ export interface FacultyDB {
 	phone?: string;
 	mobile?: string;
 	load: number;
-	tempLoad?: number;
+	pendingload?: number;
 	busy?: Array<string>;
-	//tasks?: Array<string>;
+	task?: Array<string>;
 	vacation: boolean;
 }
 

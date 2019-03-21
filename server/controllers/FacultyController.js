@@ -7,48 +7,48 @@ var FacultyModel = require('../models/FacultyModel.js');
  */
 module.exports = {
 
-    /**
-     * FacultyController.list()
-     * FIXME: should we return everyting to everybody?
-     */
-    list: function (req, res) {
-        FacultyModel.find(function (err, Facultys) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Faculty.',
-                    error: err
-                });
-            }
-            return res.json(Facultys);
-        });
-    },
+	/**
+	 * FacultyController.list()
+	 * FIXME: should we return everyting to everybody?
+	 */
+	list: function (req, res) {
+		FacultyModel.find(function (err, Facultys) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Faculty.',
+					error: err
+				});
+			}
+			return res.json(Facultys);
+		});
+	},
 
-    /**
-     * FacultyController.show()
-     */
-    show: function (req, res) {
-        var id = req.params.id;
-        FacultyModel.findOne({_id: id}, function (err, Faculty) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Faculty.',
-                    error: err
-                });
-            }
-            if (!Faculty) {
-                return res.status(404).json({
-                    message: 'No such Faculty'
-                });
-            }
-            return res.json(Faculty);
-        });
-    },
+	/**
+	 * FacultyController.show()
+	 */
+	show: function (req, res) {
+		var id = req.params.id;
+		FacultyModel.findOne({_id: id}, function (err, Faculty) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Faculty.',
+					error: err
+				});
+			}
+			if (!Faculty) {
+				return res.status(404).json({
+					message: 'No such Faculty'
+				});
+			}
+			return res.json(Faculty);
+		});
+	},
 
-    /**
-     * FacultyController.create()
-     */
-    create: function (req, res) {
-        var Faculty = new FacultyModel({
+	/**
+	 * FacultyController.create()
+	 */
+	create: function (req, res) {
+		var Faculty = new FacultyModel({
 			fullname : req.body.fullname,
 			email : req.body.email,
 			position : req.body.position,
@@ -60,38 +60,39 @@ module.exports = {
 			vacation : req.body.vacation,
 			busy : req.body.busy
 
-        });
+		});
 
-        Faculty.save(function (err, Faculty) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating Faculty',
-                    error: err
-                });
-            }
-            return res.status(201).json(Faculty);
-        });
-    },
+		Faculty.save(function (err, Faculty) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when creating Faculty',
+					error: err
+				});
+			}
+			return res.status(201).json(Faculty);
+		});
+	},
 
-    /**
-     * FacultyController.update()
-     */
-    update: function (req, res) {
-        var id = req.params.id;
-        FacultyModel.findOne({_id: id}, function (err, Faculty) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Faculty',
-                    error: err
-                });
-            }
-            if (!Faculty) {
-                return res.status(404).json({
-                    message: 'No such Faculty'
-                });
-            }
+	/**
+	 * FacultyController.update()
+	 * regular update
+	 */
+	update: function (req, res) {
+		var id = req.params.id;
+		FacultyModel.findOne({_id: id}, function (err, Faculty) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Faculty',
+					error: err
+				});
+			}
+			if (!Faculty) {
+				return res.status(404).json({
+					message: 'No such Faculty'
+				});
+			}
 
-            Faculty.fullname = req.body.fullname ? req.body.fullname : Faculty.fullname;
+			Faculty.fullname = req.body.fullname ? req.body.fullname : Faculty.fullname;
 			Faculty.email = req.body.email ? req.body.email : Faculty.email;
 			Faculty.position = req.body.position ? req.body.position : Faculty.position;
 			Faculty.rank = req.body.rank ? req.body.rank : Faculty.rank;
@@ -101,35 +102,36 @@ module.exports = {
 			Faculty.load = req.body.load ? req.body.load : Faculty.load;
 			if ( req.body.vacation !== undefined ) {
 				Faculty.vacation = req.body.vacation;
-			} 
+			}
 			Faculty.busy = req.body.busy ? req.body.busy : Faculty.busy;
-			
-            Faculty.save(function (err, Faculty) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when updating Faculty.',
-                        error: err
-                    });
-                }
+			Faculty.task = req.body.task ? req.body.task : Faculty.task;
 
-                return res.json(Faculty);
-            });
-        });
-    },
+			Faculty.save(function (err, Faculty) {
+				if (err) {
+					return res.status(500).json({
+						message: 'Error when updating Faculty.',
+						error: err
+					});
+				}
 
-    /**
-     * FacultyController.remove()
-     */
-    remove: function (req, res) {
-        var id = req.params.id;
-        FacultyModel.findByIdAndRemove(id, function (err, Faculty) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when deleting the Faculty.',
-                    error: err
-                });
-            }
-            return res.status(204).json();
-        });
-    }
+				return res.json(Faculty);
+			});
+		});
+	},
+
+	/**
+	 * FacultyController.remove()
+	 */
+	remove: function (req, res) {
+		var id = req.params.id;
+		FacultyModel.findByIdAndRemove(id, function (err, Faculty) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when deleting the Faculty.',
+					error: err
+				});
+			}
+			return res.status(204).json();
+		});
+	}
 };

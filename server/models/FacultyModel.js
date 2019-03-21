@@ -10,10 +10,15 @@ var FacultySchema = new Schema({
 	'phone' : String,
 	'mobile' : String,
 	'load' : Number,
+	'pendingload' : Number,
 	'vacation' : Boolean,
 	'busy' : {
 	 	type: Schema.Types.ObjectId,
 	 	ref: 'Busy'
+	},
+	'task' : {
+		type: Schema.Types.ObjectId,
+		ref: 'Task'
 	}
 });
 

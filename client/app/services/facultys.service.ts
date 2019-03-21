@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Faculty } from '../models/FacultyModel';
-//import { Task } from '../task';
+import { Task } from '../models/TaskModel';
 
 const httpOptions = {
 	headers: new HttpHeaders({
@@ -70,47 +70,56 @@ export class UserService {
 		);
 	}
 
+	// add task to kisi and add load to pending load
+	addTaskToKisi(kisi: Faculty, task: Task): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id + '/addtask';
+		return this.http.put<Faculty>(url, JSON.stringify(task._id), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
+	// delete task from kisi and delete pending load
+	deleteTaskFromKisi(kisi: Faculty, task: Task): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id + '/deltask';
+		return this.http.put<Faculty>(url, JSON.stringify(task._id), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
-  // addTaskAndIncrementLoadToKisi(kisi: Faculty, task: Task): Observable<Faculty> {
-  //   const url = kadroUrl + '/' + kisi.username + '/addtask';
-  //   return this.http.put<Faculty>(url, JSON.stringify(task), httpOptions)
-  //     .pipe(
-  //       catchError(this.handleError)
-  //     );
-  // }
-  //
-  // deleteTaskAndDecrementLoadFromKisi(kisi: Faculty, task: Task): Observable<Faculty> {
-  //   const url = kadroUrl + '/' + kisi.username + '/deltask';
-  //   return this.http.put<Faculty>(url, JSON.stringify(task), httpOptions)
-  //     .pipe(
-  //       catchError(this.handleError)
-  //     );
-  // }
+	// complete task, add load, remove pending load
+	completeTaskOfKisi(kisi: Faculty, task: Task): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id + '/taskdone';
+		return this.http.put<Faculty>(url, JSON.stringify(task._id), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
-  
+	// FIXME: make it sudo
+	deleteKisi(kisi: Faculty): Observable<{}> {
+		const url = kadroUrl + '/' + kisi._id;
+		return this.http.delete(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
 
-  deleteKisi(kisi: Faculty): Observable<{}> {
-    const url = kadroUrl + '/' + kisi.username;
-    return this.http.delete(url)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
-    }
-    // return an observable with a user-facing error message
-    // return throwError('Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.');
-    return throwError(error.error);
-  }
+	private handleError(error: HttpErrorResponse) {
+		if (error.error instanceof ErrorEvent) {
+			// A client-side or network error occurred. Handle it accordingly.
+			console.error('An error occurred:', error.error.message);
+		} else {
+			// The backend returned an unsuccessful response code.
+			// The response body may contain clues as to what went wrong,
+			console.error(
+				`Backend returned code ${error.status}, ` +
+				`body was: ${error.error}`
+			);
+		}
+		// return an observable with a user-facing error message
+		// return throwError('Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.');
+		return throwError(error.error);
+	}
 }
