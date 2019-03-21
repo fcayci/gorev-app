@@ -1,13 +1,14 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
+// import models
 import { Faculty, ROLES } from '../../models/FacultyModel';
+// import services
 import { UserService } from '../../services/facultys.service';
 
 @Component({
-  selector: 'faculty-profile',
-  templateUrl: './faculty-profile.component.html'
+	selector: 'faculty-profile',
+	templateUrl: './faculty-profile.component.html'
 })
 
 export class FacultyProfileComponent implements OnInit, OnChanges {
@@ -34,7 +35,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 		load: [, [Validators.required, Validators.pattern('[0-9.]{1,10}')]],
 		vacation: [false, Validators.required]
 		});
-	
+
 		this.kisiForm.disable();
 		this.kisiForm.patchValue( this.profile );
 	}
@@ -56,7 +57,6 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 		// if position is in the list, get its rank, otherwise just assign 100
 		if (r) candidate["rank"] = r.rank;
 		else candidate["rank"] = 100;
-
 
 		this.profileEvent.emit({ event: 'save', content: candidate });
 		this.disableGroup();

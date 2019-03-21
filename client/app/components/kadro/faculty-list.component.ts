@@ -45,8 +45,6 @@ export class FacultyListComponent implements OnInit {
 	getAllPeople() {
 		this._user.getKadro()
 		.subscribe((kadro: Faculty[]) => {
-			//FIXME: remove
-			console.log(kadro);
 			this.dataSource = new MatTableDataSource(kadro);
 			this.dataSource.paginator = this.paginator;
 			this.dataSource.sort = this.sort;

@@ -34,37 +34,38 @@ export class FacultyWrapperComponent implements OnInit {
 	}
 
 	// update kisi
-	onSave(candidate: Faculty ): void {
-		this._user.updateKisi(candidate)
+	onSave(kisi: Faculty ): void {
+		this._user.updateKisi(kisi)
 		.subscribe((kisi: Faculty) => {
 			this._toaster.info(kisi.fullname + ' başarıyla düzenlendi.');
-			setTimeout(() => this._router.navigate(['/kadro']), 300);	
+			setTimeout(() => this._router.navigate(['/kadro']), 300);
 		}, err => {
 		this._toaster.info(err);
 		this._router.navigate(['/kadro']);
-		}
-		);
+		});
 	}
 
+	// delete kisi
+	// FIXME: Delete all busy related to this guy..
+	onDelete(): void {
+		const kisi: Faculty = this.kisi;
+		this._user.deleteKisi(this.kisi)
+		.subscribe(res => {
+			this._toaster.info(this.kisi.fullname + ' silindi..');
+		}, err => {
+			this._toaster.info(err);
+			this._router.navigate(['/kadro']);
+		});
+		//this._busy.deleteBusybyOwnerID();
+		setTimeout(() => this._router.navigate(['/kadro']), 300);
+	}
 
-  // FIXME: Delete all busy related to this guy.
-  // FIXME: Delete all the tasks related to this guy.
-  onDelete(): void {
-    this._user.deleteKisi(this.kisi)
-      .subscribe(res => {
-        if (res === 1) {
-          this._toaster.info(this.kisi.fullname + ' silindi..');
-        } else {
-          console.log('hata olustu, ' + JSON.stringify(res));
-        }
-    });
-    setTimeout(() => this._router.navigate(['/kadro']), 300);
-  }
-  profileEventHandler(e) {
-    if (e.event === 'delete') {
-      this.onDelete();
-    } else if (e.event === 'save') {
-      this.onSave(e.content);
-    }
-  }
+	// get events from children and act accordingly
+	profileEventHandler(e) {
+		if (e.event === 'delete') {
+			this.onDelete();
+		} else if (e.event === 'save') {
+			this.onSave(e.content);
+		}
+	}
 }

@@ -4,7 +4,6 @@ import { MatDialog, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import 'moment-recur-ts';
 import 'moment-duration-format';
-import { extendMoment } from 'moment-range';
 
 // import models
 import { Faculty } from '../../models/FacultyModel';
@@ -46,23 +45,21 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 		if (this.profile) {
 			this._busy.getFacultyBusyTimes(this.profile._id)
 			.subscribe((busies: Busy[]) => {
-			// FIXME: Remove filter when you remove task_id field from busy.
-			//const b = busies.filter(i => !i.task_id);
-			console.log(busies);
-			this.dataSource = new MatTableDataSource(busies);
+				// FIXME: Remove filter when you remove task_id field from busy.
+				//const b = busies.filter(i => !i.task_id);
+				console.log(busies);
+				this.dataSource = new MatTableDataSource(busies);
 			});
 		}
 	}
 
-	// TODO: Ask for confirmation before removing
 	// TODO: Add error handler - if a manual error is forced
 	//   service is catching the error and not forwarding here
 	// res is null - a msg can be created on the server side
 	//   to verify oepration
 	onDelete(busy: Busy, i: number): void {
 		this._busy.deleteBusy(busy)
-		.subscribe((res) => {
-			console.log(res);
+		.subscribe( _ => {
 			const oldData = this.dataSource.data;
 			oldData.splice(i, 1);
 			this.dataSource.data = oldData;
@@ -82,7 +79,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
 		dialogRef.afterClosed().subscribe(msg => {
 			if (msg === -1) {
-				this._toaster.info('Hatali giris');
+				this._toaster.info('Hatalı giriş!');
 			} else if (msg) {
 				const oldData = this.dataSource.data;
 				oldData.push(msg);
