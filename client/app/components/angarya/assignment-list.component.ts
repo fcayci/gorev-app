@@ -114,7 +114,7 @@ export class AssignmentListComponent implements OnInit {
 		this._router.navigate(['/kadro/' + p]);
 	}
 
-	onDetail(a: Task) {
-		this._router.navigate(['/angarya/' + a._id]);
-	}
+	// onDetail(a: Task) {
+	// 	this._router.navigate(['/angarya/' + a._id]);
+	// }
 }

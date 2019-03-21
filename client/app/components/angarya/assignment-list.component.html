@@ -59,10 +59,8 @@
         </td>
       </ng-container>
 
-      <!-- <mat-chip color="warn" selected="true" (click)="onDetail(detail.gorev)">Detaylar</mat-chip> -->
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row style="cursor:pointer;height:55px;" *matRowDef="let row; columns: displayedColumns;" (click)="onDetail(row)">
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
 
