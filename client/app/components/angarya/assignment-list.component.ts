@@ -3,11 +3,14 @@ import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 
-// import { animate, state, style, transition, trigger } from '@angular/animations';
+// import components
 import { AssignmentAddComponent } from './assignment-add.component';
 
-import { Task, TASK_GROUPS, TASK_STATES} from '../../models/TaskModel';
+// import models
+import { Task, TASK_STATES} from '../../models/TaskModel';
 import { Faculty } from '../../models/FacultyModel';
+
+// import services
 import { TaskService } from '../../services/tasks.service';
 import { UserService } from '../../services/facultys.service';
 import { ToasterService } from '../../services/toaster.service';
@@ -106,17 +109,12 @@ export class AssignmentListComponent implements OnInit {
 		});
 	}
 
-// 	gotoPerson(id: string) {
-// 		const p = this.kadro.find(x => x._id === id).username;
-// 		this._router.navigate(['/kadro/' + p]);
-// 	}
-//
-// 	applyFilter(filterValue: string) {
-//  		filterValue = filterValue.trim().toLowerCase();
-// 		this.dataSource.filter = filterValue;
-// 	}
-//
-// 	onDetail(a) {
-// 		this._router.navigate(['/angarya/' + a._id]);
-// 	}
+	gotoPerson(id: string) {
+		const p = this.kadro.find(x => x._id === id)._id;
+		this._router.navigate(['/kadro/' + p]);
+	}
+
+	onDetail(a: Task) {
+		this._router.navigate(['/angarya/' + a._id]);
+	}
 }
