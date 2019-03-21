@@ -42,8 +42,8 @@ export class AssignmentAddComponent implements OnInit {
 	taskdate: TaskDate; // holder for task dates
 	task_groups = TASK_GROUPS;
 
-	availablePeople: Faculty[] = [];
-	busyPeople: Faculty[] = [];
+	//availablePeople: Faculty[] = [];
+	//busyPeople: Faculty[] = [];
 	owners: Faculty[] =[];
 
 	// create weights and numbers for people / load weight
@@ -76,8 +76,7 @@ export class AssignmentAddComponent implements OnInit {
 			owners: [[], ],
 			state: [0],
 			// these are temporary holders
-			sel: ['0', Validators.required],
-			showallpeople: [false, Validators.required],
+			sel: [, Validators.required],
 			selectedPerson: [],
 		}, {validators: peopleCountValidator});
 
@@ -149,19 +148,19 @@ export class AssignmentAddComponent implements OnInit {
 		};
 
 		// Add the task to the db
-		//  this._task.addTask(model)
-		//  .subscribe(res => {
-		//  	// FIXME: Add error handling
-		//  	for (let i = 0; i < model.peoplecount; i++) {
-		//  		const p = this.kadro.filter(faculty => faculty._id === model.choosenPeople[i])[0];
-		//  		// Add task to the each of the assigned people
-		//  		this._user.addTaskAndIncrementLoadToKisi(p, res)
-		//  		.subscribe((kisi: Faculty) => {
-		//  			// FIXME: Add error handling
-		//  		});
-		//  	}
-		//  	this.dialogRef.close(res);
-		// });
+		this._task.addTask(model)
+		.subscribe(res => {
+			// // FIXME: Add error handling
+			// for (let i = 0; i < model.peoplecount; i++) {
+			// 	const p = this.kadro.filter(faculty => faculty._id === model.choosenPeople[i])[0];
+			// 	// Add task to the each of the assigned people
+			// 	this._user.addTaskAndIncrementLoadToKisi(p, res)
+			// 	.subscribe((kisi: Faculty) => {
+			// 		// FIXME: Add error handling
+			// 	});
+			// }
+			this.dialogRef.close(res);
+		});
 	}
 
 	addToOwners(x?: Faculty) {
@@ -176,10 +175,11 @@ export class AssignmentAddComponent implements OnInit {
 		}
 
 		// Remove candidate from availablePeople
-		const i = this.availablePeople.indexOf(p);
-		if (i > -1) {
-			this.availablePeople.splice(i, 1);
-		}
+		p.isAvailable = 0;
+		// const i = this.availablePeople.indexOf(p);
+		// if (i > -1) {
+		// 	this.availablePeople.splice(i, 1);
+		// }
 
 		// Disable form if good to go.
 		if (this.gorevForm.value.peoplecount <= this.owners.length) {
@@ -199,10 +199,12 @@ export class AssignmentAddComponent implements OnInit {
 			this.gorevForm.value.owners.splice(i, 1);
 		}
 
-		if (this.availablePeople.indexOf(p) === -1) {
-			this.availablePeople.push(p);
-		}
-		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+		// add to available
+		p.isAvailable = 1;
+		// if (this.availablePeople.indexOf(p) === -1) {
+		// 	this.availablePeople.push(p);
+		// }
+		// this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
 
 		// Enable form
 		if (this.owners.length < this.gorevForm.get('peoplecount').value) {
@@ -215,23 +217,23 @@ export class AssignmentAddComponent implements OnInit {
 
 	autoAssignPeople(): void {
 		const g = this.gorevForm.value;
+		this.kadro = this._fsort.transform(this.kadro, 'load');
 
 		for (let i = this.owners.length; i < g.peoplecount; i++) {
-			if (g.sel === '0') {
-				console.log(ROLES[2].position)
-				const p = this.availablePeople.filter( people =>
+			if (g.sel === '1') {
+				const p = this.kadro.filter( people =>
 					people.position === ROLES[2].position)
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
-			} else if (g.sel === '1') {
-				const p = this.availablePeople.filter( people =>
-					people.position === ROLES[0].position);
+			} else if (g.sel === '2') {
+				const p = this.kadro.filter( people =>
+					people.position === ROLES[0].position)
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
 			} else {
-				const p = this.availablePeople;
+				const p = this.kadro;
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
@@ -306,23 +308,26 @@ export class AssignmentAddComponent implements OnInit {
 		}
 
 		// zero out lists before the storm
-		this.availablePeople = [];
-		this.busyPeople = [];
+		//this.availablePeople = [];
+		//this.busyPeople = [];
 		// FIXME: integrate vacation in other places
 		for (const k of this.kadro) {
 			if (k.vacation === false) {
 				if (busyIds.indexOf(k._id) === -1) {
-					this.availablePeople.push(k);
+					k.isAvailable = 1;
+					//this.availablePeople.push(k);
 				} else {
-					this.busyPeople.push(k);
+					k.isAvailable = 0;
+					//this.busyPeople.push(k);
 				}
 			}
 		}
-		// FIXME: remove
-		console.log('available', this.availablePeople);
-		console.log('busies', this.busyPeople);
 
-		this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
+		// FIXME: remove
+		//console.log('available', this.availablePeople);
+		//console.log('busies', this.busyPeople);
+
+		//this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
 	}

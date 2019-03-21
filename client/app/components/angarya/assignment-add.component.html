@@ -83,17 +83,21 @@
 		</mat-form-field>
 
 		<div>
+			<span matTooltip="Müsait olan Ar.Gör., Dr. veya bölümdekileri seçin.
+			Müsait olmayanları da dahil etmek için Bölüm'ü işaretleyin.">
+				<mat-button-toggle-group formControlName="sel">
+					<mat-button-toggle value="1">Ar.Gör.</mat-button-toggle>
+					<mat-button-toggle value="2">Dr.</mat-button-toggle>
+					<mat-button-toggle value="3">Müsait</mat-button-toggle>
+					<mat-button-toggle value="4">Bölüm</mat-button-toggle>
+				</mat-button-toggle-group>
+			</span>
 
-			<mat-button-toggle-group formControlName="sel" value="0">
-				<mat-button-toggle value="0">Ar. Gör.</mat-button-toggle>
-				<mat-button-toggle value="1">Dr.</mat-button-toggle>
-				<mat-button-toggle value="2">Tümü</mat-button-toggle>
-			</mat-button-toggle-group>
 		</div>
 
 		<div>
 			<button mat-button color="primary" (click)="autoAssignPeople()"
-			[disabled]="!taskdate?.valid ||
+			[disabled]="!taskdate?.valid || !gorevForm.get('sel').value ||
 			gorevForm.get('peoplecount').value === gorevForm.get('owners').length">
 				Otomatik atama yap
 			</button>
@@ -106,7 +110,7 @@
 			<mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
 
 		<!-- <mat&#45;select formControlName="selectedPerson" placeholder="Kişi Seç"> -->
-				<mat-option *ngFor="let c of (availablePeople |
+				<mat-option *ngFor="let c of (kadro |
 				selector:gorevForm.value.sel)" [value]="c">
 					<span style="margin-right: 4px; padding: 1px 5px;
 					border-radius: 24px; background-color: #cecece">
@@ -126,12 +130,6 @@
 			</button>
 		</div>
 
-		<span matTooltip="Meşguliytleri dikkate almadan herkesi listeler">
-			<!-- <mat-slide-toggle style="width:15%;align&#45;self: center;" formControlName="showallpeople"> -->
-			<mat-slide-toggle formControlName="showallpeople" value="false">
-				Herkesi Göster
-			</mat-slide-toggle>
-		</span>
 	</div>
 
 	Atanan kisiler:

@@ -17,7 +17,7 @@ export interface FacultyDB {
 }
 
 export interface Faculty extends FacultyDB {
-	isAvailable?: string;
+	isAvailable?: number;
 }
 
 /*

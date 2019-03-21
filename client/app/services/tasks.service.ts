@@ -59,6 +59,14 @@ export class TaskService {
 		);
 	}
 
+	addTask(task: Task): Observable<Task> {
+		const url = angaryaUrl;
+		return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
   getTasksByIds(ids: Array<string>): Observable<Task[]> {
     // If the ids is empty return an empty array to prevent from
     // getting all the tasks (/angarya)
@@ -82,13 +90,6 @@ export class TaskService {
       );
   }
 
-  addTask(task: Task): Observable<Task> {
-    const url = angaryaUrl;
-    return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
 
   delTaskById(task: Task): Observable<{}> {
     const url = angaryaUrl + '/' + task._id;
