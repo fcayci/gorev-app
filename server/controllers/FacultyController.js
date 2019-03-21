@@ -9,29 +9,35 @@ module.exports = {
 
 	/**
 	 * FacultyController.list()
-	 * FIXME: should we return everyting to everybody?
+	 *
+	 * Sistemde kayıtlı bütün kullanıcıların listesini çekerç
+	 * rank'a göre sıralar
+	 *
 	 */
 	list: function (req, res) {
 		FacultyModel.find(function (err, Facultys) {
 			if (err) {
 				return res.status(500).json({
-					message: 'Error when getting Faculty.',
+					message: 'Error when getting Faculty',
 					error: err
 				});
 			}
-			return res.json(Facultys);
-		});
+			return res.json(Facultys)
+		})
+		.sort({rank: 1});
 	},
 
 	/**
 	 * FacultyController.show()
+	 *
+	 * Kullanıcı IDsi verilen kişiyi çeker.
 	 */
 	show: function (req, res) {
 		var id = req.params.id;
 		FacultyModel.findOne({_id: id}, function (err, Faculty) {
 			if (err) {
 				return res.status(500).json({
-					message: 'Error when getting Faculty.',
+					message: 'Error when getting Faculty',
 					error: err
 				});
 			}
@@ -46,9 +52,12 @@ module.exports = {
 
 	/**
 	 * FacultyController.create()
+	 *
+	 * Yeni kullanıcı ekler
+	 * // FIXME: email checking can be moved to client as well
 	 */
 	create: function (req, res) {
-		var Faculty = new FacultyModel({
+		var candidate = new FacultyModel({
 			fullname : req.body.fullname,
 			email : req.body.email,
 			position : req.body.position,
@@ -58,24 +67,41 @@ module.exports = {
 			mobile : req.body.mobile,
 			load : req.body.load,
 			vacation : req.body.vacation,
-			busy : req.body.busy
-
+			busy : req.body.busy,
+			task : req.body.task
 		});
 
-		Faculty.save(function (err, Faculty) {
+		// see if email exists in db
+		FacultyModel.findOne({email: candidate.email}, function (err, Faculty) {
 			if (err) {
 				return res.status(500).json({
-					message: 'Error when creating Faculty',
+					message: 'Error when getting Faculty',
 					error: err
 				});
 			}
-			return res.status(201).json(Faculty);
+			// did it return anyting?
+			if (Faculty) {
+				return res.status(404).json({
+					message: Faculty.email + "@gtu.edu.tr sistemde zaten kayıtlı!"
+				});
+			}
+			// if it does not return, create new user
+			candidate.save(function (err, Faculty) {
+				if (err) {
+					return res.status(500).json({
+						message: 'Error when creating Faculty',
+						error: err
+					});
+				}
+				return res.status(201).json(Faculty);
+			});
 		});
 	},
 
 	/**
 	 * FacultyController.update()
-	 * regular update
+	 *
+	 * kullanıyı günceller.
 	 */
 	update: function (req, res) {
 		var id = req.params.id;
@@ -92,6 +118,7 @@ module.exports = {
 				});
 			}
 
+			// update the relevant content
 			Faculty.fullname = req.body.fullname ? req.body.fullname : Faculty.fullname;
 			Faculty.email = req.body.email ? req.body.email : Faculty.email;
 			Faculty.position = req.body.position ? req.body.position : Faculty.position;
@@ -100,6 +127,7 @@ module.exports = {
 			Faculty.phone = req.body.phone ? req.body.phone : Faculty.phone;
 			Faculty.mobile = req.body.mobile ? req.body.mobile : Faculty.mobile;
 			Faculty.load = req.body.load ? req.body.load : Faculty.load;
+			Faculty.pendingload = req.body.pendingload ? req.body.pendingload : Faculty.pendingload;
 			if ( req.body.vacation !== undefined ) {
 				Faculty.vacation = req.body.vacation;
 			}
@@ -121,13 +149,15 @@ module.exports = {
 
 	/**
 	 * FacultyController.remove()
+	 *
+	 * verilen kullanıcıyı siler
 	 */
 	remove: function (req, res) {
 		var id = req.params.id;
 		FacultyModel.findByIdAndRemove(id, function (err, Faculty) {
 			if (err) {
 				return res.status(500).json({
-					message: 'Error when deleting the Faculty.',
+					message: 'Error when deleting Faculty.',
 					error: err
 				});
 			}

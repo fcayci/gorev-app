@@ -23,21 +23,6 @@ router.post('/', FacultyController.create);
 router.put('/:id', FacultyController.update);
 
 /*
- * PUT
- */
-router.put('/:id/addtask', FacultyController.update);
-
-/*
- * PUT
- */
-router.put('/:id/deltask', FacultyController.update);
-
-/*
- * PUT
- */
-router.put('/:id/taskdone', FacultyController.update);
-
-/*
  * DELETE
  */
 router.delete('/:id', FacultyController.remove);
