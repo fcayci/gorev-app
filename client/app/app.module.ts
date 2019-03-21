@@ -24,7 +24,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 
 import { AssignmentListComponent } from './components/angarya/assignment-list.component';
-import { AssignmentDetailComponent } from './components/angarya/assignment-detail.component';
 import { AssignmentAddComponent } from './components/angarya/assignment-add.component';
 
 import { FacultyListComponent } from './components/kadro/faculty-list.component';
@@ -36,6 +35,7 @@ import { FacultyAddComponent } from './components/kadro/faculty-add.component';
 import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
 import { PositionSelectorPipe } from './pipes/position-selector.pipe';
 import { FSortPipe } from './pipes/fsort.pipe';
+import { peopleCountValidatorDirective } from './directives/peoplecount.directive';
 
 registerLocaleData(localeTr);
 
@@ -58,16 +58,12 @@ const ROUTES : Routes = [
     component: FacultyBusyAddComponent
   },
   {
-    path: 'kadro/:username',
+    path: 'kadro/:_id',
     component: FacultyWrapperComponent
   },
   {
     path: 'angarya',
     component: AssignmentListComponent
-  },
-  {
-    path: 'angarya/:id',
-    component: AssignmentDetailComponent
   },
   {
     path: 'gorevekle',
@@ -81,7 +77,6 @@ const ROUTES : Routes = [
     AppComponent,
     HomeComponent,
     AssignmentListComponent,
-    AssignmentDetailComponent,
     AssignmentAddComponent,
     FacultyListComponent,
     FacultyWrapperComponent,
@@ -91,6 +86,7 @@ const ROUTES : Routes = [
     FacultyAddComponent,
     FacultyBusyAddComponent,
     PositionSelectorPipe,
+    peopleCountValidatorDirective,
     FSortPipe
   ],
   imports: [
