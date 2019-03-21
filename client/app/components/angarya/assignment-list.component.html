@@ -20,9 +20,9 @@
         <td mat-cell *matCellDef="let row; let i = index">{{i+1}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="title">
+      <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Başlık</th>
-        <td mat-cell *matCellDef="let row">{{row.title}}</td>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
       </ng-container>
 
       <ng-container matColumnDef="group">
@@ -32,29 +32,29 @@
 
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef>Tarih</th>
-        <td mat-cell *matCellDef="let row">{{row.when.sday | date: "dd MMMM EEEE": '': 'tr'}}</td>
+        <td mat-cell *matCellDef="let row">{{row.startdate | date: "dd MMMM EEEE": '': 'tr'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="time">
         <th mat-header-cell *matHeaderCellDef>Saat</th>
-        <td mat-cell *matCellDef="let row">{{row.when.sday | date: "HH:mm"}} - {{row.when.eday | date: "HH:mm"}}</td>
+        <td mat-cell *matCellDef="let row">{{row.startdate | date: "HH:mm"}} - {{row.enddate | date: "HH:mm"}}</td>
       </ng-container>
 
       <ng-container matColumnDef="people">
         <th mat-header-cell *matHeaderCellDef>Kişi Sayısı</th>
-        <td mat-cell *matCellDef="let row">{{row.peopleCount}}</td>
+        <td mat-cell *matCellDef="let row">{{row.peoplecount}}</td>
       </ng-container>
 
       <ng-container matColumnDef="state">
         <th mat-header-cell *matHeaderCellDef>Durum</th>
-        <td mat-cell *matCellDef="let row">{{TASK_STATUS[row.state]}}</td>
+        <td mat-cell *matCellDef="let row">{{taskstates[row.state]}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="chosens">
+      <ng-container matColumnDef="owners">
         <th mat-header-cell *matHeaderCellDef>Atanan Kişiler</th>
         <td mat-cell *matCellDef="let row">
           <mat-chip-list >
-          <mat-chip *ngFor="let pid of row.chosens"  matTooltip={{getPerson(pid)}} color="accent" (click)="gotoPerson(pid)"> {{getPersonInitials(pid)}} </mat-chip>
+          <mat-chip *ngFor="let pid of row.owners"  matTooltip={{getPerson(pid)}} color="accent" (click)="gotoPerson(pid)"> {{getPersonInitials(pid)}} </mat-chip>
           </mat-chip-list>
         </td>
       </ng-container>

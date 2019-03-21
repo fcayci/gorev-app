@@ -22,10 +22,10 @@ export class AssignmentListComponent implements OnInit {
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 
-	//gstates = TASK_STATES;
+	taskstates = TASK_STATES;
 	angarya: Task[];
 	kadro: Faculty[] = [];
-	displayedColumns = ['no', 'title', 'group', 'date', 'time', 'people', 'chosens', 'state'];
+	displayedColumns = ['no', 'name', 'group', 'date', 'time', 'people', 'owners', 'state'];
 	dataSource: MatTableDataSource<Task>;
 
 	constructor(
@@ -74,22 +74,22 @@ export class AssignmentListComponent implements OnInit {
 		});
 	}
 
-// 	getPerson(id: string) {
-// 		if (this.kadro.length > 0) {
-// 			return this.kadro.find(x => x._id === id).fullname;
-// 		} else {
-// 			return 'N/A';
-// 	}
-// }
-//
-// 	getPersonInitials(id: string) {
-// 		if (this.kadro.length > 0) {
-// 			const name = this.kadro.find(x => x._id === id).fullname;
-// 			return name.match(/\b(\w)/g).join('').toLowerCase();
-// 		} else {
-// 			return 'N/A';
-// 		}
-// 	}
+	getPerson(id: string) {
+		if (this.kadro.length > 0) {
+			return this.kadro.find(x => x._id === id).fullname;
+		} else {
+			return 'N/A';
+	}
+}
+
+	getPersonInitials(id: string) {
+		if (this.kadro.length > 0) {
+			const name = this.kadro.find(x => x._id === id).fullname;
+			return name.match(/\b(\w)/g).join('').toLowerCase();
+		} else {
+			return 'N/A';
+		}
+	}
 
 	openDialog(): void {
 		const dialogRef = this.dialog.open(AssignmentAddComponent, {
