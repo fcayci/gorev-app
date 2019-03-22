@@ -21,17 +21,17 @@
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Başlık</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Başlık</th>
         <td mat-cell *matCellDef="let row">{{row.name}}</td>
       </ng-container>
 
       <ng-container matColumnDef="group">
-        <th mat-header-cell *matHeaderCellDef>Tür</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tür</th>
         <td mat-cell *matCellDef="let row">{{row.group}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Tarih</th>
+      <ng-container matColumnDef="startdate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</th>
         <td mat-cell *matCellDef="let row">{{row.startdate | date: "dd MMMM EEEE": '': 'tr'}}</td>
       </ng-container>
 
@@ -44,10 +44,15 @@
         <th mat-header-cell *matHeaderCellDef>Kişi Sayısı</th>
         <td mat-cell *matCellDef="let row">{{row.peoplecount}}</td>
       </ng-container>
-
+      <!--
       <ng-container matColumnDef="state">
         <th mat-header-cell *matHeaderCellDef>Durum</th>
         <td mat-cell *matCellDef="let row">{{taskstates[row.state]}}</td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="load">
+        <th mat-header-cell *matHeaderCellDef>Yük</th>
+        <td mat-cell *matCellDef="let row">{{row.load}}</td>
       </ng-container>
 
       <ng-container matColumnDef="owners">
@@ -56,6 +61,16 @@
           <mat-chip-list >
           <mat-chip *ngFor="let pid of row.owners"  matTooltip={{getPerson(pid)}} color="accent" (click)="gotoPerson(pid)"> {{getPersonInitials(pid)}} </mat-chip>
           </mat-chip-list>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef>Durum</th>
+        <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.startdate) ? 'Geçmiş' : 'Aktif' }}
+          <span class="fill-remaining-space"></span>
+          <!-- <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
+            <mat-icon aria-label="delete">cancel</mat-icon>
+          </button> -->
         </td>
       </ng-container>
 

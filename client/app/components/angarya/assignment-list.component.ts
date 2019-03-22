@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
+
+import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+
+import * as moment from 'moment';
 
 // import components
 import { AssignmentAddComponent } from './assignment-add.component';
@@ -28,8 +30,9 @@ export class AssignmentListComponent implements OnInit {
 	taskstates = TASK_STATES;
 	angarya: Task[];
 	kadro: Faculty[] = [];
-	displayedColumns = ['no', 'name', 'group', 'date', 'time', 'people', 'owners', 'state'];
+	displayedColumns = ['no', 'name', 'group', 'startdate', 'time', 'people', 'owners', 'load', 'state'];
 	dataSource: MatTableDataSource<Task>;
+	today;
 
 	constructor(
 		private _task: TaskService,
@@ -45,6 +48,8 @@ export class AssignmentListComponent implements OnInit {
 			this.kadro = kadro;
 		});
 
+		this.today = moment();
+
 		this.getTasks();
 	}
 
@@ -52,6 +57,20 @@ export class AssignmentListComponent implements OnInit {
 		this._task.getTasks()
 		.subscribe((angarya: Task[]) => {
 			// FIXME: remove
+			console.log(angarya);
+			// append owner names so that they are searchable
+			while(!this.kadro); // block until kadro appears
+			for (const a of angarya){
+				a.ownernames = [];
+				for (const id of a.owners) {
+					const k = this.kadro.find(x => x._id === id);
+					if (k) {
+						a.ownernames.push(k.fullname);
+					} else {
+						a.ownernames.push('ghost');
+					}
+				}
+			}
 			console.log(angarya);
 
 			this.dataSource = new MatTableDataSource(angarya);
@@ -68,7 +87,7 @@ export class AssignmentListComponent implements OnInit {
 				return dataStr.indexOf(transformedFilter) !== -1;
 			};
 
-			this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+			this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: any): any => {
 				if (typeof data[sortHeaderId] === 'string') {
 					return data[sortHeaderId].toLocaleLowerCase();
 				}
@@ -79,20 +98,33 @@ export class AssignmentListComponent implements OnInit {
 
 	getPerson(id: string) {
 		if (this.kadro.length > 0) {
-			return this.kadro.find(x => x._id === id).fullname;
-		} else {
-			return 'N/A';
+			const kisi = this.kadro.find(x => x._id === id)
+			if (kisi){
+				return kisi.fullname;
+			}
+		}
+		return 'ghost';
 	}
-}
 
 	getPersonInitials(id: string) {
 		if (this.kadro.length > 0) {
-			const name = this.kadro.find(x => x._id === id).fullname;
-			return name.match(/\b(\w)/g).join('').toLowerCase();
-		} else {
-			return 'N/A';
+			const kisi = this.kadro.find(x => x._id === id);
+			if (kisi) {
+				return this.getInitials(kisi.fullname);
+			}
 		}
+		return 'ghost';
 	}
+
+	getInitials(fullname: string) {
+		var names = fullname.split(' '),
+			initials = names[0].substring(0, 1).toLowerCase();
+
+		if (names.length > 1) {
+			initials += names[names.length - 1].substring(0, 1).toLowerCase();
+		}
+		return initials;
+	};
 
 	openDialog(): void {
 		const dialogRef = this.dialog.open(AssignmentAddComponent, {
@@ -109,12 +141,22 @@ export class AssignmentListComponent implements OnInit {
 		});
 	}
 
+	isExpired(d) {
+		return this.today.isAfter(d);
+	}
+
+	// function for search box
+	applyFilter(filterValue: string) {
+ 		filterValue = filterValue.trim().toLowerCase();
+		this.dataSource.filter = filterValue;
+		if (this.dataSource.paginator) {
+			this.dataSource.paginator.firstPage();
+		}
+	}
+
 	gotoPerson(id: string) {
 		const p = this.kadro.find(x => x._id === id)._id;
 		this._router.navigate(['/kadro/' + p]);
 	}
 
-	// onDetail(a: Task) {
-	// 	this._router.navigate(['/angarya/' + a._id]);
-	// }
 }

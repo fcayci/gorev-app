@@ -12,7 +12,6 @@
       <span class="fill-remaining-space"></span>
       <span matTooltip="Yeni Kişi Ekle"><button class="add-button" mat-fab color="warn" (click)="openDialog()"><mat-icon>person_add</mat-icon></button></span>
     </div>
-    
 
     <table mat-table [dataSource]="dataSource" matSort>
 
@@ -54,10 +53,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row style="cursor:pointer;" *matRowDef="let row; columns: displayedColumns;" (click)="gotoPerson(row)"></tr>
     </table>
-    
+
     <mat-spinner *ngIf="!dataSource"></mat-spinner>
 
-    <mat-paginator 
+    <mat-paginator
       [pageSize]="50"
       [pageSizeOptions]="[10, 25, 50]">
     </mat-paginator>

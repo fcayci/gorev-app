@@ -1,4 +1,4 @@
-export interface Task {
+export interface TaskDB {
 	_id?: string;
 	name: string;
 	group: string;
@@ -13,17 +13,21 @@ export interface Task {
 	state: number;
 }
 
+export interface Task extends TaskDB {
+	ownernames?: Array<string>;
+}
+
 export const TASK_STATES = ['Açık', 'Kapalı'];
 
 export const TASK_GROUPS = [
-	'Gözetmenlik', 
-	'Ders Asistanlığı', 
-	'Lab Asistanlığı', 
-	'Sekreterlik', 
-	'Kalite', 
-	'Abet', 
-	'Tanıtım', 
-	'Kurul', 
+	'Gözetmenlik',
+	'Ders Asistanlığı',
+	'Lab Asistanlığı',
+	'Sekreterlik',
+	'Kalite',
+	'Abet',
+	'Tanıtım',
+	'Kurul',
 	'Diğer'
 ];
 

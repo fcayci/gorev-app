@@ -3,15 +3,15 @@ import { Router } from '@angular/router';
 
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
-// import model
+// import components
+import { FacultyAddComponent } from './faculty-add.component';
+
+// import models
 import { Faculty, ROLES } from '../../models/FacultyModel';
 
 // import services
 import { UserService } from '../../services/facultys.service';
 import { ToasterService } from '../../services/toaster.service';
-
-// import other components
-import { FacultyAddComponent } from './faculty-add.component';
 
 @Component({
 	selector: 'faculty-list',
@@ -80,11 +80,6 @@ export class FacultyListComponent implements OnInit {
 		}
 	}
 
-	// TODO: find a way to make this kisi.username
-	// active service is added for that purpose
-	// to emit the events on kisi change
-	// however there is the problem when a user
-	// directly goes to a user's page using url
 	gotoPerson(kisi: Faculty): void {
 		this._user.getKisi(kisi)
 		.subscribe((kisi: Faculty) => {
