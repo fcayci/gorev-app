@@ -8,8 +8,11 @@ import 'moment-duration-format';
 
 // import models
 import { Busy, REPEATS } from '../../models/BusyModel';
+import { Faculty } from '../../models/FacultyModel';
+
 // import services
 import { BusyService } from '../../services/busys.service';
+import { UserService } from '../../services/facultys.service';
 
 @Component({
 	selector: 'faculty-busy-add',
@@ -27,6 +30,7 @@ export class FacultyBusyAddComponent implements OnInit  {
 
 	constructor(
 		private _busy: BusyService,
+		private _user: UserService,
 		public dialogRef: MatDialogRef<FacultyBusyAddComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		private _fb: FormBuilder
@@ -60,7 +64,7 @@ export class FacultyBusyAddComponent implements OnInit  {
 
 				// check if the time is correct
 				if (ed.isAfter(sd)) {
-					this.formValid = true; 
+					this.formValid = true;
 				} else {
 					this.formValid = false;
 				}
@@ -106,9 +110,16 @@ export class FacultyBusyAddComponent implements OnInit  {
 			owner : this.data._id,
 			recur : b.recur
 		};
-			
+
+		// FIXME: add error handling
 		this._busy.setBusy(model)
 		.subscribe(res => {
+
+			this._user.addBusyToKisi(this.data, res)
+				.subscribe((kisi: Faculty) => {
+
+				});
+
 			this.dialogRef.close(res);
 		});
 	}

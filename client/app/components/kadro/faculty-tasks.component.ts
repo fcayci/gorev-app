@@ -44,10 +44,6 @@ export class FacultyTasksComponent implements OnInit, OnChanges {
 		}
 	}
 
-	onClick(r) {
-		this._router.navigate(['/angarya/' + r._id]);
-	}
-
 	isExpired(d) {
 		return this.today.isAfter(d);
 	}

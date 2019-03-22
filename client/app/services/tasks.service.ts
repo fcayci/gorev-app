@@ -59,7 +59,7 @@ export class TaskService {
 		);
 	}
 
-	addTask(task: Task): Observable<Task> {
+	setTask(task: Task): Observable<Task> {
 		const url = angaryaUrl;
 		return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
 		.pipe(

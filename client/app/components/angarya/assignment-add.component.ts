@@ -42,8 +42,6 @@ export class AssignmentAddComponent implements OnInit {
 	taskdate: TaskDate; // holder for task dates
 	task_groups = TASK_GROUPS;
 
-	//availablePeople: Faculty[] = [];
-	//busyPeople: Faculty[] = [];
 	owners: Faculty[] =[];
 
 	// create weights and numbers for people / load weight
@@ -128,10 +126,8 @@ export class AssignmentAddComponent implements OnInit {
 
 	onSubmit() {
 		const g = this.gorevForm.value;
-		// FIXME: remove
-		console.log('g', g);
 		// calculate load
-		const load = Math.trunc(this.taskdate.duration * g.weight / 60);
+		const load = this.calculateload(this.taskdate.duration, g.weight);
 		const model: Task = {
 			name: g.name,
 			group: g.group,
@@ -147,8 +143,8 @@ export class AssignmentAddComponent implements OnInit {
 			state: 0
 		};
 
-		// Add the task to the db
-		this._task.addTask(model)
+		// Set the task to the db
+		this._task.setTask(model)
 		.subscribe(res => {
 			// // FIXME: Add error handling
 			for (let i = 0; i < model.peoplecount; i++) {
@@ -180,10 +176,6 @@ export class AssignmentAddComponent implements OnInit {
 
 		// Remove candidate from availablePeople
 		p.isAvailable = 0;
-		// const i = this.availablePeople.indexOf(p);
-		// if (i > -1) {
-		// 	this.availablePeople.splice(i, 1);
-		// }
 
 		// Disable form if good to go.
 		if (this.gorevForm.value.peoplecount <= this.owners.length) {
@@ -205,10 +197,6 @@ export class AssignmentAddComponent implements OnInit {
 
 		// add to available
 		p.isAvailable = 1;
-		// if (this.availablePeople.indexOf(p) === -1) {
-		// 	this.availablePeople.push(p);
-		// }
-		// this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
 
 		// Enable form
 		if (this.owners.length < this.gorevForm.get('peoplecount').value) {
@@ -245,12 +233,6 @@ export class AssignmentAddComponent implements OnInit {
 		}
 	}
 
-  // clearAssignedPeople(): void {
-  //   this.choosenPeople = [];
-  //   this.gorevForm.controls['choosenPeople'].setValue([]);
-  //   this.gorevForm.patchValue({peoplecount: ''});
-  // }
-  //
 
 	updateAvailablePeople(sd: string, ed: string) {
 		// arrays to hold busy/available id
@@ -311,9 +293,6 @@ export class AssignmentAddComponent implements OnInit {
 			}
 		}
 
-		// zero out lists before the storm
-		//this.availablePeople = [];
-		//this.busyPeople = [];
 		// FIXME: integrate vacation in other places
 		for (const k of this.kadro) {
 			if (k.vacation === false) {
@@ -327,13 +306,13 @@ export class AssignmentAddComponent implements OnInit {
 			}
 		}
 
-		// FIXME: remove
-		//console.log('available', this.availablePeople);
-		//console.log('busies', this.busyPeople);
-
-		//this.availablePeople = this._fsort.transform(this.availablePeople, 'load');
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
+	}
+
+	// Here is where the load calculation happens
+	calculateload(duration: number, weight: number) {
+		return Math.trunc(duration * weight / 60);
 	}
 
 	// for when validation in the form

@@ -25,8 +25,7 @@ export class BusyService {
 		let url = busyUrl;
 		return this.http.get<Busy[]>(url)
 		.pipe(
-			catchError(this.handleError),
-			//tap()
+			catchError(this.handleError)
 		);
 	}
 
@@ -35,8 +34,7 @@ export class BusyService {
 		let url = busyUrl + '/' + id;
 		return this.http.get<Busy>(url)
 		.pipe(
-			catchError(this.handleError),
-			//tap()
+			catchError(this.handleError)
 		);
 	}
 
@@ -59,15 +57,7 @@ export class BusyService {
   //   return busies.filter(i=>i.owner_id === oid)
   // }
 
-	// FIXME: Update cache
-	deleteBusy(busy: Busy): Observable<{}>{
-		let url = busyUrl + '/' + busy._id;
-		return this.http.delete(url)
-		.pipe(
-			catchError(this.handleError)
-		);
-	}
-
+	// add busy to db
 	setBusy(busy: Busy): Observable<Busy>{
 		let url = busyUrl
 		return this.http.post<Busy>(url, JSON.stringify(busy), httpOptions)
@@ -76,21 +66,30 @@ export class BusyService {
 		);
 	}
 
-  // FIXME: move this to handlers
- private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${JSON.stringify(error.error)}`);
-    }
-    // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
-  };
+	// delete busy from db
+	deleteBusy(busy: Busy): Observable<{}>{
+		let url = busyUrl + '/' + busy._id;
+		return this.http.delete(url)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	// FIXME: move this to handlers
+	private handleError(error: HttpErrorResponse) {
+		if (error.error instanceof ErrorEvent) {
+			// A client-side or network error occurred. Handle it accordingly.
+			console.error('An error occurred:', error.error.message);
+		} else {
+			// The backend returned an unsuccessful response code.
+			// The response body may contain clues as to what went wrong,
+			console.error(
+			`Backend returned code ${error.status}, ` +
+			`body was: ${JSON.stringify(error.error)}`);
+		}
+		// return an observable with a user-facing error message
+		return throwError(
+			'Something bad happened; please try again later.');
+	};
 
 }

@@ -6,6 +6,7 @@ import { retry, catchError, tap } from 'rxjs/operators';
 // import models
 import { Faculty } from '../models/FacultyModel';
 import { Task } from '../models/TaskModel';
+import { Busy } from '../models/BusyModel';
 
 const httpOptions = {
 	headers: new HttpHeaders({
@@ -102,6 +103,34 @@ export class UserService {
 		if (index !== -1) {
 			kisi.task.splice(index, 1);
 			kisi.pendingload -= task.load;
+		}
+		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	// add busy to kisi
+	addBusyToKisi(kisi: Faculty, busy: Busy): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id;
+		// check and add busy if it is not there already
+		const index: number = kisi.busy.indexOf(busy._id);
+		if (index === -1) {
+			kisi.busy.push(busy._id);
+		}
+		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	// delete busy from kisi
+	deleteBusyFromKisi(kisi: Faculty, busy: Busy): Observable<Faculty> {
+		const url = kadroUrl + '/' + kisi._id;
+		// find and remove task from kisi if task exists
+		const index: number = kisi.busy.indexOf(busy._id);
+		if (index !== -1) {
+			kisi.busy.splice(index, 1);
 		}
 		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(

@@ -11,6 +11,7 @@ import { Busy } from '../../models/BusyModel';
 
 // import services
 import { BusyService } from '../../services/busys.service';
+import { UserService } from '../../services/facultys.service';
 import { ToasterService } from '../../services/toaster.service';
 
 // import components
@@ -33,6 +34,7 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 
 	constructor(
 		private _busy: BusyService,
+		private _user: UserService,
 		private _toaster: ToasterService,
 		public dialog: MatDialog
 	) {}
@@ -63,6 +65,12 @@ export class FacultyBusyComponent implements OnInit, OnChanges{
 			const oldData = this.dataSource.data;
 			oldData.splice(i, 1);
 			this.dataSource.data = oldData;
+
+			this._user.deleteBusyFromKisi(this.profile, busy)
+				.subscribe((kisi: Faculty) => {
+
+				});
+
 			this._toaster.info(busy.name + ' silindi.');
 		});
 	}
