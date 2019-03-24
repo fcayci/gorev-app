@@ -36,6 +36,7 @@ import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.com
 import { PositionSelectorPipe } from './pipes/position-selector.pipe';
 import { FSortPipe } from './pipes/fsort.pipe';
 import { peopleCountValidatorDirective } from './directives/peoplecount.directive';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 registerLocaleData(localeTr);
 
@@ -76,6 +77,7 @@ const ROUTES : Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
+    NavBarComponent,
     AssignmentListComponent,
     AssignmentAddComponent,
     FacultyListComponent,

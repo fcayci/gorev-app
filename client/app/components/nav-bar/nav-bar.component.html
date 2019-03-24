@@ -1,0 +1,31 @@
+<mat-toolbar class="navbar mat-elevation-z6" color="primary">
+	<mat-toolbar-row class="navbar-row">
+		<button mat-button routerLink="/" routerLinkActive="active">Home</button>
+		<button *ngIf="authenticated" mat-button routerLink="kadro" routerLinkActive="active">Kadro</button>
+		<button *ngIf="authenticated" mat-button routerLink="angarya" routerLinkActive="active">Görevler</button>
+
+		<span class="fill-remaining-space"></span>
+
+		<button *ngIf="authenticated" mat-button [matMenuTriggerFor]="menu">
+				<div *ngIf="user?.avatar; then userAvatar else defaultAvatar"></div>
+				<ng-template #userAvatar>
+					<img src="user.avatar" class="rounded-circle align-self-center mr-2" style="width: 32px;">
+				</ng-template>
+				<ng-template #defaultAvatar>
+					<mat-icon>person</mat-icon>
+				</ng-template>
+		</button>
+
+		<button *ngIf="!authenticated" mat-button
+			[matMenuTriggerFor]="menu"
+			(click)="signIn()">
+				Giriş
+		</button>
+
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item>Profil</button>
+			<button mat-menu-item (click)="signOut()">Çıkış</button>
+		</mat-menu>
+
+	</mat-toolbar-row>
+</mat-toolbar>

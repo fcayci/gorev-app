@@ -1,19 +1,4 @@
-  <mat-toolbar class="navbar mat-elevation-z6" color="primary">
-    <mat-toolbar-row class="navbar-row">
-      <button mat-button routerLink="" routerLinkActive="active">Home</button>
-      <button mat-button routerLink="kadro" routerLinkActive="active">Kadro</button>
-      <button mat-button routerLink="angarya" routerLinkActive="active">Görevler</button>
-
-      <span class="fill-remaining-space"></span>
-
-      <button mat-button>Sign out</button>
-      <button mat-button>Sign in</button>
-      <span matTooltip="Profile"><button mat-icon-button>
-      <mat-icon>person</mat-icon></button></span>
-
-    </mat-toolbar-row>
-  </mat-toolbar>
-
-<div class="wrapper">
-  <router-outlet (activate)="onActivate($event)"></router-outlet>
-</div>
+<app-nav-bar></app-nav-bar>
+<main class="wrapper">
+	<router-outlet (activate)="onActivate()"></router-outlet>
+</main>

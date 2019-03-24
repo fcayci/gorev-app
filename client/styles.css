@@ -19,25 +19,6 @@ header {
   margin: 0 20px 20px 20px;
 }
 
-.navbar {
-  min-height: 52px!important;
-  height: 52px!important;
-  position: fixed;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  border-radius: 0;
-}
-
-.navbar-row {
-  /*max-width: 960px;*/
-  margin: auto;
-  padding: 0!important;
-}
-
 .table-header {
   min-height: 34px;
   padding: 8px 24px 0;

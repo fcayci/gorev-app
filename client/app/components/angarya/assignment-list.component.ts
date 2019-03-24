@@ -30,9 +30,10 @@ export class AssignmentListComponent implements OnInit {
 	taskstates = TASK_STATES;
 	angarya: Task[];
 	kadro: Faculty[] = [];
-	displayedColumns = ['no', 'name', 'group', 'startdate', 'time', 'people', 'owners', 'load', 'state'];
+	displayedColumns = ['no', 'name', 'group', 'startdate', 'time', 'people', 'owners', 'load', 'state', 'delete'];
 	dataSource: MatTableDataSource<Task>;
 	today;
+	showdelete = false;
 
 	constructor(
 		private _task: TaskService,
@@ -152,6 +153,10 @@ export class AssignmentListComponent implements OnInit {
 		if (this.dataSource.paginator) {
 			this.dataSource.paginator.firstPage();
 		}
+	}
+
+	toggleEdit() {
+		this.showdelete = !this.showdelete;
 	}
 
 	gotoPerson(id: string) {
