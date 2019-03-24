@@ -11,7 +11,7 @@ import { Busy } from '../../models/BusyModel';
 
 // import services
 import { BusyService } from '../../services/busys.service';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 // import components

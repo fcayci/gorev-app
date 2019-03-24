@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Faculty } from '../../models/FacultyModel';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({

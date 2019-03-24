@@ -14,7 +14,7 @@ import { Faculty } from '../../models/FacultyModel';
 
 // import services
 import { TaskService } from '../../services/tasks.service';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({

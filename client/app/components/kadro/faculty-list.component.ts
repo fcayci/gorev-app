@@ -10,7 +10,7 @@ import { FacultyAddComponent } from './faculty-add.component';
 import { Faculty, ROLES } from '../../models/FacultyModel';
 
 // import services
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({

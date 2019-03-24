@@ -14,7 +14,7 @@ import { Busy, TaskDate } from '../../models/BusyModel';
 
 // import services
 import { TaskService } from '../../services/tasks.service';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 import { BusyService } from '../../services/busys.service';
 import { ValidationService } from '../../services/validation.service';
 

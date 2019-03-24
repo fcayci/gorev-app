@@ -12,7 +12,7 @@ import { Faculty } from '../../models/FacultyModel';
 
 // import services
 import { BusyService } from '../../services/busys.service';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
 	selector: 'faculty-busy-add',

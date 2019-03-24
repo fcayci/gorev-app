@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
 import { Faculty, ROLES } from '../../models/FacultyModel';
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
 	selector: 'faculty-add',

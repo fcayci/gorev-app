@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // import models
 import { Faculty, ROLES } from '../../models/FacultyModel';
 // import services
-import { UserService } from '../../services/facultys.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
 	selector: 'faculty-profile',
