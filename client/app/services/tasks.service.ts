@@ -65,19 +65,19 @@ export class TaskService {
 		);
 	}
 
-	// getTasksByIds(ids: Array<string>): Observable<Task[]> {
-	// 	// If the ids is empty return an empty array to prevent from
-	// 	// getting all the tasks (/angarya)
-	// 	if (ids.length === 0) {
-	// 		return of([]);
-	// 	} else {
-	// 		const url = angaryaUrl + '/' + ids;
-	// 		return this.http.get<Task[]>(url)
-	// 			.pipe(
-	// 				catchError(this.handleError)
-	// 		);
-	// 	}
-	// }
+	getTasksByIds(ids: Array<string>): Observable<Task[]> {
+		// If the ids is empty return an empty array to prevent from
+		// getting all the tasks (/angarya)
+		if (ids.length === 0) {
+			return of([]);
+		} else {
+			const url = angaryaUrl + '/' + ids;
+			return this.http.get<Task[]>(url)
+				.pipe(
+					catchError(this.handleError)
+			);
+		}
+	}
 
 	// FIXME: Seems wrong
 	// getTasksByOwnerId(id: string): Observable<Task[]> {

@@ -8,6 +8,7 @@ var UserSchema = new Schema({
 		lowercase: true,
 		trim: true
 	},
+	'department' : String,
 	'position' : String,
 	'rank' : Number,
 	'office' : String,
@@ -37,8 +38,5 @@ var UserSchema = new Schema({
 		ref: 'Task'
 	}]
 });
-
-
-
 
 module.exports = mongoose.model('User', UserSchema);

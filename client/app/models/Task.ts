@@ -14,7 +14,6 @@ export interface TaskDB {
 
 export interface Task extends TaskDB {
 	ownernames?: Array<string>;
-	weight?: number;
 }
 
 export interface Owners {

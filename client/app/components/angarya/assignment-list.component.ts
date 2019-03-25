@@ -30,7 +30,7 @@ export class AssignmentListComponent implements OnInit {
 	taskstates = TASK_STATES;
 	angarya: Task[];
 	kadro: User[] = [];
-	displayedColumns = ['no', 'name', 'group', 'startdate', 'time', 'people', 'owners', 'load', 'state', 'delete'];
+	displayedColumns = ['no', 'description', 'taskgroup', 'startdate', 'time', 'people', 'owners', 'load', 'state', 'delete'];
 	dataSource: MatTableDataSource<Task>;
 	today;
 	showdelete = false;

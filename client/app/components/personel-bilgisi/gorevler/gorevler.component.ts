@@ -1,35 +1,33 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
 // import models
-import { Personel } from '../../models/Personel';
-import { Task, TASK_STATES } from '../../models/TaskModel';
+import { User } from '../../../models/User';
+import { Task, TASK_STATES } from '../../../models/Task';
 
 // import services
-import { TaskService } from '../../services/tasks.service';
+import { TaskService } from '../../../services/tasks.service';
 
 @Component({
-	selector: 'faculty-tasks',
-	templateUrl: './faculty-tasks.component.html'
+	selector: 'app-gorevler',
+	templateUrl: './gorevler.component.html',
+	styleUrls: ['./gorevler.component.css']
 })
+export class GorevlerComponent implements OnInit, OnChanges {
 
-export class FacultyTasksComponent implements OnInit, OnChanges {
-
-	@Input() profile: Personel;
+	@Input() profile: User;
 
 	title = 'Görevlendirmeler';
-	displayedColumns = ['name', 'date', 'time', 'load', 'expired'];
+	displayedColumns = ['description', 'date', 'time', 'load', 'expired'];
 	dataSource: MatTableDataSource<Task>;
 	today;
 	gstates = TASK_STATES;
 	totalLoad: number;
 
 	constructor(
-		private _task: TaskService,
-		private _router: Router) {}
+		private _task: TaskService) {}
 
 	ngOnInit(): void {
 		this.today = moment();
@@ -37,7 +35,8 @@ export class FacultyTasksComponent implements OnInit, OnChanges {
 
 	ngOnChanges() {
 		if (this.profile) {
-			this._task.getFacultyTasks(this.profile._id)
+			let ids = this.profile.task;
+			this._task.getTasksByIds(ids)
 			.subscribe((tasks: Task[]) => {
 				// FIXME: remove
 				console.log(tasks);

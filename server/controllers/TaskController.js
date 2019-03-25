@@ -7,112 +7,112 @@ var TaskModel = require('../models/TaskModel.js');
  */
 module.exports = {
 
-    /**
-     * TaskController.list()
-     */
-    list: function (req, res) {
-        TaskModel.find(function (err, Tasks) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Task.',
-                    error: err
-                });
-            }
-            return res.json(Tasks);
-        });
-    },
+	/**
+	 * TaskController.list()
+	 */
+	list: function (req, res) {
+		TaskModel.find(function (err, Tasks) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Task.',
+					error: err
+				});
+			}
+			return res.json(Tasks);
+		});
+	},
 
-    /**
-     * TaskController.show()
-     */
-    show: function (req, res) {
-        var id = req.params.id;
-        TaskModel.findOne({_id: id}, function (err, Task) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Task.',
-                    error: err
-                });
-            }
-            if (!Task) {
-                return res.status(404).json({
-                    message: 'No such Task'
-                });
-            }
-            return res.json(Task);
-        });
-    },
+	/**
+	 * TaskController.show()
+	 */
+	show: function (req, res) {
+		var id = req.params.id;
+		TaskModel.findOne({_id: id}, function (err, Task) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Task.',
+					error: err
+				});
+			}
+			if (!Task) {
+				return res.status(404).json({
+					message: 'No such Task'
+				});
+			}
+			return res.json(Task);
+		});
+	},
 
    /**
-     * TaskController.show()
-     */
-    showUser: function (req, res) {
-        var id = req.params.id;
-        TaskModel.find({owner: id}, function (err, Task) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Task.',
-                    error: err
-                });
-            }
-            // if (!Task) {
-            //     return res.status(404).json({
-            //         message: 'No such Task'
-            //     });
-            // }
-            return res.json(Task);
-        });
-    },
+	 * TaskController.show()
+	 */
+	showUser: function (req, res) {
+		var id = req.params.id;
+		TaskModel.find({owner: id}, function (err, Task) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Task.',
+					error: err
+				});
+			}
+			// if (!Task) {
+			//     return res.status(404).json({
+			//         message: 'No such Task'
+			//     });
+			// }
+			return res.json(Task);
+		});
+	},
 
 
-    /**
-     * TaskController.create()
-     */
-    create: function (req, res) {
-        var Task = new TaskModel({
-			name : req.body.name,
-			group : req.body.group,
+	/**
+	 * TaskController.create()
+	 */
+	create: function (req, res) {
+		var Task = new TaskModel({
+			description : req.body.description,
+			taskgroup : req.body.taskgroup,
 			peoplecount : req.body.peoplecount,
-			weight : req.body.weight,
 			load : req.body.load,
 			owners : req.body.owners,
 			startdate : req.body.startdate,
 			enddate : req.body.enddate,
 			duration : req.body.duration,
+			recur : req.body.recur,
 			state : req.body.state
 
-        });
+		});
 
-        Task.save(function (err, Task) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating Task',
-                    error: err
-                });
-            }
-            return res.status(201).json(Task);
-        });
-    },
+		Task.save(function (err, Task) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when creating Task',
+					error: err
+				});
+			}
+			return res.status(201).json(Task);
+		});
+	},
 
-    /**
-     * TaskController.update()
-     */
-    update: function (req, res) {
-        var id = req.params.id;
-        TaskModel.findOne({_id: id}, function (err, Task) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting Task',
-                    error: err
-                });
-            }
-            if (!Task) {
-                return res.status(404).json({
-                    message: 'No such Task'
-                });
-            }
+	/**
+	 * TaskController.update()
+	 */
+	update: function (req, res) {
+		var id = req.params.id;
+		TaskModel.findOne({_id: id}, function (err, Task) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Task',
+					error: err
+				});
+			}
+			if (!Task) {
+				return res.status(404).json({
+					message: 'No such Task'
+				});
+			}
 
-            Task.name = req.body.name ? req.body.name : Task.name;
+			Task.name = req.body.name ? req.body.name : Task.name;
 			Task.group = req.body.group ? req.body.group : Task.group;
 			Task.peoplecount = req.body.peoplecount ? req.body.peoplecount : Task.peoplecount;
 			Task.weight = req.body.weight ? req.body.weight : Task.weight;
@@ -122,33 +122,33 @@ module.exports = {
 			Task.enddate = req.body.enddate ? req.body.enddate : Task.enddate;
 			Task.duration = req.body.duration ? req.body.duration : Task.duration;
 			Task.state = req.body.state ? req.body.state : Task.state;
-			
-            Task.save(function (err, Task) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when updating Task.',
-                        error: err
-                    });
-                }
 
-                return res.json(Task);
-            });
-        });
-    },
+			Task.save(function (err, Task) {
+				if (err) {
+					return res.status(500).json({
+						message: 'Error when updating Task.',
+						error: err
+					});
+				}
 
-    /**
-     * TaskController.remove()
-     */
-    remove: function (req, res) {
-        var id = req.params.id;
-        TaskModel.findByIdAndRemove(id, function (err, Task) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when deleting the Task.',
-                    error: err
-                });
-            }
-            return res.status(204).json();
-        });
-    }
+				return res.json(Task);
+			});
+		});
+	},
+
+	/**
+	 * TaskController.remove()
+	 */
+	remove: function (req, res) {
+		var id = req.params.id;
+		TaskModel.findByIdAndRemove(id, function (err, Task) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when deleting the Task.',
+					error: err
+				});
+			}
+			return res.status(204).json();
+		});
+	}
 };

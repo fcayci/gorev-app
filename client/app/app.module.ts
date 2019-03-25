@@ -37,6 +37,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { ProfileComponent } from './components/personel-bilgisi/profile/profile.component';
 import { MesgulListesiComponent } from './components/personel-bilgisi/mesgul-listesi/mesgul-listesi.component';
 import { MesgulEkleComponent } from './components/personel-bilgisi/mesgul-ekle/mesgul-ekle.component';
+import { GorevlerComponent } from './components/personel-bilgisi/gorevler/gorevler.component';
 
 registerLocaleData(localeTr);
 
@@ -88,7 +89,8 @@ const ROUTES : Routes = [
     PersonelBilgisiComponent,
     ProfileComponent,
     MesgulListesiComponent,
-    MesgulEkleComponent
+    MesgulEkleComponent,
+    GorevlerComponent
   ],
   imports: [
     BrowserModule,

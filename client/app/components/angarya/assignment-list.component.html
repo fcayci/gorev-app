@@ -35,14 +35,14 @@
         <td mat-cell *matCellDef="let row; let i = index">{{i+1}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="name">
+      <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Başlık</th>
-        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+        <td mat-cell *matCellDef="let row">{{row.description}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="group">
+      <ng-container matColumnDef="taskgroup">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Tür</th>
-        <td mat-cell *matCellDef="let row">{{row.group}}</td>
+        <td mat-cell *matCellDef="let row">{{row.taskgroup}}</td>
       </ng-container>
 
       <ng-container matColumnDef="startdate">
@@ -74,7 +74,8 @@
         <th mat-header-cell *matHeaderCellDef>Atanan Kişiler</th>
         <td mat-cell *matCellDef="let row">
           <mat-chip-list >
-          <mat-chip *ngFor="let pid of row.owners"  matTooltip={{getPerson(pid)}} color="accent" (click)="gotoPerson(pid)"> {{getPersonInitials(pid)}} </mat-chip>
+          <mat-chip *ngFor="let p of row.owners"  matTooltip={{getPerson(p.id)}} color="accent"
+          (click)="gotoPerson(p.id)"> {{getPersonInitials(p.id)}} </mat-chip>
           </mat-chip-list>
         </td>
       </ng-container>

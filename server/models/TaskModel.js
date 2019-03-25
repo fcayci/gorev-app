@@ -2,18 +2,22 @@ var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var TaskSchema = new Schema({
-	'name' : String,
-	'group' : String,
+	'description' : {
+		type: String,
+		trim: true
+	},
+	'taskgroup' : String,
 	'peoplecount' : Number,
-	'weight' : Number,
 	'load' : Number,
 	'owners' : [{
-	 	type: Schema.Types.ObjectId,
-	 	ref: 'Faculty'
+		'id' : String,
+		'state' : Number,
+		'newload' : Number
 	}],
 	'startdate' : Date,
 	'enddate' : Date,
 	'duration' : Number,
+	'recur' : Number,
 	'state' : Number
 });
 

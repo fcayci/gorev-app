@@ -58,7 +58,7 @@ export class AssignmentAddComponent implements OnInit {
 	ngOnInit() {
 		// FIXME: remove default values
 		this.gorevForm = this._fb.group({
-			name: ['User Test',
+			description: ['User Test',
 				Validators.required],
 			taskgroup: ['Sekreterlik', Validators.required],
 			when: this._fb.group({
