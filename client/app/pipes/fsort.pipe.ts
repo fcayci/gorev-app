@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Faculty } from '../models/FacultyModel';
+import { User } from '../models/User';
 
 @Pipe({name: 'fsort'})
 export class FSortPipe implements PipeTransform {
-	transform(list: Array<Faculty>, sel: string): Array<Faculty> {
+	transform(list: Array<User>, sel: string): Array<User> {
 		if (sel === 'name') {
 			return list.sort(compareName);
 		} else if (sel === 'load') {

@@ -14,7 +14,7 @@
 
 		<!-- group -->
 		<mat-form-field  style="width:35%">
-			<mat-select formControlName="group" placeholder="Görev Türü">
+			<mat-select formControlName="taskgroup" placeholder="Görev Türü">
 				<mat-option *ngFor="let g of task_groups" [value]="g">
 					{{[g]}}
 				</mat-option>
@@ -83,7 +83,7 @@
 		</mat-form-field>
 
 		<div>
-			<span matTooltip="Müsait olan Ar.Gör., Dr. veya bölümdekileri seçin.
+			<span matTooltip="Müsait olan Ar.Gör., Dr. veya bölümdeki tüm müsaitleri seçin.
 			Müsait olmayanları da dahil etmek için Bölüm'ü işaretleyin.">
 				<mat-button-toggle-group formControlName="sel">
 					<mat-button-toggle value="1">Ar.Gör.</mat-button-toggle>
@@ -116,14 +116,17 @@
 					border-radius: 24px; background-color: #cecece">
 						{{c.load}}
 					</span>
-					<span> - {{c.fullname}}</span>
+					<span>
+						-
+					</span>
+					<span>{{c.fullname}}</span>
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
 
 		<div>
 			<button mat-button color="primary" (click)="addToOwners()"
-			[disabled]="gorevForm.get('when').status === 'INVALID' || !taskdate.valid ||
+			[disabled]="gorevForm.get('when').status === 'INVALID' || !taskdate?.valid ||
 			!gorevForm.get('selectedPerson').value ||
 			gorevForm.get('peoplecount').value <= gorevForm.get('owners').length">
 				Ekle

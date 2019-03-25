@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Faculty } from '../models/FacultyModel';
+import { User } from '../models/User';
 
 @Injectable({
 	providedIn: 'root',
@@ -9,7 +9,7 @@ import { Faculty } from '../models/FacultyModel';
 export class ActiveService {
 
 	// private kisi = new BehaviorSubject(' ');
-	// activeKisi = this.kisi.asObservable(); 
+	// activeKisi = this.kisi.asObservable();
 
 	constructor() {}
 

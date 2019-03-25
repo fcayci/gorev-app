@@ -4,9 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { retry, catchError, tap } from 'rxjs/operators';
 
 // import models
-import { Faculty } from '../models/FacultyModel';
-import { Task } from '../models/TaskModel';
-import { Busy } from '../models/BusyModel';
+import { User, Busy } from '../models/User';
+import { Task } from '../models/Task';
 
 const httpOptions = {
 	headers: new HttpHeaders({
@@ -22,66 +21,70 @@ const kadroUrl = '/api/kadro';
 })
 export class UserService {
 
-	// local cache copies of Faculty
-	cache_kisi: Faculty;
-	cache_kadro: Faculty[] = [];
+	// local cache copies of Users
+	cache_kisi: User;
+	cache_kadro: User[] = [];
 
 	constructor(private http: HttpClient) {}
 
-	// get full kadro
-	getKadro(): Observable<Faculty[]> {
+	// get all the users
+	getUsers(): Observable<User[]> {
 		const url = kadroUrl;
-		return this.http.get<Faculty[]>(url)
+		return this.http.get<User[]>(url)
 		.pipe(
 			retry(3), // retry a failed request up to 3 times
 			catchError(this.handleError),
 			tap( // cache result
-				Faculty => this.cache_kadro = Faculty
+				User => this.cache_kadro = User
 			)
 		);
 	}
 
 	// add a person to kadro
-	addKisi(kisi: Faculty): Observable<Faculty> {
+	addUser(kisi: User): Observable<User> {
 		const url = kadroUrl;
-		return this.http.post<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		return this.http.post<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError),
 			tap( // update cache when someone is added
-				Faculty => this.cache_kadro.push(Faculty)
+				User => this.cache_kadro.push(User)
 			)
 		);
 	}
 
-	// get the given person (request with id)
-	getKisi(kisi: Faculty): Observable<Faculty> {
+	// get the given person
+	getUser(kisi: User): Observable<User> {
+		console.log('getUser() is used', kisi);
 		const url = kadroUrl + '/' + kisi._id;
-		return this.http.get<Faculty>(url)
+		return this.http.get<User>(url)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
 	// get given id person
-	getKisibyId(id: string): Observable<Faculty> {
+	getUserById(id: string): Observable<User> {
 		const url = kadroUrl + '/' + id;
-		return this.http.get<Faculty>(url)
+		return this.http.get<User>(url)
 		.pipe(
-			catchError(this.handleError)
+			catchError(this.handleError),
+			tap(
+				User => console.log('getUserByID() is used', User)
+			)
 		);
 	}
 
 	// update kisi properties
-	updateKisi(kisi: Faculty): Observable<Faculty> {
+	updateUser(kisi: User): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
 	// add task to kisi and add load to pending load
-	addTaskToKisi(kisi: Faculty, task: Task): Observable<Faculty> {
+	addTaskToUser(kisi: User, task: Task): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
 		// check and add task if it is not there already
 		const index: number = kisi.task.indexOf(task._id);
@@ -89,14 +92,14 @@ export class UserService {
 			kisi.task.push(task._id);
 			kisi.pendingload += task.load;
 		}
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
 	// delete task from kisi and delete pending load
-	deleteTaskFromKisi(kisi: Faculty, task: Task): Observable<Faculty> {
+	deleteTaskFromKisi(kisi: User, task: Task): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
 		// find and remove task from kisi if task exists
 		const index: number = kisi.task.indexOf(task._id);
@@ -104,59 +107,57 @@ export class UserService {
 			kisi.task.splice(index, 1);
 			kisi.pendingload -= task.load;
 		}
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
 	// add busy to kisi
-	addBusyToKisi(kisi: Faculty, busy: Busy): Observable<Faculty> {
+	addBusyToUser(kisi: User, b: Busy): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
-		// check and add busy if it is not there already
-		const index: number = kisi.busy.indexOf(busy._id);
-		if (index === -1) {
-			kisi.busy.push(busy._id);
-		}
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		kisi.busy.push(b);
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
 	// delete busy from kisi
-	deleteBusyFromKisi(kisi: Faculty, busy: Busy): Observable<Faculty> {
+	deleteBusyFromUser(kisi: User, b: Busy): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
 		// find and remove task from kisi if task exists
-		const index: number = kisi.busy.indexOf(busy._id);
+		const index: number = kisi.busy.findIndex(m => m._id === b._id);
 		if (index !== -1) {
 			kisi.busy.splice(index, 1);
+		} else {
+			// return ; //FIXME add error message
 		}
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError)
 		);
 	}
 
-	// complete task, add load, remove pending load
-	completeTaskOfKisi(kisi: Faculty, task: Task): Observable<Faculty> {
-		const url = kadroUrl + '/' + kisi._id;
-		// find and remove task from kisi if task exists
-		const index: number = kisi.task.indexOf(task._id);
-		if (index !== -1) {
-			kisi.task.splice(index, 1);
-			kisi.pendingload -= task.load;
-			kisi.load += task.load;
-		}
-		return this.http.put<Faculty>(url, JSON.stringify(kisi), httpOptions)
-		.pipe(
-			catchError(this.handleError)
-		);
-	}
+	// // complete task, add load, remove pending load
+	// completeTaskOfKisi(kisi: User, task: Task): Observable<User> {
+	// 	const url = kadroUrl + '/' + kisi._id;
+	// 	// find and remove task from kisi if task exists
+	// 	const index: number = kisi.task.indexOf(task._id);
+	// 	if (index !== -1) {
+	// 		kisi.task.splice(index, 1);
+	// 		kisi.pendingload -= task.load;
+	// 		kisi.load += task.load;
+	// 	}
+	// 	return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
+	// 	.pipe(
+	// 		catchError(this.handleError)
+	// 	);
+	// }
 
 	// FIXME: make it sudo
 	// FIXME: add cache
-	deleteKisi(kisi: Faculty): Observable<{}> {
+	deleteUser(kisi: User): Observable<{}> {
 		const url = kadroUrl + '/' + kisi._id;
 		return this.http.delete(url)
 		.pipe(

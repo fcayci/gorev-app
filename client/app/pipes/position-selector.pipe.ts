@@ -1,9 +1,16 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Faculty, ROLES } from '../models/FacultyModel';
+import { User } from '../models/User';
 
-@Pipe({name: 'selector'})
+@Pipe({
+	name: 'selector',
+	pure: true
+})
 export class PositionSelectorPipe implements PipeTransform {
-	transform(kadro: Array<Faculty>, selector: string): Array<Faculty> {
+	transform(kadro: Array<User>, selector: string): Array<User> {
+		console.log('selector worked');
+		if (selector === '0') {
+			return [];
+		}
 		if (selector === '1') {
 			return kadro.filter(i => i.isAvailable === 1 && i.position === 'Araştırma Görevlisi');
 		} else if (selector === '2') {

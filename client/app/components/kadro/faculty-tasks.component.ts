@@ -4,8 +4,11 @@ import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
-import { Faculty } from '../../models/FacultyModel';
-import { TASK_STATES, Task } from '../../models/TaskModel';
+// import models
+import { Personel } from '../../models/Personel';
+import { Task, TASK_STATES } from '../../models/TaskModel';
+
+// import services
 import { TaskService } from '../../services/tasks.service';
 
 @Component({
@@ -15,7 +18,7 @@ import { TaskService } from '../../services/tasks.service';
 
 export class FacultyTasksComponent implements OnInit, OnChanges {
 
-	@Input() profile: Faculty;
+	@Input() profile: Personel;
 
 	title = 'Görevlendirmeler';
 	displayedColumns = ['name', 'date', 'time', 'load', 'expired'];

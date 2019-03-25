@@ -1,24 +1,25 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { Router } from '@angular/router';
 
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
 // import components
-import { FacultyAddComponent } from './faculty-add.component';
+import { PersonelEkleComponent } from '../personel-ekle/personel-ekle.component';
 
 // import models
-import { Faculty, ROLES } from '../../models/FacultyModel';
+import { User, ROLES } from '../../models/User';
 
 // import services
 import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({
-	selector: 'faculty-list',
-	templateUrl: './faculty-list.component.html'
+  selector: 'app-personel-listesi',
+  templateUrl: './personel-listesi.component.html',
+  styleUrls: ['./personel-listesi.component.css']
 })
-
-export class FacultyListComponent implements OnInit {
+export class PersonelListesiComponent implements OnInit {
 
 	// table stuff
 	@ViewChild(MatPaginator) paginator: MatPaginator;
@@ -26,7 +27,7 @@ export class FacultyListComponent implements OnInit {
 
 	// what columns to display
 	displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
-	dataSource: MatTableDataSource<Faculty>;
+	dataSource: MatTableDataSource<User>;
 	filterValue: string;
 	roles = ROLES;
 	title = 'Bölüm Kadrosu';
@@ -39,12 +40,12 @@ export class FacultyListComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.getAllPeople();
+		this.getUsers();
 	}
 
-	getAllPeople() {
-		this._user.getKadro()
-		.subscribe((kadro: Faculty[]) => {
+	getUsers() {
+		this._user.getUsers()
+		.subscribe((kadro: User[]) => {
 			this.dataSource = new MatTableDataSource(kadro);
 			this.dataSource.paginator = this.paginator;
 			this.dataSource.sort = this.sort;
@@ -52,21 +53,20 @@ export class FacultyListComponent implements OnInit {
 	}
 
 	openDialog(): void {
-		const dialogRef = this.dialog.open(FacultyAddComponent, {
+		const dialogRef = this.dialog.open(PersonelEkleComponent, {
 			width: '460px'
 		});
 
 		dialogRef.afterClosed().subscribe( res => {
-		// FIXME: what happens is res is nil?
 		if (res) {
 			if (res.fullname) {
 				this._toaster.info(res.position + ' ' + res.fullname + ' başarıyla eklendi.');
-				this.getAllPeople();
+				this.getUsers();
 			} else {
 				this._toaster.info(res);
 			}
 		} else {
-			this._toaster.info('I should not be here');
+			this._toaster.info('İptal edildi.');
 		}
 		});
 	}
@@ -80,9 +80,9 @@ export class FacultyListComponent implements OnInit {
 		}
 	}
 
-	gotoPerson(kisi: Faculty): void {
-		this._user.getKisi(kisi)
-		.subscribe((kisi: Faculty) => {
+	gotoPerson(kisi: User): void {
+		this._user.getUser(kisi)
+		.subscribe((kisi: User) => {
 			this._router.navigate(['/kadro/' + kisi._id]);
 		}, err => {
 		this._toaster.info(err);

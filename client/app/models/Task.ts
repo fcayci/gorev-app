@@ -1,11 +1,10 @@
 export interface TaskDB {
 	_id?: string;
-	name: string;
-	group: string;
+	description: string;
+	taskgroup: string;
 	peoplecount: number;
-	weight: number;
 	load: number;
-	owners: Array<string>;
+	owners: Array<Owners>;
 	startdate: string;
 	enddate: string;
 	duration: number;
@@ -15,9 +14,23 @@ export interface TaskDB {
 
 export interface Task extends TaskDB {
 	ownernames?: Array<string>;
+	weight?: number;
 }
 
-export const TASK_STATES = ['Açık', 'Kapalı'];
+export interface Owners {
+	id: string;
+	state: number;
+	newload: number;
+}
+
+export interface TaskDate {
+	valid: boolean;
+	startdate: string;
+	enddate: string;
+	duration: number;
+}
+
+export const TASK_STATES = ['Aktif', 'Geçmiş', 'Kapalı'];
 
 export const TASK_GROUPS = [
 	'Gözetmenlik',

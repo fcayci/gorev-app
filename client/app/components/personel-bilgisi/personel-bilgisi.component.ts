@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Faculty } from '../../models/FacultyModel';
+// import models
+import { User } from '../../models/User';
+
+// import services
 import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({
-	selector: 'faculty-wrapper',
-	templateUrl: './faculty-wrapper.component.html'
+	selector: 'app-personel-bilgisi',
+	templateUrl: './personel-bilgisi.component.html',
+	styleUrls: ['./personel-bilgisi.component.css']
 })
+export class PersonelBilgisiComponent implements OnInit {
 
-export class FacultyWrapperComponent implements OnInit {
-
-	kisi: Faculty;
+	kisi: User;
 
 	constructor(
 		private _router: Router,
@@ -23,8 +26,8 @@ export class FacultyWrapperComponent implements OnInit {
 
 	ngOnInit(): void {
 		const id = this._route.snapshot.paramMap.get('_id');
-		this._user.getKisibyId(id)
-		.subscribe((kisi: Faculty) => {
+		this._user.getUserById(id)
+		.subscribe((kisi: User) => {
 			this.kisi = kisi;
 			}, err => {
 			this._toaster.info(err);
@@ -34,9 +37,9 @@ export class FacultyWrapperComponent implements OnInit {
 	}
 
 	// update kisi
-	onSave(kisi: Faculty ): void {
-		this._user.updateKisi(kisi)
-		.subscribe((kisi: Faculty) => {
+	onSave(kisi: User ): void {
+		this._user.updateUser(kisi)
+		.subscribe((kisi: User) => {
 			this._toaster.info(kisi.fullname + ' başarıyla düzenlendi.');
 			setTimeout(() => this._router.navigate(['/kadro']), 300);
 		}, err => {
@@ -48,8 +51,8 @@ export class FacultyWrapperComponent implements OnInit {
 	// delete kisi
 	// FIXME: Delete all busy related to this guy..
 	onDelete(): void {
-		const kisi: Faculty = this.kisi;
-		this._user.deleteKisi(this.kisi)
+		const kisi: User = this.kisi;
+		this._user.deleteUser(this.kisi)
 		.subscribe(res => {
 			this._toaster.info(this.kisi.fullname + ' silindi..');
 		}, err => {

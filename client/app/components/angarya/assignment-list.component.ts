@@ -9,8 +9,8 @@ import * as moment from 'moment';
 import { AssignmentAddComponent } from './assignment-add.component';
 
 // import models
-import { Task, TASK_STATES} from '../../models/TaskModel';
-import { Faculty } from '../../models/FacultyModel';
+import { User } from '../../models/User';
+import { Task, TASK_STATES} from '../../models/Task';
 
 // import services
 import { TaskService } from '../../services/tasks.service';
@@ -29,7 +29,7 @@ export class AssignmentListComponent implements OnInit {
 
 	taskstates = TASK_STATES;
 	angarya: Task[];
-	kadro: Faculty[] = [];
+	kadro: User[] = [];
 	displayedColumns = ['no', 'name', 'group', 'startdate', 'time', 'people', 'owners', 'load', 'state', 'delete'];
 	dataSource: MatTableDataSource<Task>;
 	today;
@@ -44,27 +44,27 @@ export class AssignmentListComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this._user.getKadro()
-		.subscribe((kadro: Faculty[]) => {
+		this._user.getUsers()
+		.subscribe((kadro: User[]) => {
 			this.kadro = kadro;
 		});
 
 		this.today = moment();
 
-		this.getTasks();
+		this.getAllTasks();
 	}
 
-	getTasks(): void {
+	getAllTasks(): void {
 		this._task.getTasks()
 		.subscribe((angarya: Task[]) => {
 			// FIXME: remove
-			console.log(angarya);
+			console.log('getAllTasks()', angarya);
 			// append owner names so that they are searchable
 			while(!this.kadro); // block until kadro appears
 			for (const a of angarya){
 				a.ownernames = [];
-				for (const id of a.owners) {
-					const k = this.kadro.find(x => x._id === id);
+				for (const o of a.owners) {
+					const k = this.kadro.find(x => x._id === o.id);
 					if (k) {
 						a.ownernames.push(k.fullname);
 					} else {
@@ -72,7 +72,6 @@ export class AssignmentListComponent implements OnInit {
 					}
 				}
 			}
-			console.log(angarya);
 
 			this.dataSource = new MatTableDataSource(angarya);
 			this.dataSource.paginator = this.paginator;
@@ -134,8 +133,8 @@ export class AssignmentListComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe( res => {
 		if (res) {
-			this._toaster.info( res.group + ' ' + res.name + ' başarıyla eklendi.');
-				this.getTasks();
+			this._toaster.info( res.taskgroup + ' ' + res.description + ' başarıyla eklendi.');
+			this.getAllTasks();
 		} else {
 			this._toaster.info('İptal edildi...');
 		}
@@ -163,5 +162,25 @@ export class AssignmentListComponent implements OnInit {
 		const p = this.kadro.find(x => x._id === id)._id;
 		this._router.navigate(['/kadro/' + p]);
 	}
+
+	// TODO: Add error handler - if a manual error is forced
+	//   service is catching the error and not forwarding here
+	// res is null - a msg can be created on the server side
+	//   to verify operation
+	onDelete(task: Task): void {
+		this._task.deleteTask(task)
+		.subscribe( res => {
+			console.log('onDelete()', res);
+			this._toaster.info(task.description + ' silindi.');
+			this.getAllTasks();
+			// remove deleted task from data
+			// const oldData = this.dataSource.data;
+			// const index: number = oldData.indexOf(task._id);
+			// console.log(index);
+			// oldData.splice(index, 1);
+			// this.dataSource.data = oldData;
+		});
+	}
+
 
 }

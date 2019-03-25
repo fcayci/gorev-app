@@ -1,0 +1,52 @@
+<div class="mat-elevation-z8" style="margin-bottom:16px">
+	<mat-toolbar class="toolbar-child" color="primary">
+			<h2 class="toolbar-header">{{title}}</h2>
+	</mat-toolbar>
+
+	<div class="table-header">
+		<span matTooltip="Yeni Meşguliyet Ekle"><button class="add-button" mat-mini-fab
+		color="primary" (click)="openDialog()"><mat-icon>library_add</mat-icon></button>
+		</span>
+		<span class="fill-remaining-space"></span>
+		<span *ngIf="this.dataSource?.data.length" matTooltip="Meşguliyetleri Düzenle"><button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()"><mat-icon>edit</mat-icon></button></span>
+	</div>
+
+		<table mat-table [dataSource]="dataSource" matSort>
+
+			<ng-container matColumnDef="description">
+				<th mat-header-cell *matHeaderCellDef>Başlık</th>
+				<td mat-cell *matCellDef="let row">{{row.description}}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="date">
+				<th mat-header-cell *matHeaderCellDef>Tarih</th>
+				<td mat-cell *matCellDef="let row">{{ row.startdate | date: 'dd.MM.yyyy' }} - {{ row.enddate | date: 'dd.MM.yyyy' }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="time">
+				<th mat-header-cell *matHeaderCellDef>Saat</th>
+				<td mat-cell *matCellDef="let row">{{row.startdate | date: "HH:mm"}} - {{row.enddate | date: "HH:mm"}}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="recur">
+				<th mat-header-cell *matHeaderCellDef>Tekrar</th>
+				<td mat-cell *matCellDef="let row">{{row.recur ? (row.recur == 1 ? 'Günlük' : 'Her ' + (row.startdate | date: 'EEEE': '': 'tr')) : '-'}}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="expired">
+				<th mat-header-cell *matHeaderCellDef>Durumu</th>
+				<td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.enddate) ? 'Süresi Geçmiş' : 'Aktif' }}
+					<span class="fill-remaining-space"></span>
+					<button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
+						<mat-icon aria-label="delete">cancel</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+		</table>
+
+		<mat-spinner diameter="50" *ngIf="!dataSource"></mat-spinner>
+
+</div>

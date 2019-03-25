@@ -26,17 +26,17 @@ import { HomeComponent } from './components/home/home.component';
 import { AssignmentListComponent } from './components/angarya/assignment-list.component';
 import { AssignmentAddComponent } from './components/angarya/assignment-add.component';
 
-import { FacultyListComponent } from './components/kadro/faculty-list.component';
-import { FacultyWrapperComponent } from './components/kadro/faculty-wrapper.component';
-import { FacultyProfileComponent } from './components/kadro/faculty-profile.component';
-import { FacultyTasksComponent } from './components/kadro/faculty-tasks.component';
-import { FacultyBusyComponent } from './components/kadro/faculty-busy.component';
-import { FacultyAddComponent } from './components/kadro/faculty-add.component';
-import { FacultyBusyAddComponent } from './components/kadro/faculty-busy-add.component';
+import { PersonelListesiComponent } from './components/personel-listesi/personel-listesi.component';
+import { PersonelEkleComponent } from './components/personel-ekle/personel-ekle.component';
+import { PersonelBilgisiComponent } from './components/personel-bilgisi/personel-bilgisi.component';
+
 import { PositionSelectorPipe } from './pipes/position-selector.pipe';
 import { FSortPipe } from './pipes/fsort.pipe';
 import { peopleCountValidatorDirective } from './directives/peoplecount.directive';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { ProfileComponent } from './components/personel-bilgisi/profile/profile.component';
+import { MesgulListesiComponent } from './components/personel-bilgisi/mesgul-listesi/mesgul-listesi.component';
+import { MesgulEkleComponent } from './components/personel-bilgisi/mesgul-ekle/mesgul-ekle.component';
 
 registerLocaleData(localeTr);
 
@@ -48,19 +48,19 @@ const ROUTES : Routes = [
   },
   {
     path: 'kadro',
-    component: FacultyListComponent
+    component: PersonelListesiComponent
   },
   {
     path: 'kisiekle',
-    component: FacultyAddComponent
+    component: PersonelEkleComponent
   },
   {
     path: 'mesgulekle',
-    component: FacultyBusyAddComponent
+    component: MesgulEkleComponent
   },
   {
     path: 'kadro/:_id',
-    component: FacultyWrapperComponent
+    component: PersonelBilgisiComponent
   },
   {
     path: 'angarya',
@@ -80,16 +80,15 @@ const ROUTES : Routes = [
     NavBarComponent,
     AssignmentListComponent,
     AssignmentAddComponent,
-    FacultyListComponent,
-    FacultyWrapperComponent,
-    FacultyProfileComponent,
-    FacultyBusyComponent,
-    FacultyTasksComponent,
-    FacultyAddComponent,
-    FacultyBusyAddComponent,
     PositionSelectorPipe,
     peopleCountValidatorDirective,
-    FSortPipe
+    FSortPipe,
+    PersonelListesiComponent,
+    PersonelEkleComponent,
+    PersonelBilgisiComponent,
+    ProfileComponent,
+    MesgulListesiComponent,
+    MesgulEkleComponent
   ],
   imports: [
     BrowserModule,

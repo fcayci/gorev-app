@@ -2,22 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
-import { Faculty, ROLES } from '../../models/FacultyModel';
+// import models
+import { User, ROLES } from '../../models/User';
+
+// import services
 import { UserService } from '../../services/user.service';
 
 @Component({
-	selector: 'faculty-add',
-	templateUrl: './faculty-add.component.html'
+  selector: 'app-personel-ekle',
+  templateUrl: './personel-ekle.component.html',
+  styleUrls: ['./personel-ekle.component.css']
 })
-
-export class FacultyAddComponent implements OnInit  {
+export class PersonelEkleComponent implements OnInit {
 
 	roles = ROLES;
 	kisiForm: FormGroup;
 	title = 'Yeni Kişi Ekle';
 
 	constructor(
-		public dialogRef: MatDialogRef<FacultyAddComponent>,
+		public dialogRef: MatDialogRef<PersonelEkleComponent>,
 		private _fb: FormBuilder,
 		private _user: UserService) {}
 
@@ -44,7 +47,7 @@ export class FacultyAddComponent implements OnInit  {
 
 	onSubmit() {
 		// this.kisiForm.value.fullname = this.kisiForm.value.fullname.toProperCase();
-		const profile: Faculty = this.kisiForm.value;
+		const profile: User = this.kisiForm.value;
 
 		// add rank object
 		const r = ROLES.find(x => x.position === profile.position);
@@ -52,7 +55,7 @@ export class FacultyAddComponent implements OnInit  {
 		if (r) profile.rank = r.rank;
 		else profile.rank = 100;
 
-		this._user.addKisi(profile)
+		this._user.addUser(profile)
 		.subscribe(
 			res => { this.dialogRef.close(res); },
 			err => { this.dialogRef.close(err); }

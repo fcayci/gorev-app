@@ -7,20 +7,19 @@ import 'moment-recur-ts';
 import 'moment-duration-format';
 
 // import models
-import { Busy, REPEATS } from '../../models/BusyModel';
-import { Faculty } from '../../models/FacultyModel';
+import { User, Busy, REPEATS } from '../../../models/User';
 
 // import services
-import { BusyService } from '../../services/busys.service';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
-	selector: 'faculty-busy-add',
-	templateUrl: './faculty-busy-add.component.html'
+	selector: 'app-mesgul-ekle',
+	templateUrl: './mesgul-ekle.component.html',
+	styleUrls: ['./mesgul-ekle.component.css']
 })
+export class MesgulEkleComponent implements OnInit {
 
-export class FacultyBusyAddComponent implements OnInit  {
-
+	profile: User;
 	busyForm: FormGroup;
 	repeats = JSON.parse(JSON.stringify(REPEATS));
 	tor = [0, 1, 7];
@@ -29,14 +28,15 @@ export class FacultyBusyAddComponent implements OnInit  {
 	enddate;
 
 	constructor(
-		private _busy: BusyService,
 		private _user: UserService,
-		public dialogRef: MatDialogRef<FacultyBusyAddComponent>,
+		public dialogRef: MatDialogRef<MesgulEkleComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		private _fb: FormBuilder
 	) {}
 
 	ngOnInit() {
+		this.profile = this.data;
+		console.log('init', this.profile);
 		moment.locale('tr');
 		const day = moment().format('dddd');
 		this.repeats[2] = REPEATS[2] + ' ' +  day;
@@ -83,7 +83,7 @@ export class FacultyBusyAddComponent implements OnInit  {
 
 	createForm() {
 		this.busyForm = this._fb.group({
-			name: ['', Validators.required],
+			description: ['', Validators.required],
 			startday: [ moment().startOf('day').format(), Validators.required],
 			endday: [ moment().startOf('day').format(), Validators.required],
 			starttime: [ moment('0800', 'hmm').format('HH:mm'), Validators.required],
@@ -104,22 +104,16 @@ export class FacultyBusyAddComponent implements OnInit  {
 	onSubmit() {
  		const b = this.busyForm.value;
 		const model: Busy = {
-			name: b.name,
+			owner: this.profile._id,
+			description: b.description,
 			startdate : this.startdate.format(),
 			enddate : this.enddate.format(),
-			owner : this.data._id,
 			recur : b.recur
 		};
 
 		// FIXME: add error handling
-		this._busy.setBusy(model)
+		this._user.addBusyToUser(this.profile, model)
 		.subscribe(res => {
-
-			this._user.addBusyToKisi(this.data, res)
-				.subscribe((kisi: Faculty) => {
-
-				});
-
 			this.dialogRef.close(res);
 		});
 	}

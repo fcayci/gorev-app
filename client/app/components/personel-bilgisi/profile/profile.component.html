@@ -1,0 +1,67 @@
+<mat-card class="no-padding">
+	<div class="mat-elevation-z8">
+		<mat-toolbar color="primary">
+			<mat-toolbar-row >
+				<mat-icon>person</mat-icon>  <h2 style="padding-left:5px;">{{ profile?.position + ' ' + profile?.fullname }}</h2>
+				<button *ngIf="kisiForm.disabled" style="margin-left:15px;" class="add-button" mat-mini-fab name="edit" color="" (click)="enableGroup()"><span matTooltip="Kişiyi Düzenle"><mat-icon>edit</mat-icon></span></button>
+				<button *ngIf="!kisiForm.disabled" style="margin-left:15px;" mat-mini-fab name="cancel" color="" (click)="onCancel()"><span matTooltip="Iptal"><mat-icon>cancel</mat-icon></span></button>
+				<button *ngIf="!kisiForm.disabled" style="margin-left:15px;" mat-mini-fab name="delete" color="warn" (click)="onDelete()"><span matTooltip="Kişiyi Sil"><mat-icon>delete_forever</mat-icon></span></button>
+				<button *ngIf="!kisiForm.disabled" style="margin-left:15px;background-color:cornflowerblue;" mat-mini-fab name="save" color="warn" [disabled]="!kisiForm.valid" (click)="onSave()"><span matTooltip="Kaydet"><mat-icon>save</mat-icon></span></button>
+			</mat-toolbar-row>
+		</mat-toolbar>
+
+		<mat-card-content style="padding:24px;" [formGroup]="kisiForm">
+			<div class="form-row">
+				<mat-form-field style="width:20%">
+					<mat-select formControlName="position" placeholder="Akademik Ünvan">
+						<mat-option *ngFor="let r of roles" [value]="r.position">{{[r.position]}}</mat-option>
+					</mat-select>
+					<mat-error *ngIf="!kisiForm.hasError('position')">
+						Bir ünvan seçiniz
+					</mat-error>
+				</mat-form-field>
+
+				<mat-form-field style="width:20%">
+					<input matInput formControlName="fullname" placeholder="İsim">
+				</mat-form-field>
+
+				<mat-form-field style="width:20%">
+					<input matInput formControlName="email" placeholder="e-Posta">
+					<span matSuffix>@gtu.edu.tr</span>
+				</mat-form-field>
+
+				<mat-slide-toggle style="width:15%;align-self: center;" formControlName="vacation">İzinde?</mat-slide-toggle>
+			</div>
+
+			<div class="form-row">
+				<mat-form-field style="width:10%">
+					<input matInput formControlName="office" placeholder="Oda No.">
+				</mat-form-field>
+
+				<mat-form-field style="width:10%">
+					<input matInput formControlName="phone" placeholder="Dahili No.">
+					<mat-hint *ngIf="!kisiForm.disabled" align="end">{{kisiForm.value.phone.length}} / 4</mat-hint>
+					<mat-error *ngIf="!kisiForm.hasError('phone')">
+						4 haneli dahili numaranızı giriniz.
+					</mat-error>
+				</mat-form-field>
+
+				<mat-form-field style="width:20%">
+					<input matInput formControlName="mobile" placeholder="Cep No.">
+					<mat-error *ngIf="!kisiForm.hasError('mobile')">
+						(Keyfi) 11 haneli cep numaranızı giriniz.
+					</mat-error>
+					<mat-hint *ngIf="!kisiForm.disabled" align="end">Örn: 05003215476</mat-hint>
+				</mat-form-field>
+
+				<mat-form-field style="width:10%">
+					<input matInput formControlName="load" placeholder="Toplam Yük">
+					<mat-error *ngIf="!kisiForm.hasError('load')">
+						Bir sayı giriniz.
+					</mat-error>
+				</mat-form-field>
+			</div>
+
+		</mat-card-content>
+	</div>
+</mat-card>

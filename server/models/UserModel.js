@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
-var FacultySchema = new Schema({
+var UserSchema = new Schema({
 	'fullname' : String,
 	'email' : {
 		type: String,
@@ -26,8 +26,11 @@ var FacultySchema = new Schema({
 		default: false
 	},
 	'busy' : [{
-	 	type: Schema.Types.ObjectId,
-	 	ref: 'Busy'
+		'owner' : String,
+		'description' : String,
+		'startdate' : Date,
+		'enddate' : Date,
+		'recur' : Number
 	}],
 	'task' : [{
 		type: Schema.Types.ObjectId,
@@ -35,4 +38,7 @@ var FacultySchema = new Schema({
 	}]
 });
 
-module.exports = mongoose.model('Faculty', FacultySchema);
+
+
+
+module.exports = mongoose.model('User', UserSchema);

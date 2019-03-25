@@ -1,9 +1,8 @@
-export interface FacultyDB {
+export interface UserDB {
 	_id?: string;
 	fullname: string;
 	email: string;
-	username?: string;
-	password?: string;
+	department: string;
 	position: string;
 	rank: number;
 	office?: string;
@@ -11,13 +10,22 @@ export interface FacultyDB {
 	mobile?: string;
 	load: number;
 	pendingload?: number;
-	busy?: Array<string>;
+	busy?: Array<Busy>;
 	task?: Array<string>;
 	vacation: boolean;
 }
 
-export interface Faculty extends FacultyDB {
+export interface User extends UserDB {
 	isAvailable?: number;
+}
+
+export interface Busy {
+	_id?: string;
+	owner: string;
+	description: string;
+	startdate: string;
+	enddate: string;
+	recur: number;
 }
 
 /*
@@ -34,3 +42,4 @@ export const ROLES = [
 	{position: "Diğer", rank: 100}
 ];
 
+export const REPEATS = ['Tek Seferlik', 'Günlük', 'Her Hafta'];

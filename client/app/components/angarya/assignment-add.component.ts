@@ -8,14 +8,12 @@ import 'moment-duration-format';
 import { extendMoment } from 'moment-range';
 
 // import models
-import { Task, TASK_GROUPS} from '../../models/TaskModel';
-import { Faculty, ROLES } from '../../models/FacultyModel';
-import { Busy, TaskDate } from '../../models/BusyModel';
+import { Task, TaskDate, TASK_GROUPS} from '../../models/Task';
+import { User, Busy, ROLES } from '../../models/User';
 
 // import services
 import { TaskService } from '../../services/tasks.service';
 import { UserService } from '../../services/user.service';
-import { BusyService } from '../../services/busys.service';
 import { ValidationService } from '../../services/validation.service';
 
 // import pipes
@@ -33,7 +31,7 @@ export class AssignmentAddComponent implements OnInit {
 
 	title = 'Yeni Görev Oluştur';
 
-	kadro: Faculty[] = []; // holder for the whole kadro
+	kadro: User[] = []; // holder for the whole kadro
 	busies: Busy[] = []; // all busy times
 	tasks: Task[] = []; // all tasks that are open
 
@@ -42,7 +40,7 @@ export class AssignmentAddComponent implements OnInit {
 	taskdate: TaskDate; // holder for task dates
 	task_groups = TASK_GROUPS;
 
-	owners: Faculty[] =[];
+	owners: User[] =[];
 
 	// create weights and numbers for people / load weight
 	numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
@@ -53,7 +51,6 @@ export class AssignmentAddComponent implements OnInit {
 		private _fsort: FSortPipe,
 		private _fb: FormBuilder,
 		private _user: UserService,
-		private _busy: BusyService,
 		private _task: TaskService,
 		private _valiDate: ValidationService
 	) {}
@@ -63,7 +60,7 @@ export class AssignmentAddComponent implements OnInit {
 		this.gorevForm = this._fb.group({
 			name: ['User Test',
 				Validators.required],
-			group: ['Sekreterlik', Validators.required],
+			taskgroup: ['Sekreterlik', Validators.required],
 			when: this._fb.group({
 				sday: [, Validators.required],
 				stime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
@@ -74,33 +71,27 @@ export class AssignmentAddComponent implements OnInit {
 			owners: [[], ],
 			state: [0],
 			// these are temporary holders
-			sel: [, Validators.required],
+			sel: ['0', Validators.required],
 			selectedPerson: [],
 		}, {validators: peopleCountValidator});
 
-
-		// Get busy times of all the people
-		this._busy.getBusyAll()
-		.subscribe((res: Busy[]) => {
-			// FIXME: remove
-			console.log(res);
-			this.busies = res;
-		});
-
 		// Get currently open tasks for additional busy times
 		this._task.getTasks()
-		.subscribe((res: Task[]) => {
-			// FIXME: remove
-			console.log(res);
-			this.tasks = res;
+		.subscribe((tasks: Task[]) => {
+			console.log('getTasks()', tasks);
+			this.tasks = tasks;
 		});
 
 		// Get people
-		this._user.getKadro()
-		.subscribe((res: Faculty[]) => {
-			// FIXME: remove
-			console.log(res);
-			this.kadro = res;
+		this._user.getUsers()
+		.subscribe((kadro: User[]) => {
+			console.log('getUsers()', kadro);
+			this.kadro = kadro;
+			for (const k of this.kadro){
+				for (const b of k.busy){
+					this.busies.push(b);
+				}
+			}
 		});
 
 		this.gorevForm.get('when').statusChanges
@@ -129,12 +120,12 @@ export class AssignmentAddComponent implements OnInit {
 		// calculate load
 		const load = this.calculateload(this.taskdate.duration, g.weight);
 		const model: Task = {
-			name: g.name,
-			group: g.group,
+			description: g.description,
+			taskgroup: g.taskgroup,
 			peoplecount: g.peoplecount,
 			weight: g.weight,
 			load: load,
-			owners: g.owners,
+			owners: [],
 			startdate: this.taskdate.startdate,
 			enddate: this.taskdate.enddate,
 			duration: this.taskdate.duration,
@@ -143,17 +134,25 @@ export class AssignmentAddComponent implements OnInit {
 			state: 0
 		};
 
+		for (const oid of g.owners){
+			model.owners.push({
+				id: oid,
+				state: 0,
+				newload: load
+			});
+		}
+
 		// Set the task to the db
 		this._task.setTask(model)
 		.subscribe(res => {
 			// // FIXME: Add error handling
 			for (let i = 0; i < model.peoplecount; i++) {
-				const p = this.kadro.filter(faculty => faculty._id === model.owners[i])[0];
+				const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
 				// Add task to the each of the assigned people
 				// FIXME: remove
 				console.log(res);
-				this._user.addTaskToKisi(p, res)
-				.subscribe((kisi: Faculty) => {
+				this._user.addTaskToUser(p, res)
+				.subscribe((kisi: User) => {
 					// FIXME: remove
 					console.log(kisi);
 					// FIXME: Add error handling
@@ -163,8 +162,8 @@ export class AssignmentAddComponent implements OnInit {
 		});
 	}
 
-	addToOwners(x?: Faculty) {
-		let p: Faculty;
+	addToOwners(x?: User) {
+		let p: User;
 
 		// assign p depending on the parameter
 		p = x ? x : this.gorevForm.get('selectedPerson').value;
@@ -184,6 +183,12 @@ export class AssignmentAddComponent implements OnInit {
 
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
+		// hack it! -  trigger for selector pipe
+		//let hacky = this.gorevForm.get('sel').value;
+		//this.gorevForm.controls['sel'].setValue('0');
+		//this.gorevForm.value.sel = hacky;
+		//setTimeout(100);
+		//this.gorevForm.controls['sel'].setValue(hacky);
 	}
 
 	removeFromOwners(p) {
@@ -205,22 +210,31 @@ export class AssignmentAddComponent implements OnInit {
 
 		// Reset form
 		this.gorevForm.controls['selectedPerson'].setValue('');
+		// hack it! -  trigger for selector pipe
+		//let hacky = this.gorevForm.get('sel').value;
+		//this.gorevForm.controls['sel'].setValue('0');
 	}
 
 	autoAssignPeople(): void {
 		const g = this.gorevForm.value;
 		this.kadro = this._fsort.transform(this.kadro, 'load');
-
+		console.log( g.peoplecount);
 		for (let i = this.owners.length; i < g.peoplecount; i++) {
 			if (g.sel === '1') {
-				const p = this.kadro.filter( people =>
-					people.position === ROLES[2].position)
+				const p = this.kadro.filter( x =>
+					x.position === ROLES[2].position && x.isAvailable === 1)
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
 			} else if (g.sel === '2') {
-				const p = this.kadro.filter( people =>
-					people.position === ROLES[0].position)
+				const p = this.kadro.filter( x =>
+					x.position === ROLES[0].position && x.isAvailable === 1)
+				if (p.length > 0) {
+					this.addToOwners(p[0]);
+				}
+			} else if (g.sel === '3') {
+				const p = this.kadro.filter( x =>
+					x.isAvailable === 1)
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
@@ -298,10 +312,8 @@ export class AssignmentAddComponent implements OnInit {
 			if (k.vacation === false) {
 				if (busyIds.indexOf(k._id) === -1) {
 					k.isAvailable = 1;
-					//this.availablePeople.push(k);
 				} else {
 					k.isAvailable = 0;
-					//this.busyPeople.push(k);
 				}
 			}
 		}

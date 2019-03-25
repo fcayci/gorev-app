@@ -2,18 +2,19 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // import models
-import { Faculty, ROLES } from '../../models/FacultyModel';
+import { User, ROLES } from '../../../models/User';
+
 // import services
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
-	selector: 'faculty-profile',
-	templateUrl: './faculty-profile.component.html'
+	selector: 'app-profile',
+	templateUrl: './profile.component.html',
+	styleUrls: ['./profile.component.css']
 })
+export class ProfileComponent implements OnInit {
 
-export class FacultyProfileComponent implements OnInit, OnChanges {
-
-	@Input() profile: Faculty;
+	@Input() profile: User;
 	@Output() profileEvent = new EventEmitter();
 
 	roles = ROLES;
@@ -49,7 +50,7 @@ export class FacultyProfileComponent implements OnInit, OnChanges {
 	}
 
 	onSave(): void {
-		const candidate: Faculty = this.kisiForm.value;
+		const candidate: User = this.kisiForm.value;
 		candidate["_id"] = this.profile._id;
 
 		// add rank object

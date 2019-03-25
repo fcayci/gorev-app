@@ -5,9 +5,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var home = require('./server/routes/home.js');
-var kadro = require('./server/routes/FacultyRoutes.js');
+var kadro = require('./server/routes/UserRoutes.js');
 var angarya = require('./server/routes/TaskRoutes.js');
-var mesgul  = require('./server/routes/BusyRoutes.js');
 
 const port = 3000;
 
@@ -42,7 +41,6 @@ app.use(bodyParser.urlencoded({extended : false}));
 app.use('/', home);
 app.use('/api/angarya', angarya);
 app.use('/api/kadro', kadro);
-app.use('/api/mesgul', mesgul);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
