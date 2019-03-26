@@ -25,7 +25,7 @@ export class MesgulListesiComponent implements OnInit {
 	@Input() profile: User;
 
 	title = 'Meşguliyet';
-	displayedColumns = ['description', 'date', 'time', 'recur', 'expired'];
+	displayedColumns = ['description', 'date', 'time', 'recur', 'expired', 'delete'];
 	dataSource: MatTableDataSource<Busy>;
 	today;
 	showdelete = false;

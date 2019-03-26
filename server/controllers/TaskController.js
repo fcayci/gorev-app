@@ -11,6 +11,7 @@ module.exports = {
 	 * TaskController.list()
 	 */
 	list: function (req, res) {
+		console.log('list');
 		TaskModel.find(function (err, Tasks) {
 			if (err) {
 				return res.status(500).json({
@@ -27,8 +28,12 @@ module.exports = {
 	 */
 	show: function (req, res) {
 		var id = req.params.id;
-		TaskModel.findOne({_id: id}, function (err, Task) {
+		console.log('show', id);
+		const ids = req.params.id.split(',');
+		TaskModel.find({ '_id': {$in: ids} }, function (err, Task) {
+		//TaskModel.find({_id: id}, function (err, Task) {
 			if (err) {
+				console.log(err);
 				return res.status(500).json({
 					message: 'Error when getting Task.',
 					error: err
@@ -42,28 +47,6 @@ module.exports = {
 			return res.json(Task);
 		});
 	},
-
-   /**
-	 * TaskController.show()
-	 */
-	showUser: function (req, res) {
-		var id = req.params.id;
-		TaskModel.find({owner: id}, function (err, Task) {
-			if (err) {
-				return res.status(500).json({
-					message: 'Error when getting Task.',
-					error: err
-				});
-			}
-			// if (!Task) {
-			//     return res.status(404).json({
-			//         message: 'No such Task'
-			//     });
-			// }
-			return res.json(Task);
-		});
-	},
-
 
 	/**
 	 * TaskController.create()
@@ -141,6 +124,7 @@ module.exports = {
 	 */
 	remove: function (req, res) {
 		var id = req.params.id;
+		console.log('remove', id);
 		TaskModel.findByIdAndRemove(id, function (err, Task) {
 			if (err) {
 				return res.status(500).json({

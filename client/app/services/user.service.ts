@@ -98,14 +98,31 @@ export class UserService {
 		);
 	}
 
-	// delete task from kisi and delete pending load
-	deleteTaskFromKisi(kisi: User, task: Task): Observable<User> {
+	// delete task from user and delete pending load
+	deleteTaskFromUser(kisi: User, task: Task): Observable<User> {
 		const url = kadroUrl + '/' + kisi._id;
 		// find and remove task from kisi if task exists
 		const index: number = kisi.task.indexOf(task._id);
 		if (index !== -1) {
 			kisi.task.splice(index, 1);
 			kisi.pendingload -= task.load;
+		}
+		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	// delete task from user and add new load to user
+	completeTaskOfUser(kisi: User, task: Task): Observable<User> {
+		const url = kadroUrl + '/' + kisi._id;
+		// find and remove task from kisi if task exists
+		const o = task.owners.filter(p => p.id === kisi._id);
+		const index: number = kisi.task.indexOf(task._id);
+		if (index !== -1) {
+			kisi.task.splice(index, 1);
+			kisi.pendingload -= task.load;
+			kisi.load += o[0].newload;
 		}
 		return this.http.put<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(

@@ -1,105 +1,102 @@
-  <div class="mat-elevation-z8">
-    <mat-toolbar color="primary">
-      <mat-toolbar-row>
-      <mat-icon>assignment</mat-icon>  <h2 style="padding-left:5px;">Görev Listesi</h2>
-      </mat-toolbar-row>
-    </mat-toolbar>
+	<div class="mat-elevation-z8">
+		<mat-toolbar color="primary">
+			<mat-toolbar-row>
+			<mat-icon>assignment</mat-icon>  <h2 style="padding-left:5px;">Görev Listesi</h2>
+			</mat-toolbar-row>
+		</mat-toolbar>
 
-    <div class="table-header">
-      <mat-form-field style="width:50%">
-        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
-      </mat-form-field>
-      <span class="fill-remaining-space"></span>
-      <span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="warn" (click)="openDialog()"><mat-icon>note_add</mat-icon></button></span>
-    </div>
+		<div class="table-header">
+			<mat-form-field style="width:50%">
+				<input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ara">
+			</mat-form-field>
+			<span class="fill-remaining-space"></span>
+			<span matTooltip="Yeni Görev Ekle"><button class="add-button" mat-fab color="warn" (click)="openDialog()"><mat-icon>note_add</mat-icon></button></span>
+		</div>
 
-    <table mat-table [dataSource]="dataSource" matSort>
+		<table mat-table [dataSource]="dataSource" matSort>
 
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>
-          <span *ngIf="this.dataSource?.data.length" matTooltip="Meşguliyetleri Düzenle">
-            <button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </span>
-        </th>
-        <td mat-cell *matCellDef="let row; let i = index">
-            <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
-              <mat-icon aria-label="delete">cancel</mat-icon>
-            </button>
-        </td>
-      </ng-container>
+			<ng-container matColumnDef="delete">
+				<th mat-header-cell *matHeaderCellDef>
+					<span *ngIf="this.dataSource?.data.length" matTooltip="Meşguliyetleri Düzenle">
+						<button class="add-button" mat-mini-fab color="warn" (click)="toggleEdit()">
+							<mat-icon>edit</mat-icon>
+						</button>
+					</span>
+				</th>
+				<td mat-cell *matCellDef="let row; let i = index">
+						<button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
+							<mat-icon aria-label="delete">cancel</mat-icon>
+						</button>
+				</td>
+			</ng-container>
 
-      <ng-container matColumnDef="no">
-        <th mat-header-cell *matHeaderCellDef>No.</th>
-        <td mat-cell *matCellDef="let row; let i = index">{{i+1}}</td>
-      </ng-container>
+			<ng-container matColumnDef="no">
+				<th mat-header-cell *matHeaderCellDef>No.</th>
+				<td mat-cell *matCellDef="let row; let i = index">{{i+1}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Başlık</th>
-        <td mat-cell *matCellDef="let row">{{row.description}}</td>
-      </ng-container>
+			<ng-container matColumnDef="description">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Başlık</th>
+				<td mat-cell *matCellDef="let row">{{row.description}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="taskgroup">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tür</th>
-        <td mat-cell *matCellDef="let row">{{row.taskgroup}}</td>
-      </ng-container>
+			<ng-container matColumnDef="taskgroup">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Tür</th>
+				<td mat-cell *matCellDef="let row">{{row.taskgroup}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="startdate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</th>
-        <td mat-cell *matCellDef="let row">{{row.startdate | date: "dd MMMM EEEE": '': 'tr'}}</td>
-      </ng-container>
+			<ng-container matColumnDef="startdate">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</th>
+				<td mat-cell *matCellDef="let row">{{row.startdate | date: "dd MMMM EEEE": '': 'tr'}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="time">
-        <th mat-header-cell *matHeaderCellDef>Saat</th>
-        <td mat-cell *matCellDef="let row">{{row.startdate | date: "HH:mm"}} - {{row.enddate | date: "HH:mm"}}</td>
-      </ng-container>
+			<ng-container matColumnDef="time">
+				<th mat-header-cell *matHeaderCellDef>Saat</th>
+				<td mat-cell *matCellDef="let row">{{row.startdate | date: "HH:mm"}} - {{row.enddate | date: "HH:mm"}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="people">
-        <th mat-header-cell *matHeaderCellDef>Kişi Sayısı</th>
-        <td mat-cell *matCellDef="let row">{{row.peoplecount}}</td>
-      </ng-container>
-      <!--
-      <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef>Durum</th>
-        <td mat-cell *matCellDef="let row">{{taskstates[row.state]}}</td>
-      </ng-container> -->
+			<ng-container matColumnDef="people">
+				<th mat-header-cell *matHeaderCellDef>Kişi Sayısı</th>
+				<td mat-cell *matCellDef="let row">{{row.peoplecount}}</td>
+			</ng-container>
+			<!--
+			<ng-container matColumnDef="state">
+				<th mat-header-cell *matHeaderCellDef>Durum</th>
+				<td mat-cell *matCellDef="let row">{{taskstates[row.state]}}</td>
+			</ng-container> -->
 
-      <ng-container matColumnDef="load">
-        <th mat-header-cell *matHeaderCellDef>Yük</th>
-        <td mat-cell *matCellDef="let row">{{row.load}}</td>
-      </ng-container>
+			<ng-container matColumnDef="load">
+				<th mat-header-cell *matHeaderCellDef>Yük</th>
+				<td mat-cell *matCellDef="let row">{{row.load}}</td>
+			</ng-container>
 
-      <ng-container matColumnDef="owners">
-        <th mat-header-cell *matHeaderCellDef>Atanan Kişiler</th>
-        <td mat-cell *matCellDef="let row">
-          <mat-chip-list >
-          <mat-chip *ngFor="let p of row.owners"  matTooltip={{getPerson(p.id)}} color="accent"
-          (click)="gotoPerson(p.id)"> {{getPersonInitials(p.id)}} </mat-chip>
-          </mat-chip-list>
-        </td>
-      </ng-container>
+			<ng-container matColumnDef="owners">
+				<th mat-header-cell *matHeaderCellDef>Atanan Kişiler</th>
+				<td mat-cell *matCellDef="let row">
+					<mat-chip-list >
+					<mat-chip *ngFor="let p of row.owners"  matTooltip={{getPerson(p.id)}} color="accent"
+					(click)="gotoPerson(p.id)"> {{getPersonInitials(p.id)}} </mat-chip>
+					</mat-chip-list>
+				</td>
+			</ng-container>
 
-      <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef>Durum</th>
-        <td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.startdate) ? 'Geçmiş' : 'Aktif' }}
-          <span class="fill-remaining-space"></span>
-          <!-- <button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
-            <mat-icon aria-label="delete">cancel</mat-icon>
-          </button> -->
-        </td>
-      </ng-container>
+			<ng-container matColumnDef="state">
+				<th mat-header-cell *matHeaderCellDef>Durum</th>
+				<td mat-cell *matCellDef="let row; let i = index">{{ isExpired(row.startdate) ? 'Geçmiş' : 'Aktif' }}
+					<span class="fill-remaining-space"></span>
+				</td>
+			</ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-      </tr>
-    </table>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns;">
+			</tr>
+		</table>
 
-    <mat-spinner *ngIf="!dataSource"></mat-spinner>
+		<mat-spinner *ngIf="!dataSource"></mat-spinner>
 
-    <mat-paginator #paginator
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 20, 50]">
-    </mat-paginator>
+		<mat-paginator #paginator
+			[pageSize]="10"
+			[pageSizeOptions]="[10, 20, 50]">
+		</mat-paginator>
 
-  </div>
+	</div>

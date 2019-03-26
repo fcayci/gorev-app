@@ -49,14 +49,6 @@ export class TaskService {
 	// 	);
 	// }
 
-	// getTasksByOwnerId(ownerid: string): Observable<Task[]> {
-	// 	const url = angaryaUrl + '/user/' + ownerid;
-	// 	return this.http.get<Task[]>(url)
-	// 	.pipe(
-	// 		catchError(this.handleError)
-	// 	);
-	// }
-
 	setTask(task: Task): Observable<Task> {
 		const url = angaryaUrl;
 		return this.http.post<Task>(url, JSON.stringify(task), httpOptions)
@@ -78,16 +70,6 @@ export class TaskService {
 			);
 		}
 	}
-
-	// FIXME: Seems wrong
-	// getTasksByOwnerId(id: string): Observable<Task[]> {
-	// 	const url = angaryaUrl + '/' + id;
-	// 	return this.http.get<Task[]>(url)
-	// 		.pipe(
-	// 			catchError(this.handleError)
-	// 		);
-	// }
-
 
 	deleteTask(task: Task): Observable<{}> {
 		const url = angaryaUrl + '/' + task._id;

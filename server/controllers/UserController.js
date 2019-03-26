@@ -126,8 +126,8 @@ module.exports = {
 			User.office = req.body.office ? req.body.office : User.office;
 			User.phone = req.body.phone ? req.body.phone : User.phone;
 			User.mobile = req.body.mobile ? req.body.mobile : User.mobile;
-			User.load = req.body.load ? req.body.load : User.load;
-			User.pendingload = req.body.pendingload ? req.body.pendingload : User.pendingload;
+			User.load = req.body.load !== undefined ? req.body.load : User.load;
+			User.pendingload = req.body.pendingload !== undefined ? req.body.pendingload : User.pendingload;
 			if ( req.body.vacation !== undefined ) {
 				User.vacation = req.body.vacation;
 			}

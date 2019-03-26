@@ -26,7 +26,7 @@ export class PersonelListesiComponent implements OnInit {
 	@ViewChild(MatSort) sort: MatSort;
 
 	// what columns to display
-	displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load'];
+	displayedColumns = ['no', 'position', 'fullname', 'email', 'office', 'phone', 'load', 'vacation'];
 	dataSource: MatTableDataSource<User>;
 	filterValue: string;
 	roles = ROLES;
@@ -46,6 +46,7 @@ export class PersonelListesiComponent implements OnInit {
 	getUsers() {
 		this._user.getUsers()
 		.subscribe((kadro: User[]) => {
+			console.log('getUsers():', kadro);
 			this.dataSource = new MatTableDataSource(kadro);
 			this.dataSource.paginator = this.paginator;
 			this.dataSource.sort = this.sort;

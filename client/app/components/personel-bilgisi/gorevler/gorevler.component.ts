@@ -9,6 +9,7 @@ import { Task, TASK_STATES } from '../../../models/Task';
 
 // import services
 import { TaskService } from '../../../services/tasks.service';
+import { find } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-gorevler',
@@ -20,14 +21,15 @@ export class GorevlerComponent implements OnInit, OnChanges {
 	@Input() profile: User;
 
 	title = 'Görevlendirmeler';
-	displayedColumns = ['description', 'date', 'time', 'load', 'expired'];
+	displayedColumns = ['description', 'taskgroup', 'date', 'time', 'load', 'complete'];
 	dataSource: MatTableDataSource<Task>;
 	today;
 	gstates = TASK_STATES;
 	totalLoad: number;
 
 	constructor(
-		private _task: TaskService) {}
+		private _task: TaskService
+	) {}
 
 	ngOnInit(): void {
 		this.today = moment();
@@ -46,7 +48,25 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		}
 	}
 
+	onComplete(t) {
+		// FIXME
+		// open a dialog
+		// ask for load change
+		// confirm
+		// send new load to taskservice (put request)
+		// only update the load in taskservice
+	}
+
 	isExpired(d) {
 		return this.today.isAfter(d);
+	}
+
+	isCompleted(t) {
+		const x = t.owners.filter(p => p.id === this.profile._id);
+		if (x){
+			return x.state;
+		} else {
+			return 0;
+		}
 	}
 }

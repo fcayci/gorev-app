@@ -2,4 +2,4 @@
 
 <app-profile *ngIf="kisi" [profile]="kisi" (profileEvent)="profileEventHandler($event)"></app-profile>
 <app-mesgul-listesi *ngIf="kisi" [profile]="kisi"></app-mesgul-listesi>
-<!--<faculty-tasks *ngIf="kisi"[profile]="kisi"></faculty-tasks> -->
+<app-gorevler *ngIf="kisi"[profile]="kisi"></app-gorevler>

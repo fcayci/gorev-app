@@ -123,7 +123,6 @@ export class AssignmentAddComponent implements OnInit {
 			description: g.description,
 			taskgroup: g.taskgroup,
 			peoplecount: g.peoplecount,
-			weight: g.weight,
 			load: load,
 			owners: [],
 			startdate: this.taskdate.startdate,
