@@ -142,7 +142,7 @@ export class AssignmentAddComponent implements OnInit {
 		}
 
 		// Set the task to the db
-		this._task.setTask(model)
+		this._task.addTask(model)
 		.subscribe(res => {
 			// // FIXME: Add error handling
 			for (let i = 0; i < model.peoplecount; i++) {

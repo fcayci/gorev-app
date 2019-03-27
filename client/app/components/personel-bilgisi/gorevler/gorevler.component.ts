@@ -53,6 +53,11 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		// open a dialog
 		// ask for load change
 		// confirm
+		this._task.updateTask(t)
+		.subscribe((task: Task) => {
+			console.log('completed task', task);
+		});
+
 		// send new load to taskservice (put request)
 		// only update the load in taskservice
 	}

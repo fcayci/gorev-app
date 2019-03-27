@@ -22,39 +22,40 @@ const kadroUrl = '/api/kadro';
 export class UserService {
 
 	// local cache copies of Users
-	cache_kisi: User;
-	cache_kadro: User[] = [];
+	user: User;
+	users: User[]];
 
-	constructor(private http: HttpClient) {}
+	constructor(
+		private http: HttpClient
+	) {}
 
 	// get all the users
+	// used by /kadro to get all users
 	getUsers(): Observable<User[]> {
 		const url = kadroUrl;
 		return this.http.get<User[]>(url)
 		.pipe(
 			retry(3), // retry a failed request up to 3 times
 			catchError(this.handleError),
-			tap( // cache result
-				User => this.cache_kadro = User
-			)
+			tap(User => this.users = User)
 		);
 	}
 
-	// add a person to kadro
+	// add a user to the users
+	// used by assignment-add component
 	addUser(kisi: User): Observable<User> {
 		const url = kadroUrl;
 		return this.http.post<User>(url, JSON.stringify(kisi), httpOptions)
 		.pipe(
 			catchError(this.handleError),
-			tap( // update cache when someone is added
-				User => this.cache_kadro.push(User)
-			)
+			tap( User => this.kadro.push(User))
 		);
 	}
 
 	// get the given person
+	// used by XXX
 	getUser(kisi: User): Observable<User> {
-		console.log('getUser() is used', kisi);
+		console.log('getUser():', kisi);
 		const url = kadroUrl + '/' + kisi._id;
 		return this.http.get<User>(url)
 		.pipe(
@@ -67,10 +68,7 @@ export class UserService {
 		const url = kadroUrl + '/' + id;
 		return this.http.get<User>(url)
 		.pipe(
-			catchError(this.handleError),
-			tap(
-				User => console.log('getUserByID() is used', User)
-			)
+			catchError(this.handleError)
 		);
 	}
 
