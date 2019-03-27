@@ -90,6 +90,7 @@ export class AssignmentAddComponent implements OnInit {
 			for (const k of this.kadro){
 				for (const b of k.busy){
 					this.busies.push(b);
+					console.log('b', b);
 				}
 			}
 		});
@@ -256,8 +257,11 @@ export class AssignmentAddComponent implements OnInit {
 		const { range } = extendMoment(moment);
 		const gorevrange = range(sdate, edate);
 		// merge two arrays to have a unified busy object for searching
-		const busymaster = Object.assign(this.busies, this.tasks);
+		let busymaster = [];
+		busymaster.push(...this.busies);
+		busymaster.push(...this.tasks);
 
+		console.log('busies:',busymaster);
 		for (const b of busymaster) {
 			// if recur is set, evaluate differently
 			if (b.recur) {

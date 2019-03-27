@@ -29,6 +29,18 @@ export class TaskService {
 	// FIXME: see if we want to do just open / open & closed
 	// authorization level: members
 	getTasks(): Observable<Task[]> {
+		const url = angaryaUrl + '/open';
+		return this.http.get<Task[]>(url)
+		.pipe(
+			catchError(this.handleError),
+			tap(Task => this.tasks = Task)
+		);
+	}
+
+	// used by /angarya to get all the tasks
+	// FIXME: see if we want to do just open / open & closed
+	// authorization level: members
+	getAllTasks(): Observable<Task[]> {
 		const url = angaryaUrl;
 		return this.http.get<Task[]>(url)
 		.pipe(
@@ -36,6 +48,7 @@ export class TaskService {
 			tap(Task => this.tasks = Task)
 		);
 	}
+
 
 	// used by /angarya to add a task
 	// authorization level: managers
@@ -77,6 +90,17 @@ export class TaskService {
 	//      status to completed
 	updateTask(task: Task): Observable<Task> {
 		const url = angaryaUrl + '/' + task._id;
+		return this.http.put<Task>(url, JSON.stringify(task), httpOptions)
+		.pipe(
+			catchError(this.handleError)
+		);
+	}
+
+	markTaskCompleted(task: Task, ownerid: string, newload: number): Observable<Task> {
+		const url = angaryaUrl + '/' + task._id;
+		const c = task.owners.filter(p => p.id === ownerid)[0];
+		c.state = 1;
+		c.newload = newload;
 		return this.http.put<Task>(url, JSON.stringify(task), httpOptions)
 		.pipe(
 			catchError(this.handleError)

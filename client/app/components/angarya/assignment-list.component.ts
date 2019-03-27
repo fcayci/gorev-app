@@ -168,14 +168,11 @@ export class AssignmentListComponent implements OnInit {
 	// res is null - a msg can be created on the server side
 	//   to verify operation
 	onDelete(task: Task): void {
-		console.log(task);
-		console.log(task.owners);
 		for (const o of task.owners) {
-			console.log('p',o);
 			const p = this.kadro.find(x => x._id === o.id);
 			this._user.deleteTaskFromUser(p, task)
 			.subscribe ( res => {
-				console.log('onDelete() 2', res);
+				//
 			})
 		}
 
@@ -193,5 +190,36 @@ export class AssignmentListComponent implements OnInit {
 		});
 	}
 
+	onComplete(task: Task) {
+		for (const o of task.owners) {
+			const p = this.kadro.find(x => x._id === o.id);
+			this._user.completeTaskOfUser(p, task)
+			.subscribe ( res => {
+				//
+			})
+		}
+
+		task.state = 1;
+		this._task.updateTask(task)
+		.subscribe( res => {
+			// completed task
+		});
+	}
+
+	// check if everyone finalized their tasks
+	isCompleted(task: Task) {
+		if (task.state == 1) {
+			// task is completed
+			return 2;
+		}
+		for (const x of task.owners){
+			if (x.state === 0){
+				// waiting for people to mark task completed
+				return 0;
+			}
+		}
+		// pending
+		return 1;
+	}
 
 }

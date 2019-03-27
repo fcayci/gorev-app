@@ -9,7 +9,6 @@ import { Task, TASK_STATES } from '../../../models/Task';
 
 // import services
 import { TaskService } from '../../../services/tasks.service';
-import { find } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-gorevler',
@@ -48,16 +47,16 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		}
 	}
 
-	onComplete(t) {
+	onComplete(task: Task) {
 		// FIXME
 		// open a dialog
 		// ask for load change
 		// confirm
-		this._task.updateTask(t)
+		const newload = task.load;
+		this._task.markTaskCompleted(task, this.profile._id, newload)
 		.subscribe((task: Task) => {
 			console.log('completed task', task);
 		});
-
 		// send new load to taskservice (put request)
 		// only update the load in taskservice
 	}
@@ -66,8 +65,8 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		return this.today.isAfter(d);
 	}
 
-	isCompleted(t) {
-		const x = t.owners.filter(p => p.id === this.profile._id);
+	isCompleted(task: Task) {
+		const x = task.owners.find(p => p.id === this.profile._id);
 		if (x){
 			return x.state;
 		} else {

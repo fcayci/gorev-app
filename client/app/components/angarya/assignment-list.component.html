@@ -24,9 +24,15 @@
 					</span>
 				</th>
 				<td mat-cell *matCellDef="let row; let i = index">
-						<button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
-							<mat-icon aria-label="delete">cancel</mat-icon>
-						</button>
+					<button *ngIf="showdelete" (click)="onDelete(row, i)" mat-icon-button color="warn">
+						<mat-icon aria-label="delete">cancel</mat-icon>
+					</button>
+					<button *ngIf="isCompleted(row) == 1" (click)="onComplete(row)" mat-icon-button color="warn">
+						<mat-icon>check_circle</mat-icon>
+					</button>
+					<button *ngIf="isCompleted(row) == 2" mat-icon-button color="primary">
+						<mat-icon>check_circle</mat-icon>
+					</button>
 				</td>
 			</ng-container>
 

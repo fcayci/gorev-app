@@ -24,6 +24,22 @@ module.exports = {
 	},
 
 	/**
+	 * TaskController.listopen()
+	 */
+	listopen: function (req, res) {
+		console.log('listopen');
+		TaskModel.find({ 'state': 0 }, function (err, Tasks) {
+			if (err) {
+				return res.status(500).json({
+					message: 'Error when getting Task.',
+					error: err
+				});
+			}
+			return res.json(Tasks);
+		});
+	},
+
+	/**
 	 * TaskController.show()
 	 */
 	show: function (req, res) {

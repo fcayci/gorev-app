@@ -10,6 +10,12 @@ router.get('/', TaskController.list);
 /*
  * GET
  */
+router.get('/open', TaskController.listopen);
+
+
+/*
+ * GET
+ */
 router.get('/:id', TaskController.show);
 
 /*
