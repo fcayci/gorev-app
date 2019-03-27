@@ -1,5 +1,6 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import * as moment from 'moment';
 
@@ -9,6 +10,7 @@ import { Task, TASK_STATES } from '../../../models/Task';
 
 // import services
 import { TaskService } from '../../../services/tasks.service';
+import { ToasterService } from '../../../services/toaster.service';
 
 @Component({
 	selector: 'app-gorevler',
@@ -27,7 +29,9 @@ export class GorevlerComponent implements OnInit, OnChanges {
 	totalLoad: number;
 
 	constructor(
-		private _task: TaskService
+		private _task: TaskService,
+		private _toaster: ToasterService,
+		public dialog: MatDialog
 	) {}
 
 	ngOnInit(): void {
@@ -48,17 +52,27 @@ export class GorevlerComponent implements OnInit, OnChanges {
 	}
 
 	onComplete(task: Task) {
-		// FIXME
-		// open a dialog
-		// ask for load change
-		// confirm
-		const newload = task.load;
-		this._task.markTaskCompleted(task, this.profile._id, newload)
-		.subscribe((task: Task) => {
-			console.log('completed task', task);
+		let newload = task.load * 60;
+		const dialogRef = this.dialog.open(LoadChangeDialog, {
+			width: '250px',
+			data: {newload: newload, name: this.profile.fullname.split(' ')[0]}
 		});
-		// send new load to taskservice (put request)
-		// only update the load in taskservice
+
+		dialogRef.afterClosed()
+		.subscribe(res => {
+			if (res === undefined) {
+				this._toaster.info('İptal edildi...');
+			} else if (res < 10) {
+				this._toaster.info('Hata: Lütfen dakika olarak giriniz...');
+			}
+			else {
+				newload = res / 60;
+				this._task.markTaskCompleted(task, this.profile._id, newload)
+				.subscribe((task: Task) => {
+					this._toaster.info('Yeni yük bildirildi ve görev sonlandırıldı.');
+				});
+			}
+		});
 	}
 
 	isExpired(d) {
@@ -74,3 +88,19 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		}
 	}
 }
+
+@Component({
+	selector: 'load-change-dialog',
+	templateUrl: 'load-change-dialog.html',
+  })
+  export class LoadChangeDialog {
+
+	constructor(
+	  public dialogRef: MatDialogRef<LoadChangeDialog>,
+	  @Inject(MAT_DIALOG_DATA) public data) {}
+
+	onNoClick(): void {
+	  this.dialogRef.close();
+	}
+
+  }

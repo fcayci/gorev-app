@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Görevi Sonlandır</h1>
+<div mat-dialog-content>
+  <p>Görevin tuttuğu sürelerin atanan kişiler tarafından güncellenmiş hali aşağıdadır.</p>
+  <p>Değişiklik yapmak istiyorsanız lütfen <b>dakika</b> olarak güncelleyin.</p>
+  <div *ngFor="let d of data.data" class="form-row">
+      <mat-form-field style="width: 95%;">
+        <span matPrefix>{{ d.name }} : &nbsp;</span>
+        <input matInput [(ngModel)]="d.newload" style="text-align: right;">
+        <span matSuffix>&nbsp; dk.</span>
+        <mat-hint align="end">Yük (dk.)</mat-hint>
+      </mat-form-field>
+  </div>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">İptal</button>
+  <button mat-button [mat-dialog-close]="data.data" cdkFocusInitial>Onayla</button>
+</div>

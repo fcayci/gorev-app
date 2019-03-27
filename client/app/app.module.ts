@@ -17,13 +17,14 @@ import {MatExpansionModule} from '@angular/material/expansion';
 
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 import localeTr from '@angular/common/locales/tr';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 
-import { AssignmentListComponent } from './components/angarya/assignment-list.component';
+import { AssignmentListComponent, FinalizeDialog } from './components/angarya/assignment-list.component';
 import { AssignmentAddComponent } from './components/angarya/assignment-add.component';
 
 import { PersonelListesiComponent } from './components/personel-listesi/personel-listesi.component';
@@ -37,7 +38,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { ProfileComponent } from './components/personel-bilgisi/profile/profile.component';
 import { MesgulListesiComponent } from './components/personel-bilgisi/mesgul-listesi/mesgul-listesi.component';
 import { MesgulEkleComponent } from './components/personel-bilgisi/mesgul-ekle/mesgul-ekle.component';
-import { GorevlerComponent } from './components/personel-bilgisi/gorevler/gorevler.component';
+import { GorevlerComponent, LoadChangeDialog } from './components/personel-bilgisi/gorevler/gorevler.component';
 
 registerLocaleData(localeTr);
 
@@ -90,7 +91,9 @@ const ROUTES : Routes = [
     ProfileComponent,
     MesgulListesiComponent,
     MesgulEkleComponent,
-    GorevlerComponent
+    GorevlerComponent,
+    LoadChangeDialog,
+    FinalizeDialog
   ],
   imports: [
     BrowserModule,
@@ -132,8 +135,10 @@ const ROUTES : Routes = [
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
     FSortPipe
   ],
+  entryComponents: [LoadChangeDialog, FinalizeDialog],
   bootstrap: [AppComponent]
 })
 

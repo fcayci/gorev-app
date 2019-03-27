@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import * as moment from 'moment';
 
@@ -191,19 +192,49 @@ export class AssignmentListComponent implements OnInit {
 	}
 
 	onComplete(task: Task) {
+
+		let dialogdata = [];
+
+		// get each users updated tasks
 		for (const o of task.owners) {
 			const p = this.kadro.find(x => x._id === o.id);
-			this._user.completeTaskOfUser(p, task)
-			.subscribe ( res => {
-				//
-			})
+			dialogdata.push({name: p.fullname, id: o.id, newload: o.newload * 60});
 		}
 
-		task.state = 1;
-		this._task.updateTask(task)
-		.subscribe( res => {
-			// completed task
+		console.log(dialogdata);
+		const dialogRef = this.dialog.open(FinalizeDialog, {
+			width: '400px',
+			data: {data: dialogdata}
 		});
+
+		dialogRef.afterClosed()
+		.subscribe(res => {
+			if (res === undefined) {
+				this._toaster.info('İptal edildi...');
+			} else {
+				for (const o of task.owners) {
+					// find the person form result to update newload
+					const a = res.find(x => x.id === o.id);
+					o.newload = a.newload / 60;
+					// find the person from kadro
+					const p = this.kadro.find(x => x._id === o.id);
+					// remove task from users
+					// and add newtask load to users
+					this._user.completeTaskOfUser(p, task)
+					.subscribe(res => {
+						//
+					});
+				}
+
+				// update task
+				task.state = 1;
+				this._task.updateTask(task)
+				.subscribe( res => {
+					this._toaster.info('Görev sonlandırıldı...');
+				});
+			}
+		});
+
 	}
 
 	// check if everyone finalized their tasks
@@ -223,3 +254,20 @@ export class AssignmentListComponent implements OnInit {
 	}
 
 }
+
+
+@Component({
+	selector: 'finalize-dialog',
+	templateUrl: 'finalize-dialog.html',
+  })
+  export class FinalizeDialog {
+
+	constructor(
+	  public dialogRef: MatDialogRef<FinalizeDialog>,
+	  @Inject(MAT_DIALOG_DATA) public data) {}
+
+	onNoClick(): void {
+	  this.dialogRef.close();
+	}
+
+  }

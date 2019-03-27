@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Merhaba {{data.name}}</h1>
+<div mat-dialog-content>
+  <p>Görevin tuttuğu süreyi lütfen <b>dakika</b> olarak güncelleyin.</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.newload" placeholder="Yük (dk.)">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">İptal</button>
+  <button mat-button [mat-dialog-close]="data.newload" cdkFocusInitial>Onayla</button>
+</div>
