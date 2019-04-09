@@ -10,13 +10,17 @@ header {
   display: flex;
 }
 
+main {
+  max-width: 57rem;
+  margin: auto;
+}
+
 .wrapper {
   /*max-width: 960px;*/
   position: absolute;
   top: 70px;
   left: 0;
   right: 0;
-  margin: 0 20px 20px 20px;
 }
 
 .table-header {

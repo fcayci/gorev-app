@@ -3,13 +3,13 @@
 
 	<div class="form-row">
 		<mat-form-field style="width:40%">
-			<mat-select formControlName="position" placeholder="Akademik Ünvan">
+			<mat-select formControlName="position" placeholder="Kadro">
 				<mat-option *ngFor="let r of roles"
 				[value]="r.position">{{[r.position]}}</mat-option>
 			</mat-select>
 
 			<mat-error *ngIf="!kisiForm.hasError('position')">
-				Bir ünvan seçiniz giriniz
+				Bir kadro seçiniz seçiniz
 			</mat-error>
 		</mat-form-field>
 
