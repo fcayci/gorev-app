@@ -128,18 +128,20 @@ export class AssignmentListComponent implements OnInit {
 	};
 
 	openDialog(): void {
-		const dialogRef = this.dialog.open(AssignmentAddComponent, {
-			width: '600px'
-		});
+		if(this.dialog.openDialogs.length==0){
+			const dialogRef = this.dialog.open(AssignmentAddComponent, {
+				width: '600px'
+			});
 
-		dialogRef.afterClosed().subscribe( res => {
-		if (res) {
-			this._toaster.info( res.taskgroup + ' ' + res.description + ' başarıyla eklendi.');
-			this.getAllTasks();
-		} else {
-			this._toaster.info('İptal edildi...');
+			dialogRef.afterClosed().subscribe( res => {
+			if (res) {
+				this._toaster.info( res.taskgroup + ' ' + res.description + ' başarıyla eklendi.');
+				this.getAllTasks();
+			} else {
+				this._toaster.info('İptal edildi...');
+			}
+			});
 		}
-		});
 	}
 
 	isExpired(d) {

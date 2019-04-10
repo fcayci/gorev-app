@@ -54,22 +54,24 @@ export class PersonelListesiComponent implements OnInit {
 	}
 
 	openDialog(): void {
-		const dialogRef = this.dialog.open(PersonelEkleComponent, {
-			width: '460px'
-		});
+		if(this.dialog.openDialogs.length==0){
+			const dialogRef = this.dialog.open(PersonelEkleComponent, {
+				width: '460px'
+			});
 
-		dialogRef.afterClosed().subscribe( res => {
-		if (res) {
-			if (res.fullname) {
-				this._toaster.info(res.position + ' ' + res.fullname + ' başarıyla eklendi.');
-				this.getUsers();
+			dialogRef.afterClosed().subscribe( res => {
+			if (res) {
+				if (res.fullname) {
+					this._toaster.info(res.position + ' ' + res.fullname + ' başarıyla eklendi.');
+					this.getUsers();
+				} else {
+					this._toaster.info(res);
+				}
 			} else {
-				this._toaster.info(res);
+				this._toaster.info('İptal edildi.');
 			}
-		} else {
-			this._toaster.info('İptal edildi.');
+			});
 		}
-		});
 	}
 
 	// function for search box
