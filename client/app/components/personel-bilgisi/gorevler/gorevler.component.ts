@@ -62,11 +62,11 @@ export class GorevlerComponent implements OnInit, OnChanges {
 		.subscribe(res => {
 			if (res === undefined) {
 				this._toaster.info('İptal edildi...');
-			} else if (res < 10) {
+			} else if (res < 10 && res > 0) {
 				this._toaster.info('Hata: Lütfen dakika olarak giriniz...');
 			}
 			else {
-				newload = res / 60;
+				newload = Math.round(res / 6) / 10;
 				this._task.markTaskCompleted(task, this.profile._id, newload)
 				.subscribe((task: Task) => {
 					this._toaster.info('Yeni yük bildirildi ve görev sonlandırıldı.');

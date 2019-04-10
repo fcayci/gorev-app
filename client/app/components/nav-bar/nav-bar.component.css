@@ -9,10 +9,11 @@
 	right: 0;
 	z-index: 2;
 	border-radius: 0;
+	font-size: 16px;
 }
 
 .navbar-row {
-	max-width: 960px;
+	max-width: 1056px;
+	padding: 0 16px;
 	margin: auto;
-
 }

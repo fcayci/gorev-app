@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
 
 		this.kisiForm.disable();
 		this.kisiForm.patchValue( this.profile );
-		this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
+		//this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
 	}
 
 	// OnChanges is needed since profile is not ready when OnInit is executed
@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit {
 	ngOnChanges(): void {
 		if (this.kisiForm) {
 			this.kisiForm.patchValue( this.profile );
-			this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
+			//this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
 		}
 	}
 
@@ -69,7 +69,7 @@ export class ProfileComponent implements OnInit {
 		this.kisiForm.reset();
 		this.kisiForm.disable();
 		this.kisiForm.patchValue( this.profile );
-		this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
+		//this.kisiForm.controls['load'].patchValue(Math.round(this.kisiForm.value.load * 100) / 100);
 	}
 
 	onDelete(): void {

@@ -215,7 +215,7 @@ export class AssignmentListComponent implements OnInit {
 				for (const o of task.owners) {
 					// find the person form result to update newload
 					const a = res.find(x => x.id === o.id);
-					o.newload = a.newload / 60;
+					o.newload =  Math.round(a.newload / 6) / 10;
 					// find the person from kadro
 					const p = this.kadro.find(x => x._id === o.id);
 					// remove task from users
