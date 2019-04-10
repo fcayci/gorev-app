@@ -39,107 +39,118 @@ import { ProfileComponent } from './components/personel-bilgisi/profile/profile.
 import { MesgulListesiComponent } from './components/personel-bilgisi/mesgul-listesi/mesgul-listesi.component';
 import { MesgulEkleComponent } from './components/personel-bilgisi/mesgul-ekle/mesgul-ekle.component';
 import { GorevlerComponent, LoadChangeDialog } from './components/personel-bilgisi/gorevler/gorevler.component';
+import { AuthGuard } from './guards/auth.guard';
 
 registerLocaleData(localeTr);
 
 // define the routes
 const ROUTES : Routes = [
-  {
-    path: '',
-    component: HomeComponent
-  },
-  {
-    path: 'kadro',
-    component: PersonelListesiComponent
-  },
-  {
-    path: 'kisiekle',
-    component: PersonelEkleComponent
-  },
-  {
-    path: 'mesgulekle',
-    component: MesgulEkleComponent
-  },
-  {
-    path: 'kadro/:_id',
-    component: PersonelBilgisiComponent
-  },
-  {
-    path: 'angarya',
-    component: AssignmentListComponent
-  },
-  {
-    path: 'gorevekle',
-    component: AssignmentAddComponent
-  },
+{
+	path: '',
+	component: HomeComponent
+},
+{
+	path: 'kadro',
+	component: PersonelListesiComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: 'kisiekle',
+	component: PersonelEkleComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: 'mesgulekle',
+	component: MesgulEkleComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: 'kadro/:_id',
+	component: PersonelBilgisiComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: 'angarya',
+	component: AssignmentListComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: 'gorevekle',
+	component: AssignmentAddComponent,
+	canActivate: [AuthGuard]
+},
+{
+	path: '**',
+	redirectTo: ''
+}
 ];
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    NavBarComponent,
-    AssignmentListComponent,
-    AssignmentAddComponent,
-    PositionSelectorPipe,
-    peopleCountValidatorDirective,
-    FSortPipe,
-    PersonelListesiComponent,
-    PersonelEkleComponent,
-    PersonelBilgisiComponent,
-    ProfileComponent,
-    MesgulListesiComponent,
-    MesgulEkleComponent,
-    GorevlerComponent,
-    LoadChangeDialog,
-    FinalizeDialog
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatChipsModule,
-    MatMenuModule,
-    MatSelectModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatSlideToggleModule,
-    MatStepperModule,
-    MatDatepickerModule,
-    MatCheckboxModule,
-    MatMomentDateModule,
-    HttpClientModule,
-    MatExpansionModule,
-    MatButtonToggleModule,
-    MatRadioModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    RouterModule.forRoot(ROUTES)
-  ],
-  providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
-    FSortPipe
-  ],
-  entryComponents: [LoadChangeDialog, FinalizeDialog],
-  bootstrap: [AppComponent]
+declarations: [
+	AppComponent,
+	HomeComponent,
+	NavBarComponent,
+	AssignmentListComponent,
+	AssignmentAddComponent,
+	PositionSelectorPipe,
+	peopleCountValidatorDirective,
+	FSortPipe,
+	PersonelListesiComponent,
+	PersonelEkleComponent,
+	PersonelBilgisiComponent,
+	ProfileComponent,
+	MesgulListesiComponent,
+	MesgulEkleComponent,
+	GorevlerComponent,
+	LoadChangeDialog,
+	FinalizeDialog
+],
+imports: [
+	BrowserModule,
+	BrowserAnimationsModule,
+	LayoutModule,
+	MatToolbarModule,
+	MatButtonModule,
+	MatSidenavModule,
+	MatListModule,
+	MatGridListModule,
+	MatCardModule,
+	MatFormFieldModule,
+	MatInputModule,
+	MatChipsModule,
+	MatMenuModule,
+	MatSelectModule,
+	MatTableModule,
+	MatProgressSpinnerModule,
+	MatPaginatorModule,
+	MatSortModule,
+	MatTooltipModule,
+	MatDialogModule,
+	MatSnackBarModule,
+	MatIconModule,
+	MatBadgeModule,
+	MatSlideToggleModule,
+	MatStepperModule,
+	MatDatepickerModule,
+	MatCheckboxModule,
+	MatMomentDateModule,
+	HttpClientModule,
+	MatExpansionModule,
+	MatButtonToggleModule,
+	MatRadioModule,
+	FormsModule,
+	ReactiveFormsModule,
+	MatAutocompleteModule,
+	RouterModule.forRoot(ROUTES)
+],
+providers: [
+	{provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
+	{provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
+	FSortPipe
+],
+entryComponents: [LoadChangeDialog, FinalizeDialog],
+bootstrap: [AppComponent]
 })
 
 export class AppModule { }
