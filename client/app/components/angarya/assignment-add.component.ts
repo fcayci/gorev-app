@@ -144,23 +144,23 @@ export class AssignmentAddComponent implements OnInit {
 		}
 
 		// Set the task to the db
-		// this._task.addTask(model)
-		// .subscribe(res => {
-		// 	// // FIXME: Add error handling
-		// 	for (let i = 0; i < model.peoplecount; i++) {
-		// 		const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
-		// 		// Add task to the each of the assigned people
-		// 		// FIXME: remove
-		// 		console.log(res);
-		// 		this._user.addTaskToUser(p, res)
-		// 		.subscribe((kisi: User) => {
-		// 			// FIXME: remove
-		// 			console.log(kisi);
-		// 			// FIXME: Add error handling
-		// 		});
-		// 	}
-		// 	this.dialogRef.close(res);
-		// });
+		this._task.addTask(model)
+		.subscribe(res => {
+			// // FIXME: Add error handling
+			for (let i = 0; i < model.peoplecount; i++) {
+				const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
+				// Add task to the each of the assigned people
+				// FIXME: remove
+				console.log(res);
+				this._user.addTaskToUser(p, res)
+				.subscribe((kisi: User) => {
+					// FIXME: remove
+					console.log(kisi);
+					// FIXME: Add error handling
+				});
+			}
+			this.dialogRef.close(res);
+		});
 	}
 
 	addToOwners(x?: User) {
