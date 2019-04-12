@@ -63,21 +63,23 @@ export class MesgulListesiComponent implements OnInit {
 	}
 
 	openDialog(): void {
-		const dialogRef = this.dialog.open(MesgulEkleComponent, {
-			width: '400px',
-			data: this.profile
-		});
+		if(this.dialog.openDialogs.length==0){
+			const dialogRef = this.dialog.open(MesgulEkleComponent, {
+				width: '400px',
+				data: this.profile
+			});
 
-		dialogRef.afterClosed().subscribe(msg => {
-			if (msg === -1) {
-				this._toaster.info('Hatalı giriş!');
-			} else if (msg) {
-				//const oldData = this.dataSource.data;
-				//oldData.push(msg);
-				this.dataSource.data = msg.busy;
-				this._toaster.info(msg.description + ' eklendi.');
-			}
-		});
+			dialogRef.afterClosed().subscribe(msg => {
+				if (msg === -1) {
+					this._toaster.info('Hatalı giriş!');
+				} else if (msg) {
+					//const oldData = this.dataSource.data;
+					//oldData.push(msg);
+					this.dataSource.data = msg.busy;
+					this._toaster.info(msg.description + ' eklendi.');
+				}
+			});
+		}
 	}
 
 	toggleEdit() {

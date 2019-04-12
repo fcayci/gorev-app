@@ -7,8 +7,6 @@ export function peopleCountValidator(pc: number): ValidatorFn {
 	return (control: AbstractControl): {[key: string]: any} | null => {
 		const owners = control.get('owners').value;
 		const peoplecount = control.get('peoplecount').value;
-		console.log('people', peoplecount);
-		console.log('owners', owners.length);
 		return owners.length === peoplecount ? null : { peoplevalid : false };
 	};
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
 import * as moment from 'moment';
@@ -63,11 +63,11 @@ export class AssignmentAddComponent implements OnInit {
 
 	ngOnInit() {
 		this.whenFormGroup = this._fb.group({
-			description: ['a', Validators.required],
-			taskgroup:   ['a', Validators.required],
+			description: ['', Validators.required],
+			taskgroup:   ['', Validators.required],
 			peoplecount: [1, Validators.required],
 			weight:      [1, Validators.required],
-			sday:        ['2019-04-16T10:00:00.000Z', Validators.required],
+			sday:        ['', Validators.required],
 			stime:       [moment('0800', 'hmm').format('HH:mm'), Validators.required],
 			etime:       [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
 		}, { validators: validateDateValidator });
@@ -91,10 +91,12 @@ export class AssignmentAddComponent implements OnInit {
 			console.log('getUsers()', kadro);
 			this.kadro = kadro;
 			for (const k of this.kadro) {
+				k['tempload'] = 0; // temporary load holder
 				for (const b of k.busy) {
 					this.busies.push(b);
 				}
 			}
+
 		});
 
 		this.whenFormGroup.statusChanges
@@ -131,7 +133,7 @@ export class AssignmentAddComponent implements OnInit {
 		const w = this.whoFormGroup.value;
 		// calculate load
 		const load = this.calculateload(this.taskdate.duration, g.weight);
-		console.log(load);
+		//console.log(load);
 		const model: Task = {
 			description: g.description,
 			taskgroup: g.taskgroup,
@@ -153,25 +155,24 @@ export class AssignmentAddComponent implements OnInit {
 			});
 		}
 
-		console.log(model);
-	// 	// Set the task to the db
-	// 	// this._task.addTask(model)
-	// 	// .subscribe(res => {
-	// 	// 	// // FIXME: Add error handling
-	// 	// 	for (let i = 0; i < model.peoplecount; i++) {
-	// 	// 		const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
-	// 	// 		// Add task to the each of the assigned people
-	// 	// 		// FIXME: remove
-	// 	// 		console.log(res);
-	// 	// 		this._user.addTaskToUser(p, res)
-	// 	// 		.subscribe((kisi: User) => {
-	// 	// 			// FIXME: remove
-	// 	// 			console.log(kisi);
-	// 	// 			// FIXME: Add error handling
-	// 	// 		});
-	// 	// 	}
-	// 	// 	this.dialogRef.close(res);
-	// 	// });
+		// Set the task to the db
+		this._task.addTask(model)
+		.subscribe(res => {
+			// // FIXME: Add error handling
+			for (let i = 0; i < model.peoplecount; i++) {
+				const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
+				// Add task to the each of the assigned people
+				// FIXME: remove
+				console.log(res);
+				this._user.addTaskToUser(p, res)
+				.subscribe((kisi: User) => {
+					// FIXME: remove
+					console.log(kisi);
+					// FIXME: Add error handling
+				});
+			}
+			this.dialogRef.close(res);
+		});
 	}
 
 	addToOwners(x?: User) {
@@ -237,7 +238,6 @@ export class AssignmentAddComponent implements OnInit {
 			} else if (sel === '3') {
 				const p = this.kadro.filter( x =>
 					x.isSelected === 0).sort(compareLoad);
-				console.log(i, 'sec', p);
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
@@ -306,7 +306,7 @@ export class AssignmentAddComponent implements OnInit {
 						// this is for open tasks
 						for (let i = 0; i < +b.peoplecount; i++) {
 							if (busyIds.indexOf(b.owners[i]) === -1) {
-								let p = this.kadro.find( x => x._id === b.owners[i]);
+								let p = this.kadro.find( x => x._id === b.owners[i].id);
 								p['excuse'] = b.description;
 								this.mesgulkadro.push(p);
 								busyIds.push(b.owners[i]);
@@ -329,9 +329,6 @@ export class AssignmentAddComponent implements OnInit {
 		}
 
 	}
-	// 	// Reset form
-	// 	this.gorevForm.controls['selectedPerson'].setValue('');
-	// }
 
 	// Here is where the load calculation happens
 	calculateload(duration: number, weight: number) {
@@ -352,13 +349,20 @@ export class AssignmentAddComponent implements OnInit {
 
 	updatepeoplecnt(){
 		this.whoFormGroup.controls['peoplecount'].setValue(this.whenFormGroup.get('peoplecount').value);
+		// calculate loads based on tasks
+		for (const t of this.opentasks) {
+			for (const k of t.owners) {
+				const p = this.kadro.find( x => x._id === k.id);
+				p['tempload'] += k.newload;
+			}
+		}
 	}
 
 }
 
 function compareLoad (a, b) {
-	if (a.load < b.load) { return -1; }
-	if (a.load > b.load) { return 1; }
+	if (a.load + a.tempload < b.load + b.tempload) { return -1; }
+	if (a.load + a.tempload > b.load + b.tempload) { return 1; }
 	return 0;
 }
 

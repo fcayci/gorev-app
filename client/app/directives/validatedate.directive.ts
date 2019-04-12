@@ -14,8 +14,6 @@ ValidationErrors | null => {
 	const stime = control.get('stime');
 	const etime = control.get('etime');
 
-	console.log('validating');
-
 	// get date as is. if dateOnly() method is used,
 	//   timezone is lost
 	let sd = moment(sday.value);

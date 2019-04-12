@@ -19,6 +19,7 @@ export interface User extends UserDB {
 	isAvailable?: number;
 	isSelected?: number;
 	excuse?: string;
+	tempload?: number;
 }
 
 export interface Busy {
