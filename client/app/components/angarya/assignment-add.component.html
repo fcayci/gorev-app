@@ -1,164 +1,192 @@
-<form [formGroup]="gorevForm">
-	<h2 mat-dialog-title>{{title}}</h2>
+<mat-horizontal-stepper labelPosition="bottom" linear="true" #stepper>
+	<mat-step [stepControl]="whenFormGroup" editable="false">
+		<form [formGroup]="whenFormGroup">
+			<ng-template matStepLabel>Görevlendirme bilgilerini giriniz</ng-template>
 
-	<div class="form-row">
-		<!-- name -->
-		<mat-form-field  style="width:40%">
-			<input matInput formControlName="description" placeholder="Görev Adı">
-			<mat-hint align="end">Örn: ELM 000 vize gözetmenliği</mat-hint>
-		</mat-form-field>
+			<!-- first line -->
+			<div class="form-row">
 
-		<!-- <mat&#45;error *ngIf="gorevForm.hasError('required')"> -->
-		<!-- 	Lütfen bir isim giriniz. -->
-		<!-- </mat&#45;error> -->
+				<!-- name -->
+				<mat-form-field style="width:50%">
+					<input matInput formControlName="description" placeholder="Görev Adı" required>
+					<mat-hint align="end">Örn: ELM 000 vize gözetmenliği</mat-hint>
+				</mat-form-field>
 
-		<!-- group -->
-		<mat-form-field  style="width:35%">
-			<mat-select formControlName="taskgroup" placeholder="Görev Türü">
-				<mat-option *ngFor="let g of task_groups" [value]="g">
-					{{[g]}}
-				</mat-option>
-			</mat-select>
+				<!-- group -->
+				<mat-form-field style="width:40%">
+					<mat-select formControlName="taskgroup" placeholder="Görev Türü" required>
+						<mat-option *ngFor="let g of task_groups" [value]="g">
+							{{[g]}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
 
-			<!-- <mat&#45;error *ngIf="!gorevForm.hasError('group')"> -->
-			<!-- 	Bir görev türü seçiniz. -->
-			<!-- </mat&#45;error> -->
-		</mat-form-field>
+			</div>
 
-		<!-- weight -->
-		<mat-form-field style="width:20%">
-			<span matTooltip="Varsayılanı 1'dir. Görev süresiyle çarpılır.">
-			<mat-select formControlName="weight" placeholder="Ağırlık">
-				<mat-option *ngFor="let n of weights" [value]="n">
-					{{[n]}}
-				</mat-option>
-			</mat-select>
-			</span>
+			<!-- second line -->
+			<div class="form-row">
 
-			<mat-hint align="end">Görev ağırlığı</mat-hint>
-		</mat-form-field>
-	</div>
+				<!-- peoplecount -->
+				<mat-form-field style="width:40%">
+					<mat-select formControlName="peoplecount" placeholder="Kişi Sayısı">
+						<mat-option *ngFor="let n of numbers" [value]="n">
+							{{[n]}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
 
-	<div formGroupName="when">
-		<div class="form-row">
-			<!-- startday -->
-			<mat-form-field class="date-align" style="width:35%">
-				<input matInput formControlName="sday"
-				[matDatepicker]="sday" placeholder="Tarih Seç">
-					<mat-datepicker-toggle matSuffix [for]="sday">
-					</mat-datepicker-toggle>
-					<mat-datepicker #sday></mat-datepicker>
-			</mat-form-field>
-
-			<mat-error *ngIf="gorevForm.get('when').status.touched && !taskdate.valid"> -->
-				Saat aralığı hatalı.
-			</mat-error>
-
-			<!-- starttime -->
-			<mat-form-field style="width:20%">
-				<input matInput formControlName="stime" type="time"
-				placeholder="Başlangıç Saati">
-			</mat-form-field>
-
-			<!-- endtime -->
-			<mat-form-field style="width:20%">
-				<input matInput formControlName="etime" type="time"
-				placeholder="Bitiş Saati">
-			</mat-form-field>
-		</div>
-	</div>
-
-	<div class="form-row">
-		<!-- peoplecount -->
-		<mat-form-field style="width:15%">
-			<mat-select formControlName="peoplecount" placeholder="Kişi Sayısı">
-				<mat-option *ngFor="let n of numbers" [value]="n">
-					{{[n]}}
-				</mat-option>
-			</mat-select>
-
-			<mat-error *ngIf="!gorevForm.hasError('peoplecount')">
-				Görevlendirilecek kişi sayısı seçiniz.
-			</mat-error>
-		</mat-form-field>
-
-		<div>
-			<span matTooltip="Müsait olan Ar.Gör., Dr. veya bölümdeki tüm müsaitleri seçin.
-			Müsait olmayanları da dahil etmek için Bölüm'ü işaretleyin.">
-				<mat-button-toggle-group formControlName="sel">
-					<mat-button-toggle value="1">Ar.Gör.</mat-button-toggle>
-					<mat-button-toggle value="2">Dr.</mat-button-toggle>
-					<mat-button-toggle value="3">Müsait</mat-button-toggle>
-					<mat-button-toggle value="4">Bölüm</mat-button-toggle>
-				</mat-button-toggle-group>
-			</span>
-
-		</div>
-
-		<div>
-			<button mat-button color="primary" (click)="autoAssignPeople()"
-			[disabled]="!taskdate?.valid || !gorevForm.get('sel').value ||
-			gorevForm.get('peoplecount').value === gorevForm.get('owners').length">
-				Otomatik atama yap
-			</button>
-		</div>
-	</div>
-
-	<div class="form-row">
-		<!-- selectedperson -->
-		<mat-form-field  style="width:65%">
-			<mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
-
-		<!-- <mat&#45;select formControlName="selectedPerson" placeholder="Kişi Seç"> -->
-				<mat-option *ngFor="let c of (kadro |
-				selector:gorevForm.value.sel)" [value]="c">
-					<span style="margin-right: 4px; padding: 1px 5px;
-					border-radius: 24px; background-color: #cecece">
-						{{c.load}}
+				<!-- weight -->
+				<mat-form-field style="width:40%">
+					<span matTooltip="Varsayılanı 1'dir. Görev süresiyle çarpılır.">
+					<mat-select formControlName="weight" placeholder="Ağırlık" required>
+						<mat-option *ngFor="let n of weights" [value]="n">
+							{{[n]}}
+						</mat-option>
+					</mat-select>
 					</span>
-					<span>
-						-
-					</span>
-					<span>{{c.fullname}}</span>
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
 
-		<div>
-			<button mat-button color="primary" (click)="addToOwners()"
-			[disabled]="gorevForm.get('when').status === 'INVALID' || !taskdate?.valid ||
-			!gorevForm.get('selectedPerson').value ||
-			gorevForm.get('peoplecount').value <= gorevForm.get('owners').length">
-				Ekle
-			</button>
-		</div>
+					<mat-hint align="end">Görev ağırlığı</mat-hint>
+				</mat-form-field>
+			</div>
 
-	</div>
+			<!-- third line -->
+			<div class="form-row">
 
-	Atanan kisiler:
-	<div class="form-row">
-		<mat-chip-list class="mat-chip-list-stacked">
-			<mat-chip *ngFor="let c of owners" [value]="c"
-			(removed)="removeFromOwners(c)" >
+				<!-- startday -->
+				<mat-form-field class="date-align" style="width:35%">
+					<input matInput formControlName="sday"
+					[matDatepicker]="sday" placeholder="Tarih Seç" required>
+						<mat-datepicker-toggle matSuffix [for]="sday"></mat-datepicker-toggle>
+						<mat-datepicker #sday></mat-datepicker>
+				</mat-form-field>
 
-				<mat-icon style="margin-left:0; margin-right:7px" matChipRemove>
-					cancel
-				</mat-icon>
+				<!-- starttime -->
+				<mat-form-field style="width:25%">
+					<input matInput formControlName="stime" type="time"
+					placeholder="Başlangıç Saati" required>
+				</mat-form-field>
 
-				{{c.position + ' ' + c.fullname}}
-				<span style="margin-left: 4px; padding: 1px 5px; border-radius: 24px;
-				background-color: #a7a7a7">
-					{{c.load}}
+				<!-- endtime -->
+				<mat-form-field style="width:25%">
+					<input matInput formControlName="etime" type="time"
+					placeholder="Bitiş Saati" required>
+				</mat-form-field>
+			</div>
+
+			<!-- forth line -->
+			<div class="form-row">
+				<span></span>
+				<button mat-raised-button matStepperNext color="primary"
+				[disabled]="whenFormGroup.status === 'INVALID'"
+				(click)="updatepeoplecnt()">Sonraki</button>
+			</div>
+		</form>
+	</mat-step>
+
+	<mat-step [stepControl]="whoFormGroup" editable="false">
+		<form [formGroup]="whoFormGroup">
+			<ng-template matStepLabel>Kişileri seçiniz</ng-template>
+
+			<div class="form-row">
+
+				<span matTooltip="Müsait olanlardan veya bölümdeki tüm personelden seçin.">
+					<mat-button-toggle-group formControlName="sel">
+						<mat-button-toggle value="1">Ar.Gör.</mat-button-toggle>
+						<mat-button-toggle value="2">Dr.</mat-button-toggle>
+						<mat-button-toggle value="3">Bölüm</mat-button-toggle>
+					</mat-button-toggle-group>
 				</span>
-			</mat-chip>
-		</mat-chip-list>
-	</div>
 
-	<div class="button-row">
-		<button mat-raised-button color="primary" (click)="onSubmit()"
-		[disabled]="gorevForm.status === 'INVALID' || !taskdate.valid">
-			Onayla & Bilgilendir
-		</button>
-	</div>
+				<button mat-raised-button color="primary" (click)="autoAssignPeople()"
+				[disabled]="whenFormGroup.get('peoplecount').value === whoFormGroup.get('owners').length">
+					Otomatik atama yap
+				</button>
+			</div>
 
-</form>
+			<div class="form-row">
+				<!-- selectedperson -->
+				<mat-form-field  style="width:65%">
+					<mat-select formControlName="selectedPerson" placeholder="Kişi Seç">
+						<mat-option *ngFor="let c of (kadro | selector:whoFormGroup.value.sel)" [value]="c">
+							<span matTooltip="{{c.load}}">
+								{{c.fullname}}
+							</span>
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<button mat-button color="primary" (click)="addToOwners()"
+				[disabled]="!whoFormGroup.get('selectedPerson').value || whenFormGroup.get('peoplecount').value === whoFormGroup.get('owners').length">
+					Ekle
+				</button>
+
+			</div>
+
+			<div class="form-row">
+				<span style="width:60%">
+						Atanacak kişiler ({{whoFormGroup.value.owners.length}} {{whoFormGroup.value.peoplecount ? '/ ' + whoFormGroup.value.peoplecount : ''}}):
+				</span>
+				<span style="width:40%">
+						Meşgul kişiler ({{mesgulkadro.length}}):
+				</span>
+			</div>
+			<div class="form-row">
+
+				<mat-chip-list class="mat-chip-list-stacked">
+					<mat-chip *ngFor="let c of owners" [value]="c"
+					(removed)="removeFromOwners(c)" >
+
+						<mat-icon style="margin-left:0; margin-right:7px" matChipRemove>
+							cancel
+						</mat-icon>
+
+						{{c.fullname}}
+						<span style="margin-left: 4px; padding: 1px 5px; border-radius: 24px;
+						background-color: #a7a7a7">
+							{{c.load}}
+						</span>
+					</mat-chip>
+				</mat-chip-list>
+
+				<mat-chip-list class="mat-chip-list-stacked">
+
+					<mat-chip *ngFor="let c of mesgulkadro" [value]="c" >
+						<span matTooltip="{{c.excuse}}">
+						{{c.fullname}}
+						</span>
+					</mat-chip>
+				</mat-chip-list>
+			</div>
+
+			<div class="form-row">
+				<span></span>
+				<button mat-raised-button matStepperNext color="primary"
+				[disabled]="whoFormGroup.status === 'INVALID'"
+				(click)="createdescr()">Sonraki</button>
+			</div>
+		</form>
+	</mat-step>
+
+	<mat-step>
+		<ng-template matStepLabel>Sonlandır</ng-template>
+		<span *ngFor="let g of owners">
+			{{g.email}}@gtu.edu.tr;
+		</span>
+		<br />
+		<br />
+		Merhaba, <br /><br />
+		{{ taskdescription }}
+		<br />
+		<br />
+		Görevlendirilen kişiler:<br />
+		<span *ngFor="let g of owners">
+			{{g.position}} {{g.fullname}} <br />
+		</span>
+
+		<div class="form-row">
+			<span></span>
+			<!-- <button mat-button (click)="stepper.reset()">İptal</button> -->
+			<button mat-raised-button color="primary" (click)="onSubmit()">Onayla & Bilgilendir</button>
+		</div>
+	</mat-step>
+	</mat-horizontal-stepper>

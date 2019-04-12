@@ -23,7 +23,6 @@ export interface Owners {
 }
 
 export interface TaskDate {
-	valid: boolean;
 	startdate: string;
 	enddate: string;
 	duration: number;

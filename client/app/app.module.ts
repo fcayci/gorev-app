@@ -18,6 +18,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import { registerLocaleData } from '@angular/common';
 import localeTr from '@angular/common/locales/tr';
 
@@ -147,7 +148,10 @@ imports: [
 providers: [
 	{provide: MAT_DATE_LOCALE, useValue: 'tr-TR'},
 	{provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
-	FSortPipe
+	FSortPipe,
+	{provide: STEPPER_GLOBAL_OPTIONS,
+		useValue: { showError: true }
+	}
 ],
 entryComponents: [LoadChangeDialog, FinalizeDialog],
 bootstrap: [AppComponent]

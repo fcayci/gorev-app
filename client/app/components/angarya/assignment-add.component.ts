@@ -14,13 +14,13 @@ import { User, Busy, ROLES } from '../../models/User';
 // import services
 import { TaskService } from '../../services/tasks.service';
 import { UserService } from '../../services/user.service';
-import { ValidationService } from '../../services/validation.service';
 
 // import pipes
 import { FSortPipe } from '../../pipes/fsort.pipe';
 
 // import directives
 import { peopleCountValidator } from '../../directives/peoplecount.directive';
+import { validateDateValidator } from '../../directives/validatedate.directive';
 
 @Component({
 	selector: 'assignment-add',
@@ -31,16 +31,23 @@ export class AssignmentAddComponent implements OnInit {
 
 	title = 'Yeni Görev Oluştur';
 
-	kadro: User[] = []; // holder for the whole kadro
-	busies: Busy[] = []; // all busy times
-	tasks: Task[] = []; // all tasks that are open
+	kadro: User[] = [];     // bütün bölüm üyelerini tutar
+	busies: Busy[] = [];    // bütün mesgul zamanları tutar
+	opentasks: Task[] = []; // bütün acık görevleri tutar
 
-	gorevForm: FormGroup;
+	whenFormGroup: FormGroup;
+	whoFormGroup: FormGroup;
 
-	taskdate: TaskDate; // holder for task dates
 	task_groups = TASK_GROUPS;
+	taskdescription = '';
 
 	owners: User[] =[];
+	mesgulkadro: User[] = [];
+	taskdate: TaskDate = {
+		startdate : "",
+		enddate : "",
+		duration : 0
+	};
 
 	// create weights and numbers for people / load weight
 	numbers: Array<number> = Array(7).fill(0).map((x, i) => i + 1);
@@ -51,73 +58,77 @@ export class AssignmentAddComponent implements OnInit {
 		private _fsort: FSortPipe,
 		private _fb: FormBuilder,
 		private _user: UserService,
-		private _task: TaskService,
-		private _valiDate: ValidationService
+		private _task: TaskService
 	) {}
 
 	ngOnInit() {
-		// FIXME: remove default values
-		this.gorevForm = this._fb.group({
-			description: [,
-				Validators.required],
-			taskgroup: [, Validators.required],
-			when: this._fb.group({
-				sday: [, Validators.required],
-				stime: [moment('0800', 'hmm').format('HH:mm'), Validators.required],
-				etime: [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
-			}, {validators: this.validateDate.bind(this, this.taskdate)}),
-			weight: [1, Validators.required],
+		this.whenFormGroup = this._fb.group({
+			description: ['a', Validators.required],
+			taskgroup:   ['a', Validators.required],
 			peoplecount: [1, Validators.required],
-			owners: [[], ],
-			state: [0],
-			// these are temporary holders
-			sel: ['0', Validators.required],
+			weight:      [1, Validators.required],
+			sday:        ['2019-04-16T10:00:00.000Z', Validators.required],
+			stime:       [moment('0800', 'hmm').format('HH:mm'), Validators.required],
+			etime:       [moment('1000', 'hhmm').format('HH:mm'), Validators.required],
+		}, { validators: validateDateValidator });
+
+		this.whoFormGroup = this._fb.group({
+			owners:      [[]],
+			peoplecount: [], // just a hacky way to get validator work. addtoowners sets this
+			sel:         ['1'],
 			selectedPerson: [],
-		}, {validators: peopleCountValidator});
+		}, { validators: peopleCountValidator(1)});
 
 		// Get currently open tasks for additional busy times
 		this._task.getTasks()
 		.subscribe((tasks: Task[]) => {
-			console.log('getTasks()', tasks);
-			this.tasks = tasks;
+			this.opentasks = tasks;
 		});
 
-		// Get people
+		// // Get people
 		this._user.getUsers()
 		.subscribe((kadro: User[]) => {
 			console.log('getUsers()', kadro);
 			this.kadro = kadro;
-			for (const k of this.kadro){
-				for (const b of k.busy){
+			for (const k of this.kadro) {
+				for (const b of k.busy) {
 					this.busies.push(b);
-					console.log('b', b);
 				}
 			}
 		});
 
-		this.gorevForm.get('when').statusChanges
+		this.whenFormGroup.statusChanges
 		.subscribe( status => {
 			if (status === 'VALID') {
-				const t = this.gorevForm.get('when').value;
-				this.taskdate = this._valiDate.validateDate(t.sday, t.sday, t.stime, t.etime);
-				console.log('taskdate', this.taskdate);
-				if (this.taskdate.valid) {
-					this.updateAvailablePeople(this.taskdate.startdate, this.taskdate.enddate);
-				}
-			}
-		});
+				const t = this.whenFormGroup.value;
+				const sday = t.sday;
+				const stime = t.stime;
+				const etime = t.etime;
 
-		// reset selected person when selector changes
-		this.gorevForm.get('sel').valueChanges
-		.subscribe( _ => {
-			// Reset form
-			this.gorevForm.controls['selectedPerson'].setValue('');
+				// get date as is. if dateOnly() method is used,
+				//   timezone is lost
+				let sd = moment(sday);
+				let ed = moment(sday);
+
+				// combine the date & times
+				sd = sd.add(stime.slice(0, 2), 'h');
+				sd = sd.add(stime.slice(-2), 'm');
+				ed = ed.add(etime.slice(0, 2), 'h');
+				ed = ed.add(etime.slice(-2), 'm');
+
+				this.taskdate.duration = Math.trunc(moment.duration(ed.diff(sd)).as('minutes'));
+				this.taskdate.startdate = sd.format();
+				this.taskdate.enddate = ed.format();
+
+				this.updateAvailablePeople(sd, ed);
+			}
 		});
 
 	}
 
 	onSubmit() {
-		const g = this.gorevForm.value;
+		const g = this.whenFormGroup.value;
+		const w = this.whoFormGroup.value;
 		// calculate load
 		const load = this.calculateload(this.taskdate.duration, g.weight);
 		console.log(load);
@@ -131,11 +142,10 @@ export class AssignmentAddComponent implements OnInit {
 			enddate: this.taskdate.enddate,
 			duration: this.taskdate.duration,
 			recur: 0,
-			// FIXME: Think about state
 			state: 0
 		};
 
-		for (const oid of g.owners){
+		for (const oid of w.owners){
 			model.owners.push({
 				id: oid,
 				state: 0,
@@ -143,53 +153,48 @@ export class AssignmentAddComponent implements OnInit {
 			});
 		}
 
-		// Set the task to the db
-		this._task.addTask(model)
-		.subscribe(res => {
-			// // FIXME: Add error handling
-			for (let i = 0; i < model.peoplecount; i++) {
-				const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
-				// Add task to the each of the assigned people
-				// FIXME: remove
-				console.log(res);
-				this._user.addTaskToUser(p, res)
-				.subscribe((kisi: User) => {
-					// FIXME: remove
-					console.log(kisi);
-					// FIXME: Add error handling
-				});
-			}
-			this.dialogRef.close(res);
-		});
+		console.log(model);
+	// 	// Set the task to the db
+	// 	// this._task.addTask(model)
+	// 	// .subscribe(res => {
+	// 	// 	// // FIXME: Add error handling
+	// 	// 	for (let i = 0; i < model.peoplecount; i++) {
+	// 	// 		const p = this.kadro.filter(p => p._id === model.owners[i].id)[0];
+	// 	// 		// Add task to the each of the assigned people
+	// 	// 		// FIXME: remove
+	// 	// 		console.log(res);
+	// 	// 		this._user.addTaskToUser(p, res)
+	// 	// 		.subscribe((kisi: User) => {
+	// 	// 			// FIXME: remove
+	// 	// 			console.log(kisi);
+	// 	// 			// FIXME: Add error handling
+	// 	// 		});
+	// 	// 	}
+	// 	// 	this.dialogRef.close(res);
+	// 	// });
 	}
 
 	addToOwners(x?: User) {
 		let p: User;
 
 		// assign p depending on the parameter
-		p = x ? x : this.gorevForm.get('selectedPerson').value;
+		p = x ? x : this.whoFormGroup.get('selectedPerson').value;
 
 		if (this.owners.indexOf(p) === -1) {
 			this.owners.push(p);
-			this.gorevForm.value.owners.push(p._id);
+			this.whoFormGroup.value.owners.push(p._id);
 		}
 
-		// Remove candidate from availablePeople
-		p.isAvailable = 0;
+		// tag candidate with selected
+		p.isSelected = 1;
 
 		// Disable form if good to go.
-		if (this.gorevForm.value.peoplecount <= this.owners.length) {
-			this.gorevForm.controls['selectedPerson'].disable();
+		if (this.whenFormGroup.value.peoplecount <= this.owners.length) {
+			this.whoFormGroup.controls['selectedPerson'].disable();
 		}
 
 		// Reset form
-		this.gorevForm.controls['selectedPerson'].setValue('');
-		// hack it! -  trigger for selector pipe
-		//let hacky = this.gorevForm.get('sel').value;
-		//this.gorevForm.controls['sel'].setValue('0');
-		//this.gorevForm.value.sel = hacky;
-		//setTimeout(100);
-		//this.gorevForm.controls['sel'].setValue(hacky);
+		this.whoFormGroup.controls['selectedPerson'].setValue('');
 	}
 
 	removeFromOwners(p) {
@@ -198,49 +203,41 @@ export class AssignmentAddComponent implements OnInit {
 		const i = this.owners.indexOf(p);
 		if (i > -1) {
 			this.owners.splice(i, 1);
-			this.gorevForm.value.owners.splice(i, 1);
+			this.whoFormGroup.value.owners.splice(i, 1);
 		}
 
-		// add to available
-		p.isAvailable = 1;
+		// untag candidate with selected
+		p.isSelected = 0;
 
 		// Enable form
-		if (this.owners.length < this.gorevForm.get('peoplecount').value) {
-			this.gorevForm.controls['selectedPerson'].enable();
+		if (this.owners.length < this.whenFormGroup.get('peoplecount').value) {
+			this.whoFormGroup.controls['selectedPerson'].enable();
 		}
 
 		// Reset form
-		this.gorevForm.controls['selectedPerson'].setValue('');
-		// hack it! -  trigger for selector pipe
-		//let hacky = this.gorevForm.get('sel').value;
-		//this.gorevForm.controls['sel'].setValue('0');
+		this.whoFormGroup.controls['selectedPerson'].setValue('');
 	}
 
 	autoAssignPeople(): void {
-		const g = this.gorevForm.value;
-		this.kadro = this._fsort.transform(this.kadro, 'load');
-		console.log( g.peoplecount);
-		for (let i = this.owners.length; i < g.peoplecount; i++) {
-			if (g.sel === '1') {
+		const pc = this.whenFormGroup.get('peoplecount').value;
+		const sel = this.whoFormGroup.get('sel').value;
+		for (let i = this.owners.length; i < pc; i++) {
+			if (sel === '1') {
 				const p = this.kadro.filter( x =>
-					x.position === ROLES[2].position && x.isAvailable === 1)
+					x.position === ROLES[2].position && x.isAvailable === 1 && x.isSelected === 0).sort(compareLoad);
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
-			} else if (g.sel === '2') {
+			} else if (sel === '2') {
 				const p = this.kadro.filter( x =>
-					x.position === ROLES[0].position && x.isAvailable === 1)
+					x.position === ROLES[0].position && x.isAvailable === 1  && x.isSelected === 0).sort(compareLoad);
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
-			} else if (g.sel === '3') {
+			} else if (sel === '3') {
 				const p = this.kadro.filter( x =>
-					x.isAvailable === 1)
-				if (p.length > 0) {
-					this.addToOwners(p[0]);
-				}
-			} else {
-				const p = this.kadro;
+					x.isSelected === 0).sort(compareLoad);
+				console.log(i, 'sec', p);
 				if (p.length > 0) {
 					this.addToOwners(p[0]);
 				}
@@ -248,21 +245,21 @@ export class AssignmentAddComponent implements OnInit {
 		}
 	}
 
-
-	updateAvailablePeople(sd: string, ed: string) {
+	updateAvailablePeople(sd, ed) {
 		// arrays to hold busy/available id
 		let busyIds = [];
-		let sdate = moment(sd);
-		let edate = moment(ed);
+		this.mesgulkadro = [];
+		let sdate = sd;//moment(sd);
+		let edate = ed;//moment(ed);
 
 		const { range } = extendMoment(moment);
 		const gorevrange = range(sdate, edate);
 		// merge two arrays to have a unified busy object for searching
 		let busymaster = [];
 		busymaster.push(...this.busies);
-		busymaster.push(...this.tasks);
+		busymaster.push(...this.opentasks);
 
-		console.log('busies:',busymaster);
+		console.log('busymaster:',busymaster);
 		for (const b of busymaster) {
 			// if recur is set, evaluate differently
 			if (b.recur) {
@@ -281,6 +278,9 @@ export class AssignmentAddComponent implements OnInit {
 						// this person is busy, add it to the array if
 						//  she is not already included
 						if (busyIds.indexOf(b.owner) === -1) {
+							let p = this.kadro.find( x => x._id === b.owner);
+							p['excuse'] = b.description;
+							this.mesgulkadro.push(p);
 							busyIds.push(b.owner);
 						}
 					}
@@ -297,12 +297,18 @@ export class AssignmentAddComponent implements OnInit {
 					// owner only exists in busytimes
 					if (b.owner) {
 						if (busyIds.indexOf(b.owner) === -1) {
+							let p = this.kadro.find( x => x._id === b.owner);
+							p['excuse'] = b.description;
+							this.mesgulkadro.push(p);
 							busyIds.push(b.owner);
 						}
 					} else {
 						// this is for open tasks
 						for (let i = 0; i < +b.peoplecount; i++) {
 							if (busyIds.indexOf(b.owners[i]) === -1) {
+								let p = this.kadro.find( x => x._id === b.owners[i]);
+								p['excuse'] = b.description;
+								this.mesgulkadro.push(p);
 								busyIds.push(b.owners[i]);
 							}
 						}
@@ -311,8 +317,8 @@ export class AssignmentAddComponent implements OnInit {
 			}
 		}
 
-		// FIXME: integrate vacation in other places
 		for (const k of this.kadro) {
+			k.isSelected = 0;
 			if (k.vacation === false) {
 				if (busyIds.indexOf(k._id) === -1) {
 					k.isAvailable = 1;
@@ -322,18 +328,42 @@ export class AssignmentAddComponent implements OnInit {
 			}
 		}
 
-		// Reset form
-		this.gorevForm.controls['selectedPerson'].setValue('');
 	}
+	// 	// Reset form
+	// 	this.gorevForm.controls['selectedPerson'].setValue('');
+	// }
 
 	// Here is where the load calculation happens
 	calculateload(duration: number, weight: number) {
 		return Math.round(duration * weight / 6) / 10;
 	}
 
-	// for when validation in the form
-	validateDate(c: FormControl, t: TaskDate) {
-		return t.valid ? null :  { timenotvalid : true };
+	createdescr(){
+		const g = this.whenFormGroup.value;
+		this.taskdescription = g.description;
+		this.taskdescription += ' konulu görev için ';
+		this.taskdescription += moment(g.sday).locale("tr").format('Do MMMM, dddd');
+		this.taskdescription += ' günü ';
+		this.taskdescription += g.stime;
+		this.taskdescription += ' ile ';
+		this.taskdescription += g.etime;
+		this.taskdescription += ' arasında görevlendirildiniz. ';
 	}
 
+	updatepeoplecnt(){
+		this.whoFormGroup.controls['peoplecount'].setValue(this.whenFormGroup.get('peoplecount').value);
+	}
+
+}
+
+function compareLoad (a, b) {
+	if (a.load < b.load) { return -1; }
+	if (a.load > b.load) { return 1; }
+	return 0;
+}
+
+function compareName (a, b) {
+	if (a.fullname < b.fullname) { return -1; }
+	if (a.fullname > b.fullname) { return 1; }
+	return 0;
 }

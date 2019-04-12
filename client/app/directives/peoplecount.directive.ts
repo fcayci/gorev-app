@@ -1,16 +1,17 @@
-import { Directive } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 
-import { AbstractControl, FormGroup, NG_VALIDATORS, 
-  ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 // check if the peoplecount and length of owners match
-export const peopleCountValidator: ValidatorFn = (control: FormGroup): 
-ValidationErrors | null => {
-	const owners = control.get('owners');
-	const peoplecount = control.get('peoplecount');
-
-	return peoplecount && owners.value.length !== peoplecount.value ? { notenoughpeople : true } : null;
-};
+export function peopleCountValidator(pc: number): ValidatorFn {
+	return (control: AbstractControl): {[key: string]: any} | null => {
+		const owners = control.get('owners').value;
+		const peoplecount = control.get('peoplecount').value;
+		console.log('people', peoplecount);
+		console.log('owners', owners.length);
+		return owners.length === peoplecount ? null : { peoplevalid : false };
+	};
+}
 
 @Directive({
 	selector: '[appPeopleCount]',
@@ -18,8 +19,10 @@ ValidationErrors | null => {
 	})
 
 export class peopleCountValidatorDirective implements Validator {
-	validate(control: AbstractControl): ValidationErrors {
-		return peopleCountValidator(control)
-	}
-}
+	@Input('appPeopleCount') peoplecount: number;
 
+	validate(control: AbstractControl): {[key: string]: any} | null {
+	  return peopleCountValidator(1)(control);
+	}
+
+}
