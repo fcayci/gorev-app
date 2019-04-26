@@ -1,0 +1,12 @@
+@media screen and (max-width: 960px) {
+
+  .mat-column-position {
+    display: none;
+  }
+  .mat-column-phone {
+    display: none;
+  }
+  .mat-column-office {
+    display: none;
+  }
+}

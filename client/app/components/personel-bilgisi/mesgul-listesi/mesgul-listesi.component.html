@@ -14,9 +14,13 @@
 		<table mat-table [dataSource]="dataSource" matSort>
 
 			<ng-container matColumnDef="delete">
-				<th mat-header-cell *matHeaderCellDef></th>
+				<th mat-header-cell *matHeaderCellDef>
+					<span *ngIf="this.dataSource?.data.length" matTooltip="Meşguliyetleri Düzenle">
+						<mat-slide-toggle style="width:15%;align-self: center;" (click)="toggleEdit()"></mat-slide-toggle>
+					</span>
+				</th>
 				<td mat-cell *matCellDef="let row; let i = index">
-					<button (click)="onDelete(row, i)"
+					<button *ngIf="showdelete" (click)="onDelete(row, i)"
 					mat-icon-button color="primary" matTooltip="Sil">
 						<mat-icon aria-label="delete">cancel</mat-icon>
 					</button>
